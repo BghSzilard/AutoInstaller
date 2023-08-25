@@ -5,7 +5,9 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoInstaller", "AutoInstaller\AutoInstaller.csproj", "{CCC8F20F-A04A-480C-9DE4-0B17C3559BB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{3781944A-1CD4-49F0-A07C-74B862C8CE0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{3781944A-1CD4-49F0-A07C-74B862C8CE0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AISL", "AISL\AISL.csproj", "{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3781944A-1CD4-49F0-A07C-74B862C8CE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3781944A-1CD4-49F0-A07C-74B862C8CE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3781944A-1CD4-49F0-A07C-74B862C8CE0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

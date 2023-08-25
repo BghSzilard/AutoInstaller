@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Antlr
+/AutoInstaller/AISL/.antlr
+
+# Visual Studio Code
+/AutoInstaller/AISL/.vscode
