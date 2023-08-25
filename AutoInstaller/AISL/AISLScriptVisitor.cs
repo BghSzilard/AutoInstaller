@@ -38,7 +38,7 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramInfo>
             parameter.DefaultValue = context.parameterDefaultValue().GetText();
         }
 
-        _programInfo.Parameters.Add(parameter);
+        _programInfo.ParameterList.Add(parameter);
 
         return _programInfo;
     }

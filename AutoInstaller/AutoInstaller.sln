@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AISL", "AISL\AISL.csproj", "{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AISLTesting", "AISLTesting\AISLTesting.csproj", "{C4E02841-7F5A-41EB-A689-32B610E2EF87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F87ECAB8-1FEB-4727-86C0-C44397A5CCF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4E02841-7F5A-41EB-A689-32B610E2EF87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E02841-7F5A-41EB-A689-32B610E2EF87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E02841-7F5A-41EB-A689-32B610E2EF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4E02841-7F5A-41EB-A689-32B610E2EF87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
