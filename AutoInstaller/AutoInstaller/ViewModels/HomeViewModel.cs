@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 
 namespace AutoInstaller.ViewModels;
 
-public sealed partial class DemoViewModel : ObservableObject
+public sealed partial class HomeViewModel : ObservableObject
 {
     public ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
-    public DemoViewModel() 
+    public HomeViewModel() 
     {
         Parameters.Add(new Parameter() { Name = "Appdir", Value = "C:\\users" });
     }

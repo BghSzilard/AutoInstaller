@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:AutoInstaller.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:DataType="vm:DemoViewModel"
+			 x:DataType="vm:HomeViewModel"
 			 x:CompileBindings="True"
-             x:Class="AutoInstaller.Views.DemoPage">
+             x:Class="AutoInstaller.Views.HomePage">
 	<UserControl.DataContext>
-		<vm:DemoViewModel></vm:DemoViewModel>
+		<vm:HomeViewModel></vm:HomeViewModel>
 	</UserControl.DataContext>
 	<Grid>
 		<Grid.RowDefinitions>

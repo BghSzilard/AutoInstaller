@@ -22,14 +22,14 @@ namespace AutoInstaller
             serviceCollection.AddSingleton<PageService>();
             serviceCollection.AddSingleton<NavigationService>();
 
-            serviceCollection.AddSingleton<DemoPage>();
-            serviceCollection.AddSingleton<DemoViewModel>();
+            serviceCollection.AddSingleton<HomePage>();
+            serviceCollection.AddSingleton<HomeViewModel>();
 
             PageService pageService = serviceCollection.GetService<PageService>();
-            pageService.RegisterPage<DemoPage, DemoViewModel>("Demo");
+            pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
 
             NavigationService navigationService = serviceCollection.GetService<NavigationService>();
-            navigationService.CurrentPageType = typeof(DemoPage);
+            navigationService.CurrentPageType = typeof(HomePage);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
