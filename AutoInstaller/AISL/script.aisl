@@ -1,0 +1,6 @@
+FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+HAS (
+	number Port WITH DEFAULT 8080,
+	string ServerName,
+	flag Tick
+) AS installation_parameters;
