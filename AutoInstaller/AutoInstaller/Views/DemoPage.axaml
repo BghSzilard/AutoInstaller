@@ -2,19 +2,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:AutoInstaller.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:DemoViewModel"
+			 x:CompileBindings="True"
              x:Class="AutoInstaller.Views.DemoPage">
+	<UserControl.DataContext>
+		<vm:DemoViewModel></vm:DemoViewModel>
+	</UserControl.DataContext>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*"></RowDefinition>
-			<RowDefinition Height="*"></RowDefinition>
-			<RowDefinition Height="*"></RowDefinition>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+		</Grid.RowDefinitions>	   
+		<Grid.ColumnDefinitions>   
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
 			<ColumnDefinition Width="*"></ColumnDefinition>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
 			<ColumnDefinition Width="*"></ColumnDefinition>
 			<ColumnDefinition Width="*"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		<TextBlock Margin="0 20 0 0" Text="Welcome to autoinstaller!" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"></TextBlock>
+		<TextBlock Grid.Row="0" Text="Add"></TextBlock>
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="Name"></TextBlock>
+		<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" ></TextBox>
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="Installation folder"></TextBlock>
+		<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1"></TextBox>
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Folder destination"></TextBlock>
+		<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1"></TextBox>
+		<TextBlock Grid.Row="4" Text="Parameters"></TextBlock>
+		<TextBlock Grid.Row="5" Grid.Column="0" Text="Name" Margin="5 5 10 0"></TextBlock>
+		<TextBox Grid.Row="5" Grid.Column="1" ></TextBox>
+		<TextBlock Grid.Row="5" Grid.Column="2" Text="Value" Margin="5 5 10 0"></TextBlock>
+		<TextBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="1" ></TextBox>
+		<Button Grid.Row="5" Grid.Column="4" Content="+" Margin="20 0 0 0 "></Button>
+		<ListBox Grid.Row="6" ItemsSource="{Binding Parameters}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Name}" Margin="5"/>
+						<TextBlock Text=":" Margin="5"></TextBlock>
+						<TextBlock Text="{Binding Value}" Margin="5"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 	</Grid>
+
+	
 </UserControl>

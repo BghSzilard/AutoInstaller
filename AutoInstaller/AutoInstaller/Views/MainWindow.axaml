@@ -21,6 +21,26 @@
 			</x:Arguments>
 		</vm:MainWindowViewModel>
     </Design.DataContext>
+	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="10*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Menu Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+			<MenuItem Header="File"></MenuItem>
+			<MenuItem Header="Home"></MenuItem>
+		</Menu>
+		<SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
+			<SplitView.Pane>
+				<StackPanel>
+					<Button Content="Add" HorizontalAlignment="Center" Margin="0 15 0 20"></Button>
+					<TextBlock Text="Program list ...."></TextBlock>
+				</StackPanel>
+			</SplitView.Pane>
 
-	<UserControl Content="{Binding Content}"></UserControl>
-</Window>
+			<UserControl Content="{Binding Content}"></UserControl>
+		</SplitView>
+	</Grid>
+
+	</Window>
