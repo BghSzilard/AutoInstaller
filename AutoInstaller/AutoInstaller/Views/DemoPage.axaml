@@ -18,6 +18,7 @@
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>	   
 		<Grid.ColumnDefinitions>   
 			<ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -39,8 +40,17 @@
 		<TextBlock Grid.Row="5" Grid.Column="2" Text="Value" Margin="5 5 10 0"></TextBlock>
 		<TextBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="1" ></TextBox>
 		<Button Grid.Row="5" Grid.Column="4" Content="+" Margin="20 0 0 0 "></Button>
-	
-		
+		<ListBox Grid.Row="6" ItemsSource="{Binding Parameters}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Name}" Margin="5"/>
+						<TextBlock Text=":" Margin="5"></TextBlock>
+						<TextBlock Text="{Binding Value}" Margin="5"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 	</Grid>
 
 	
