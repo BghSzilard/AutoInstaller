@@ -1,12 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AutoInstaller.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 
 namespace AutoInstaller.ViewModels;
 
@@ -14,13 +10,21 @@ public sealed partial class HomeViewModel : ObservableObject
 {
     public ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
     [ObservableProperty]
-    private Parameter _selectedParameter;
+    private Parameter _selectedParameter = new Parameter();
+    [ObservableProperty]
+    private Parameter _newParameter = new Parameter();
     private PowershellExecutor _languageConverter { get; set; }
     public HomeViewModel(PowershellExecutor languageConverter)
     {
         _languageConverter = languageConverter;
-        Parameters.Add(new Parameter() { Name = "Appdir", Value = "C:\\users" });
-        Parameters.Add(new Parameter() { Name = "Appdir", Value = "C:\\users" });
+    }
+    [RelayCommand]
+    public void AddParameter()
+    {
+        if (NewParameter.Name is not null && NewParameter.Value is not null)
+        {
+            Parameters.Add(NewParameter);
+        }
     }
     [RelayCommand]
     public void RemoveParameter()
@@ -31,10 +35,5 @@ public sealed partial class HomeViewModel : ObservableObject
     public void InstallProgram()
     {
         _languageConverter.RunPowershellInstaller();
-    }
-    public class Parameter
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
     }
 }

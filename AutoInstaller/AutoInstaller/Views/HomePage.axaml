@@ -31,11 +31,11 @@
     <TextBox Margin="0 0 100 0"/>
     <TextBlock Text="Parameters"/>
     <StackPanel Orientation="Horizontal">
-        <TextBlock Text="Name" Margin="5 5 10 0"/>
-        <TextBox/>
+        <TextBlock Text="Name" Margin="5 5 10 0" />
+        <TextBox Text="{Binding NewParameter.Name}"/>
         <TextBlock Text="Value" Margin="5 5 10 0"/>
-        <TextBox/>
-        <Button Content="+" Margin="20 0 0 0 "/>
+        <TextBox Text="{Binding NewParameter.Value}"/>
+        <Button Content="+" Margin="20 0 0 0 " Command="{Binding AddParameterCommand}"/>
         <Button Content="-" Margin="20 0 0 0 " Command="{Binding RemoveParameterCommand}" />
     </StackPanel>
     <ListBox ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}">
