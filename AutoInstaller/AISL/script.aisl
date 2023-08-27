@@ -1,4 +1,4 @@
-FIND "BraveBrowserSetup" AT "C:\Users\sziba\Desktop\BraveBrowserSetup-BRV010.exe";
+FIND "SiemensProgram" AT "D:\Summer School 2023\asd\asd\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi";
 HAS (
 	number Port WITH DEFAULT 8080,
 	string ServerName,

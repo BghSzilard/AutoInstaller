@@ -13,27 +13,28 @@ public class PowershellExecutor
     }
     public void RunPowershellInstaller()
     {
-        string script = ConvertToPowerShell();
-
         // Create a process to execute PowerShell
         Process process = new Process();
-        process.StartInfo.FileName = "powershell.exe";
-        process.StartInfo.Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{script}\"";
+        process.StartInfo.FileName = "msiexec";
+        process.StartInfo.Arguments = "/i";
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;
+
+        AddPath(process);
+
+        process.StartInfo.Arguments += "/qb+";
 
         // Start the process
         process.Start();
 
         // Wait for the process to finish
         process.WaitForExit();
-
     }
-    public string ConvertToPowerShell()
+    public void AddPath(Process process)
     {
-        string powerShellCode = $"Start-Process {_scriptInfoExtractor.GetProgramInfo().InstallationsPath}";
-        return powerShellCode;
+        string pathToAdd = _scriptInfoExtractor.GetProgramInfo().InstallationsPath;
+        process.StartInfo.Arguments += $"\"{pathToAdd}\"";
     }
 }
