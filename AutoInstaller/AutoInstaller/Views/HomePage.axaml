@@ -3,12 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:AutoInstaller.ViewModels"
+			 xmlns:core="using:Core"
+			 xmlns:aisl="using:AISL"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:HomeViewModel"
 			 x:CompileBindings="True"
              x:Class="AutoInstaller.Views.HomePage">
 	<UserControl.DataContext>
-		<vm:HomeViewModel></vm:HomeViewModel>
+		<vm:HomeViewModel>
+			<x:Arguments>
+				<core:PowershellExecutor>
+					<x:Arguments>
+						<aisl:ScriptInfoExtractor></aisl:ScriptInfoExtractor>
+					</x:Arguments>
+				</core:PowershellExecutor>
+			</x:Arguments>
+		</vm:HomeViewModel>
 	</UserControl.DataContext>
 	<StackPanel>
     <TextBlock Text="Name"/>
@@ -39,7 +49,7 @@
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
-		<Button Content="Install"></Button>
+		<Button Content="Install" Command="{Binding InstallProgramCommand}"></Button>
 </StackPanel>
 
 

@@ -1,3 +1,4 @@
+using AISL;
 using AutoInstaller.Services;
 using AutoInstaller.ViewModels;
 using AutoInstaller.Views;
@@ -24,6 +25,10 @@ namespace AutoInstaller
 
             serviceCollection.AddSingleton<HomePage>();
             serviceCollection.AddSingleton<HomeViewModel>();
+
+            serviceCollection.AddSingleton<PowershellExecutor>();
+
+            serviceCollection.AddSingleton<ScriptInfoExtractor>();
 
             PageService pageService = serviceCollection.GetService<PageService>();
             pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
