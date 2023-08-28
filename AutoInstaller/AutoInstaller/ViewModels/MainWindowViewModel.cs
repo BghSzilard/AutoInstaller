@@ -1,4 +1,5 @@
 ﻿using AutoInstaller.Services;
+using AutoInstaller.Views;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -85,6 +86,11 @@ namespace AutoInstaller.ViewModels
             {
                 IsActiveChanged(isActive, activeAware);
             }
+        }
+        [RelayCommand]
+        public void AddProgram()
+        {
+            Navigation.CurrentPageType = typeof(AddPage);
         }
     }
 }

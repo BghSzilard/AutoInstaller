@@ -34,7 +34,7 @@
 		<SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
 			<SplitView.Pane>
 				<StackPanel>
-					<Button Content="Add" HorizontalAlignment="Center" Margin="0 15 0 20"></Button>
+					<Button Content="Add" HorizontalAlignment="Center" Margin="0 15 0 20" Command="{Binding AddProgramCommand}"></Button>
 					<TextBlock Text="Program list ...."></TextBlock>
 				</StackPanel>
 			</SplitView.Pane>

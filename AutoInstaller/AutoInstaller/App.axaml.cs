@@ -26,12 +26,18 @@ namespace AutoInstaller
             serviceCollection.AddSingleton<HomePage>();
             serviceCollection.AddSingleton<HomeViewModel>();
 
+            serviceCollection.AddSingleton<AddPage>();
+            serviceCollection.AddSingleton<AddViewModel>();
+
             serviceCollection.AddSingleton<PowershellExecutor>();
 
             serviceCollection.AddSingleton<ScriptInfoExtractor>();
 
+            //serviceCollection.AddSingleton<AISLScriptBuilder>();
+
             PageService pageService = serviceCollection.GetService<PageService>();
             pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
+            pageService.RegisterPage<AddPage, AddViewModel>("Add");
 
             NavigationService navigationService = serviceCollection.GetService<NavigationService>();
             navigationService.CurrentPageType = typeof(HomePage);
