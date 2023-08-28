@@ -11,6 +11,8 @@ namespace AutoInstaller.ViewModels
 {
     public sealed partial class MainWindowViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private string _configurationFolder = "C:\\Users\\sziba\\Desktop\\Programs";
         private readonly ServiceCollection _serviceCollection;
         [ObservableProperty]
         private UserControl? _content;
@@ -91,6 +93,16 @@ namespace AutoInstaller.ViewModels
         public void AddProgram()
         {
             Navigation.CurrentPageType = typeof(AddPage);
+        }
+        [RelayCommand]
+        public void InstallProgram()
+        {
+            Navigation.CurrentPageType = typeof(InstallPage);
+        }
+        [RelayCommand]
+        public void ConfigureFolder()
+        {
+            Navigation.CurrentPageType = typeof(ConfigurationPage);
         }
     }
 }
