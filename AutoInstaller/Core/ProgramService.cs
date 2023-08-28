@@ -14,9 +14,11 @@ public class ProgramService
 
         string filePath = programPath + $"\\ {programData.Version}" + ".aisl";
 
-        
-        FileStream fs = File.Create(filePath);
 
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine(_scriptBuilder.BuildScript(programData));
+        } 
 
     }
 }

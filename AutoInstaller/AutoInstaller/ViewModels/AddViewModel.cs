@@ -46,6 +46,7 @@ public sealed partial class AddViewModel : ObservableObject
         ProgramData programData = new ProgramData();
         programData.Name = Name;
         programData.Version = Version;
+        programData.InstallationsPath = InstallationPath;
         //programData.Parameters = Parameters.ToList();
         
         _service.SaveProgram(programData);
