@@ -9,7 +9,11 @@ class Program
     {
         try
         {
-            string scriptText = File.ReadAllText(@"D:\Siemens\AutoInstaller\AutoInstaller\AISL\script.aisl", Encoding.UTF8);
+            string targetFile = Enumerable.Range(0, 4)
+            .Aggregate(Environment.CurrentDirectory, (current, _) =>
+                Path.GetDirectoryName(current) ?? throw new Exception("Cannot find the folder containing the script"));
+            targetFile = Path.Combine(targetFile, "AISL", "script.aisl");
+            string scriptText = File.ReadAllText(targetFile, Encoding.UTF8);
 
             AntlrInputStream inputStream = new AntlrInputStream(scriptText);
             AISLLexer aislLexer = new AISLLexer(inputStream);
@@ -19,8 +23,6 @@ class Program
             AISLParser.ScriptContext scriptContext = aislParser.script();
             AISLScriptVisitor visitor = new();
             var programInfo = visitor.Visit(scriptContext);
-
-            Console.WriteLine();
 
             // using PowerShell ps = PowerShell.Create();
             // ps.AddScript($"Start-Process {visitor.Tokens[1]}");
