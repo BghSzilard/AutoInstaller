@@ -11,7 +11,7 @@ public enum ParameterType
 public struct ParameterData
 {
     public bool IsOptional { get; set; }
-    public string Type { get; set; }
+    public ParameterType Type { get; set; }
     public string Name { get; set; }
     public string? DefaultValue { get; set; }
     public string? FixedValue { get; set; }

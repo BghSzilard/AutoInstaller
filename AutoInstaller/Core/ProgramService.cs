@@ -41,36 +41,36 @@ public static class ProgramService
             {
                 new ParameterData()
                 {
-                    Type = "number",
+                    Type = ParameterType.number,
                     Name = "Port",
                     DefaultValue = "8080",
                 },
                 new ParameterData()
                 {
-                    Type = "string",
+                    Type = ParameterType.@string,
                     Name = "ServerName",
                 },
                 new ParameterData()
                 {
-                    Type = "choice",
+                    Type = ParameterType.choice,
                     Name = "DropDown",
                     Options = new() { "option1", "option2" },
                 },
                 new ParameterData()
                 {
-                    Type = "flag",
+                    Type = ParameterType.flag,
                     Name = "Tick",
                 },
                 new ParameterData()
                 {
-                    Type = "string",
+                    Type = ParameterType.@string,
                     Name = "FixedParameter",
                     FixedValue = "FixedValue"
                 },
                 new ParameterData()
                 {
                     IsOptional = true,
-                    Type = "string",
+                    Type = ParameterType.@string,
                     Name = "OptionalValue"
                 }
             },

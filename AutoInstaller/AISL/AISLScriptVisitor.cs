@@ -41,7 +41,7 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
     {
         ParameterData parameter = new()
         {
-            Type = context.parameterType().GetText(),
+            Type = (ParameterType)Enum.Parse(typeof(ParameterType), context.parameterType().GetText()),
             Name = context.parameterName().GetText()
         };
 
