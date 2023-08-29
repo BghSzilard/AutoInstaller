@@ -3,43 +3,43 @@ using static AISLParser;
 
 namespace AISL;
 
-public class AISLScriptVisitor : AISLBaseVisitor<ProgramInfo>
+public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
 {
-    private readonly ProgramInfo _programInfo = new();
+    private readonly ProgramData _programData = new();
 
-    public override ProgramInfo VisitScript([NotNull] ScriptContext context)
+    public override ProgramData VisitScript([NotNull] ScriptContext context)
     {
         VisitChildren(context);
-        return _programInfo;
+        return _programData;
     }
 
-    public override ProgramInfo VisitUninstallInstruction([NotNull] UninstallInstructionContext context)
+    public override ProgramData VisitUninstallInstruction([NotNull] UninstallInstructionContext context)
     {
-        _programInfo.Uninstall = true;
-        return _programInfo;
+        _programData.Uninstall = true;
+        return _programData;
     }
 
-    public override ProgramInfo VisitExecuteInstruction([NotNull] ExecuteInstructionContext context)
+    public override ProgramData VisitExecuteInstruction([NotNull] ExecuteInstructionContext context)
     {
-        _programInfo.InstallerPath = context.installerPath().GetText().Trim('"');
-        return _programInfo;
+        _programData.InstallerPath = context.installerPath().GetText().Trim('"');
+        return _programData;
     }
 
-    public override ProgramInfo VisitProgramName([NotNull] ProgramNameContext context)
+    public override ProgramData VisitProgramName([NotNull] ProgramNameContext context)
     {
-        _programInfo.Name = context.GetText().Trim('"');
-        return _programInfo;
+        _programData.Name = context.GetText().Trim('"');
+        return _programData;
     }
 
-    public override ProgramInfo VisitInstallationsPath([NotNull] InstallationsPathContext context)
+    public override ProgramData VisitInstallationsPath([NotNull] InstallationsPathContext context)
     {
-        _programInfo.InstallationsPath = context.GetText().Trim('"');
-        return _programInfo;
+        _programData.InstallationsPath = context.GetText().Trim('"');
+        return _programData;
     }
 
-    public override ProgramInfo VisitParameter([NotNull] ParameterContext context)
+    public override ProgramData VisitParameter([NotNull] ParameterContext context)
     {
-        ParameterInfo parameter = new()
+        ParameterData parameter = new()
         {
             Type = context.parameterType().GetText(),
             Name = context.parameterName().GetText()
@@ -65,8 +65,8 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramInfo>
             parameter.FixedValue = context.parameterFixedValue().GetText().Trim('"');
         }
 
-        _programInfo.ParameterList.Add(parameter);
+        _programData.ParameterList.Add(parameter);
 
-        return _programInfo;
+        return _programData;
     }
 }

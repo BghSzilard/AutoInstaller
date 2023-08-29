@@ -6,11 +6,11 @@ namespace AISLTesting;
 
 public class AISLScriptVisitorTests
 {
-    private readonly ProgramInfo _programInfo;
+    private readonly ProgramData _programData;
 
     private const string ScriptPath = @"D:\Siemens\AutoInstaller\AutoInstaller\AISL\script.aisl";
 
-    private List<ParameterInfo> ExpectedParameterList = new()
+    private List<ParameterData> ExpectedParameterList = new()
     {
         new() { Type = "number", Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
         new() { Type = "string", Name = "ServerName", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
@@ -31,31 +31,31 @@ public class AISLScriptVisitorTests
 
         AISLParser.ScriptContext scriptContext = aislParser.script();
         AISLScriptVisitor visitor = new();
-        _programInfo = visitor.Visit(scriptContext);
+        _programData = visitor.Visit(scriptContext);
     }
 
     [Fact]
     public void ProgramNameIsValid()
     {
-        Assert.Equal("Simcenter Test Cloud Blueprint", _programInfo.Name);
+        Assert.Equal("Simcenter Test Cloud Blueprint", _programData.Name);
     }
 
     [Fact]
     public void InstallationsPathIsValid()
     {
-        Assert.Equal(@"D:\Siemens\tcb", _programInfo.InstallationsPath);
+        Assert.Equal(@"D:\Siemens\tcb", _programData.InstallationsPath);
     }
 
     [Fact]
     public void UninstallIsValid()
     {
-        Assert.True(_programInfo.Uninstall);
+        Assert.True(_programData.Uninstall);
     }
 
     [Fact]
     public void InstallerPathIsValid()
     {
-        Assert.Equal(@"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi", _programInfo.InstallerPath);
+        Assert.Equal(@"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi", _programData.InstallerPath);
     }
 
     [Theory]
@@ -67,6 +67,6 @@ public class AISLScriptVisitorTests
     [InlineData(5)]
     public void ParameterIsValid(int index)
     {
-        Assert.Equal(ExpectedParameterList[index], _programInfo.ParameterList[index]);
+        Assert.Equal(ExpectedParameterList[index], _programData.ParameterList[index]);
     }
 }

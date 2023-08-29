@@ -1,6 +1,6 @@
 ﻿namespace AISL;
 
-public struct ParameterInfo
+public struct ParameterData
 {
     public bool IsOptional { get; set; }
     public string Type { get; set; }
@@ -11,7 +11,7 @@ public struct ParameterInfo
 
     public override bool Equals(object? obj)
     {
-        return obj is ParameterInfo info &&
+        return obj is ParameterData info &&
                IsOptional == info.IsOptional &&
                Type == info.Type &&
                Name == info.Name &&
@@ -21,11 +21,11 @@ public struct ParameterInfo
     }
 }
 
-public class ProgramInfo
+public class ProgramData
 {
     public string Name { get; set; } = "";
     public string InstallationsPath { get; set; } = "";
-    public List<ParameterInfo> ParameterList { get; set; } = new();
+    public List<ParameterData> ParameterList { get; set; } = new();
     public bool Uninstall { get; set; }
     public string InstallerPath { get; set; } = ""; // should it be here?
 }
