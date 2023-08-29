@@ -29,6 +29,7 @@ public partial class AddViewModel : ObservableObject
 
     partial void OnInstallationsPathChanged(string? value)
     {
+        Versions.Clear();
         ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
     }
 
@@ -40,7 +41,7 @@ public partial class AddViewModel : ObservableObject
             IsOptional = ParameterIsOptional,
             Type = SelectedParameterType,
             Name = ParameterName!,
-            DefaultValue = ParameterDefaultValue
+            DefaultValue = ParameterDefaultValue,
         };
 
         Parameters.Add(parameter);
@@ -55,12 +56,13 @@ public partial class AddViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(IsProgramDataValid))]
     public void AddProgram()
     {
-        ProgramData programData = new()
+        ProgramData programData = new() // remember to add data here
         {
             Name = Name,
             InstallationsPath = InstallationsPath,
             ParameterList = Parameters.ToList(),
-            Version = SelectedVersion // remember to add data here
+            Version = SelectedVersion,
+            Uninstall = true // hardcoded for now, will be changed
         };
         ProgramService.SaveProgram(programData);
     }
