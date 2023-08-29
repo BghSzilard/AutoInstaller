@@ -13,7 +13,7 @@ public static class ProgramService
             (current, _) => Path.GetDirectoryName(current)!);
         _databasePath = Path.Combine(databasePath, "Database");
 
-        if (Directory.Exists(_databasePath))
+        if (!Directory.Exists(_databasePath))
         {
             Directory.CreateDirectory(_databasePath);
         }
