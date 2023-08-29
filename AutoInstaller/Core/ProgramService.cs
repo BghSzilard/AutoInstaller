@@ -74,7 +74,8 @@ public static class ProgramService
                     Name = "OptionalValue"
                 }
             },
-            InstallerPath = "D:\\Siemens\\tcb\\230822_1.1.9_core\\Simcenter Test Cloud Blueprint Setup.msi"
+            InstallerPath = "D:\\Siemens\\tcb\\230822_1.1.9_core\\Simcenter Test Cloud Blueprint Setup.msi",
+            Uninstall = true
         };
 
         writer.Write(AISLScriptBuilder.Build(mockData));

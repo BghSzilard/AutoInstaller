@@ -47,12 +47,14 @@ public static class AISLScriptBuilder
     }
     private static string AddUninstallStatement(string script, ProgramData programData)
     {
-        script += $@"\n UNINSTALL ""{programData.Name}"";";
+        script += "\n";
+        script += $@"UNINSTALL ""{programData.Name}"";";
         return script;
     }
     private static string AddExecuteStatement(string script, ProgramData programData)
     {
-        script += $@"EXECUTE ""{programData.InstallerPath}"" WITH installation_parameters";
+        script += "\n";
+        script += $@"EXECUTE ""{programData.InstallerPath}"" WITH installation_parameters;";
         return script;
     }
     public static string Build(ProgramData programData)
