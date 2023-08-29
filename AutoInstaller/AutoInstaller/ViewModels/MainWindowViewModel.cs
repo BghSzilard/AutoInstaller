@@ -89,20 +89,17 @@ namespace AutoInstaller.ViewModels
                 IsActiveChanged(isActive, activeAware);
             }
         }
+
         [RelayCommand]
         public void AddProgram()
         {
             Navigation.CurrentPageType = typeof(AddPage);
         }
-        [RelayCommand]
-        public void InstallProgram()
-        {
-            Navigation.CurrentPageType = typeof(InstallPage);
-        }
-        [RelayCommand]
-        public void ConfigureFolder()
-        {
-            Navigation.CurrentPageType = typeof(ConfigurationPage);
-        }
+
+        //[RelayCommand]
+        //public void InstallProgram()
+        //{
+        //    Navigation.CurrentPageType = typeof(InstallPage);
+        //}
     }
 }

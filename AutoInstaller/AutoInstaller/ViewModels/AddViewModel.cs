@@ -1,65 +1,82 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AISL;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace AutoInstaller.ViewModels;
 
-public sealed partial class AddViewModel : ObservableObject
+public partial class AddViewModel : ObservableObject
 {
-    private ProgramService _service = new ProgramService();
-    [ObservableProperty]
-    private string _installationPath;
+    public List<ParameterType> ParameterTypes { get; } = Enum.GetValues<ParameterType>().ToList();
 
-    [ObservableProperty]
-    private string _name;
-    [ObservableProperty]
-    private string _version;
-    public ObservableCollection<string> versions { get; set; } = new ObservableCollection<string>();
-    public ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
-    [ObservableProperty]
-    private Parameter _selectedParameter = new Parameter();
-    [ObservableProperty]
-    private Parameter _newParameter = new Parameter();
-    public AddViewModel()
+    [ObservableProperty] private string? _name;
+    [ObservableProperty] private string? _installationsPath;
+    [ObservableProperty] private string? _selectedVersion;
+
+    public ObservableCollection<string> Versions { get; set; } = new();
+    public ObservableCollection<ParameterData> Parameters { get; set; } = new();
+
+    [ObservableProperty] private ParameterData? _selectedParameter;
+
+    [ObservableProperty] private ParameterType _selectedParameterType;
+    [ObservableProperty] private string? _parameterName;
+    [ObservableProperty] private string? _parameterDefaultValue;
+    [ObservableProperty] private bool _parameterIsOptional;
+
+    partial void OnInstallationsPathChanged(string? value)
     {
-
+        ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
     }
-    [RelayCommand]
+
+    [RelayCommand(CanExecute = nameof(IsParameterDataValid))]
     public void AddParameter()
     {
-        if (NewParameter.Name is not null && NewParameter.Value is not null)
+        ParameterData parameter = new()
         {
-            Parameters.Add(NewParameter);
-        }
+            IsOptional = ParameterIsOptional,
+            Type = SelectedParameterType.ToString(),
+            Name = ParameterName!,
+            DefaultValue = ParameterDefaultValue
+        };
+
+        Parameters.Add(parameter);
     }
-    [RelayCommand]
+
+    [RelayCommand(CanExecute = nameof(IsParameterSelected))]
     public void RemoveParameter()
     {
-        Parameters.Remove(SelectedParameter);
+        Parameters.Remove(SelectedParameter!.Value);
     }
-    [RelayCommand]
+
+    [RelayCommand(CanExecute = nameof(IsProgramDataValid))]
     public void AddProgram()
     {
-        ProgramData programData = new ProgramData();
-        programData.Name = Name;
-        programData.Version = Version;
-        programData.InstallationsPath = InstallationPath;
-        //programData.Parameters = Parameters.ToList();
-        
-        _service.SaveProgram(programData);
-    }
-    //This function should be in Core
-    [RelayCommand]
-    public void FindVersions()
-    {
-        string[] versionDirectories = Directory.GetDirectories(InstallationPath);
-        versions.Clear();
-        foreach (string versionDirectory in versionDirectories)
+        ProgramData programData = new()
         {
-            versions.Add(versionDirectory.Replace(InstallationPath + @"\", ""));
-        }
+            Name = Name,
+            InstallationsPath = InstallationsPath,
+            ParameterList = Parameters.ToList(),
+            Version = SelectedVersion // remember to add data here
+        };
+        ProgramService.SaveProgram(programData);
+    }
+
+    private bool IsParameterDataValid()
+    {
+        return true;
+    }
+
+    private bool IsProgramDataValid()
+    {
+        return true;
+    }
+
+    private bool IsParameterSelected()
+    {
+        return (SelectedParameter != null);
     }
 }

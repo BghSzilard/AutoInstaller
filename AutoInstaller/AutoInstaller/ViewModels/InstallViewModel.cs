@@ -8,51 +8,51 @@ namespace AutoInstaller.ViewModels;
 
 public sealed partial class InstallViewModel: ObservableObject
 {
-    private ProgramService _service = new ProgramService();
-    [ObservableProperty]
-    private string _installationPath;
+    //private ProgramService _service = new ProgramService();
+    //[ObservableProperty]
+    //private string _installationPath;
 
-    [ObservableProperty]
-    private string _name;
-    [ObservableProperty]
-    private string _version;
-    public ObservableCollection<string> versions { get; set; } = new ObservableCollection<string>();
-    public ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
-    [ObservableProperty]
-    private Parameter _selectedParameter = new Parameter();
-    [ObservableProperty]
-    private Parameter _newParameter = new Parameter();
-    public InstallViewModel()
-    {
+    //[ObservableProperty]
+    //private string _name;
+    //[ObservableProperty]
+    //private string _version;
+    //public ObservableCollection<string> versions { get; set; } = new ObservableCollection<string>();
+    //public ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
+    //[ObservableProperty]
+    //private Parameter _selectedParameter = new Parameter();
+    //[ObservableProperty]
+    //private Parameter _newParameter = new Parameter();
+    //public InstallViewModel()
+    //{
 
-    }
-    [RelayCommand]
-    public void AddParameter()
-    {
-        if (NewParameter.Name is not null && NewParameter.Value is not null)
-        {
-            Parameters.Add(NewParameter);
-        }
-    }
-    [RelayCommand]
-    public void RemoveParameter()
-    {
-        Parameters.Remove(SelectedParameter);
-    }
-    [RelayCommand]
-    public void InstallProgram()
-    {
+    //}
+    //[RelayCommand]
+    //public void AddParameter()
+    //{
+    //    if (NewParameter.Name is not null && NewParameter.Value is not null)
+    //    {
+    //        Parameters.Add(NewParameter);
+    //    }
+    //}
+    //[RelayCommand]
+    //public void RemoveParameter()
+    //{
+    //    Parameters.Remove(SelectedParameter);
+    //}
+    //[RelayCommand]
+    //public void InstallProgram()
+    //{
        
-    }
-    //This function should be in Core
-    [RelayCommand]
-    public void FindVersions()
-    {
-        string[] versionDirectories = Directory.GetDirectories(InstallationPath);
-        versions.Clear();
-        foreach (string versionDirectory in versionDirectories)
-        {
-            versions.Add(versionDirectory.Replace(InstallationPath + @"\", ""));
-        }
-    }
+    //}
+    ////This function should be in Core
+    //[RelayCommand]
+    //public void FindVersions()
+    //{
+    //    string[] versionDirectories = Directory.GetDirectories(InstallationPath);
+    //    versions.Clear();
+    //    foreach (string versionDirectory in versionDirectories)
+    //    {
+    //        versions.Add(versionDirectory.Replace(InstallationPath + @"\", ""));
+    //    }
+    //}
 }

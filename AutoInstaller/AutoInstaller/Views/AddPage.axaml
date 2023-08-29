@@ -7,37 +7,38 @@
 			 x:DataType="vm:AddViewModel"
 			 x:CompileBindings="True"
              x:Class="AutoInstaller.Views.AddPage">
+	
 	<UserControl.DataContext>
-		<vm:AddViewModel></vm:AddViewModel>
+		<vm:AddViewModel/>
 	</UserControl.DataContext>
+	
 	<StackPanel>
 		<TextBlock Text="Name"/>
 		<TextBox Margin="0 0 100 0" Text="{Binding Name}"/>
-		<Button Content="Find versions" Command="{Binding FindVersionsCommand}"></Button>
+		<TextBlock Text="Installations path"/>
+		<TextBox Margin="0 0 100 0" Text="{Binding InstallationsPath}"/>
 		<TextBlock Text="Version"/>
-		<ComboBox ItemsSource="{Binding versions}" Margin="0 0 100 0" SelectedItem="{Binding Version}"/>
-		<TextBlock Text="Installation source"/>
-		<TextBox Margin="0 0 100 0" Text="{Binding InstallationPath}"/>
+		<ComboBox Margin="0 0 100 0" ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}"/>
 		<TextBlock Text="Parameters"/>
 		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Type" Margin="5 5 10 0"/>
+			<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}"/>
 			<TextBlock Text="Name" Margin="5 5 10 0" />
-			<TextBox Text="{Binding NewParameter.Name}"/>
-			<TextBlock Text="Value" Margin="5 5 10 0"/>
-			<TextBox Text="{Binding NewParameter.Value}"/>
+			<TextBox Text="{Binding ParameterName}"/>
+			<TextBlock Text="Default value" Margin="5 5 10 0"/>
+			<TextBox Text="{Binding ParameterDefaultValue}"/>
+			<CheckBox Margin="5 5 10 0" IsChecked="{Binding ParameterIsOptional}"/>
+			<TextBlock Text="Optional" Margin="5 5 10 0"/>
 			<Button Content="+" Margin="20 0 0 0 " Command="{Binding AddParameterCommand}"/>
 			<Button Content="-" Margin="20 0 0 0 " Command="{Binding RemoveParameterCommand}" />
 		</StackPanel>
 		<ListBox ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{Binding Name}" Margin="5"/>
-						<TextBlock Text=":" Margin="5"></TextBlock>
-						<TextBlock Text="{Binding Value}" Margin="5"/>
-					</StackPanel>
+					<TextBlock Text="{Binding Name}"/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-		<Button Content="Add" Command="{Binding AddProgramCommand}"></Button>
+		<Button Content="Add program" Command="{Binding AddProgramCommand}"></Button>
 	</StackPanel>
 </UserControl>

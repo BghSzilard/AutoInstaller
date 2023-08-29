@@ -1,5 +1,13 @@
 ﻿namespace AISL;
 
+public enum ParameterType
+{
+    number,
+    @string,
+    choice,
+    flag
+}
+
 public struct ParameterData
 {
     public bool IsOptional { get; set; }
@@ -23,9 +31,11 @@ public struct ParameterData
 
 public class ProgramData
 {
-    public string Name { get; set; } = "";
-    public string InstallationsPath { get; set; } = "";
+    public string? Name { get; set; }
+    public string? InstallationsPath { get; set; }
     public List<ParameterData> ParameterList { get; set; } = new();
     public bool Uninstall { get; set; }
-    public string InstallerPath { get; set; } = ""; // should it be here?
+    public string? InstallerPath { get; set; } // should it be here?
+
+    public string? Version { get; set; }
 }

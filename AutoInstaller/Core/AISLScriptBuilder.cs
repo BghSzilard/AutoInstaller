@@ -1,14 +1,12 @@
-﻿namespace Core;
+﻿using AISL;
 
-public class AISLScriptBuilder
+namespace Core;
+
+public static class AISLScriptBuilder
 {
-    public string BuildScript(ProgramData programData)
+    public static string Build(ProgramData programData)
     {
         string script = $@"FIND ""{programData.Name}"" AT ""{programData.InstallationsPath}""";
-        if (programData.Parameters.Count != 0 )
-        {
-            script += "HAS ( \n";
-        }
         return script;
     }
 }

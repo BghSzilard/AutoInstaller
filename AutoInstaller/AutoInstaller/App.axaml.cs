@@ -32,14 +32,10 @@ namespace AutoInstaller
             serviceCollection.AddSingleton<InstallPage>();
             serviceCollection.AddSingleton<InstallViewModel>();
 
-            serviceCollection.AddSingleton<ConfigurationPage>();
-            serviceCollection.AddSingleton<ConfigurationViewModel>();
-
             PageService pageService = serviceCollection.GetService<PageService>();
             pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
             pageService.RegisterPage<AddPage, AddViewModel>("Add");
             pageService.RegisterPage<InstallPage, InstallViewModel>("Install");
-            pageService.RegisterPage<ConfigurationPage, ConfigurationViewModel>("Configuration");
 
             NavigationService navigationService = serviceCollection.GetService<NavigationService>();
             navigationService.CurrentPageType = typeof(HomePage);

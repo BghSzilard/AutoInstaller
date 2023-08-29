@@ -10,7 +10,7 @@
 	<UserControl.DataContext>
 		<vm:InstallViewModel></vm:InstallViewModel>
 	</UserControl.DataContext>
-	<StackPanel>
+	<!--<StackPanel>
 		<TextBlock Text="Name"/>
 		<TextBox Margin="0 0 100 0" Text="{Binding Name}"/>
 		<Button Content="Find versions" Command="{Binding FindVersionsCommand}"></Button>
@@ -39,5 +39,5 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 		<Button Content="Add" Command="{Binding InstallProgramCommand}"></Button>
-	</StackPanel>
+	</StackPanel>-->
 </UserControl>
