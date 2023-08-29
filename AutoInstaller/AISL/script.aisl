@@ -1,0 +1,6 @@
+FIND "SiemensProgram" AT "D:\Summer School 2023\asd\asd\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi";
+HAS (
+	number Port WITH DEFAULT 8080,
+	string ServerName,
+	flag Tick
+) AS installation_parameters;

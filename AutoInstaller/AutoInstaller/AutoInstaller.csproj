@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
@@ -23,10 +22,18 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.2" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="System.Management.Automation" Version="7.3.6" />
   </ItemGroup>
 
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Update="Views\HomePage.axaml.cs">
+      <DependentUpon>HomePage.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
