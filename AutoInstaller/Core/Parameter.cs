@@ -1,4 +1,4 @@
-﻿namespace AutoInstaller.Models;
+﻿namespace Core;
 
 public class Parameter
 {

@@ -28,14 +28,19 @@
 			<RowDefinition Height="10*"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Menu Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
-			<MenuItem Header="File"></MenuItem>
+			<MenuItem Header="File">
+				<MenuItem Header="Set configuration path" Command="{Binding ConfigureFolderCommand}"></MenuItem>
+			</MenuItem>
 			<MenuItem Header="Home"></MenuItem>
 		</Menu>
 		<SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
 			<SplitView.Pane>
 				<StackPanel>
-					<Button Content="Add" HorizontalAlignment="Center" Margin="0 15 0 20"></Button>
-					<TextBlock Text="Program list ...."></TextBlock>
+					<StackPanel Orientation="Horizontal">
+						<Button Content="Add" HorizontalAlignment="Center" Margin="40 15 0 20" Command="{Binding AddProgramCommand}"></Button>
+						<Button Content="Install" HorizontalAlignment="Center" Margin="30 15 0 20" Command="{Binding AddProgramCommand}"></Button>
+					</StackPanel>
+					<TextBlock Text="Program list"></TextBlock>
 				</StackPanel>
 			</SplitView.Pane>
 
