@@ -35,10 +35,6 @@ namespace AutoInstaller
             serviceCollection.AddSingleton<ConfigurationPage>();
             serviceCollection.AddSingleton<ConfigurationViewModel>();
 
-            serviceCollection.AddSingleton<PowershellExecutor>();
-
-            serviceCollection.AddSingleton<ScriptInfoExtractor>();
-
             PageService pageService = serviceCollection.GetService<PageService>();
             pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
             pageService.RegisterPage<AddPage, AddViewModel>("Add");
