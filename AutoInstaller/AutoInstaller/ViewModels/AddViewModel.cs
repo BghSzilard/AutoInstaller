@@ -38,7 +38,7 @@ public partial class AddViewModel : ObservableObject
         ParameterData parameter = new()
         {
             IsOptional = ParameterIsOptional,
-            Type = SelectedParameterType.ToString(),
+            Type = SelectedParameterType,
             Name = ParameterName!,
             DefaultValue = ParameterDefaultValue
         };

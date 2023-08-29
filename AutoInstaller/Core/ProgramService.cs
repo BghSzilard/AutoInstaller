@@ -32,7 +32,53 @@ public static class ProgramService
 
         //File.WriteAllText(filePath, AISLScriptBuilder.Build(programData));
         using StreamWriter writer = new(filePath);
-        writer.Write(AISLScriptBuilder.Build(programData));
+
+        ProgramData mockData = new()
+        {
+            Name = "Simcenter Test Cloud Blueprint",
+            InstallationsPath = "D:\\Siemens\\tcb",
+            ParameterList = new()
+            {
+                new ParameterData()
+                {
+                    Type = ParameterType.number,
+                    Name = "Port",
+                    DefaultValue = "8080",
+                },
+                new ParameterData()
+                {
+                    Type = ParameterType.@string,
+                    Name = "ServerName",
+                },
+                new ParameterData()
+                {
+                    Type = ParameterType.choice,
+                    Name = "DropDown",
+                    Options = new() { "option1", "option2" },
+                },
+                new ParameterData()
+                {
+                    Type = ParameterType.flag,
+                    Name = "Tick",
+                },
+                new ParameterData()
+                {
+                    Type = ParameterType.@string,
+                    Name = "FixedParameter",
+                    FixedValue = "FixedValue"
+                },
+                new ParameterData()
+                {
+                    IsOptional = true,
+                    Type = ParameterType.@string,
+                    Name = "OptionalValue"
+                }
+            },
+            InstallerPath = "D:\\Siemens\\tcb\\230822_1.1.9_core\\Simcenter Test Cloud Blueprint Setup.msi",
+            Uninstall = true
+        };
+
+        writer.Write(AISLScriptBuilder.Build(mockData));
     }
 
     public static List<string> FindVersionSubdirectories(string directoryPath)

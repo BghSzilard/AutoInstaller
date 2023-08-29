@@ -15,12 +15,12 @@ public class AISLScriptVisitorTests
 
     private List<ParameterData> ExpectedParameterList = new()
     {
-        new() { Type = "number", Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = "string", Name = "ServerName", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = "choice", Name = "DropDown", DefaultValue = null, IsOptional = false, FixedValue = null, Options = new() { "option1", "option2"} },
-        new() { Type = "flag", Name = "Tick", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = "string", Name = "FixedParameter", DefaultValue = null, IsOptional = false, FixedValue = "FixedValue", Options = null },
-        new() { Type = "string", Name = "OptionalValue", DefaultValue = null, IsOptional = true, FixedValue = null, Options = null }
+        new() { Type = ParameterType.number, Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = ParameterType.@string, Name = "ServerName", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = ParameterType.choice, Name = "DropDown", DefaultValue = null, IsOptional = false, FixedValue = null, Options = new() { "option1", "option2"} },
+        new() { Type = ParameterType.flag, Name = "Tick", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = ParameterType.@string, Name = "FixedParameter", DefaultValue = null, IsOptional = false, FixedValue = "FixedValue", Options = null },
+        new() { Type = ParameterType.@string, Name = "OptionalValue", DefaultValue = null, IsOptional = true, FixedValue = null, Options = null }
     };
 
     public AISLScriptVisitorTests(ITestOutputHelper output)
