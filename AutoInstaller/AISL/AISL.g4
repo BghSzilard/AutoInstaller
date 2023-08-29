@@ -4,7 +4,7 @@ grammar AISL;
  * Parser Rules
  */
 
-script : findInstruction hasBlock? EOF ;
+script : findInstruction hasBlock? uninstallInstruction? executeInstruction EOF ;
 
 findInstruction : FIND programName AT installationsPath SEMICOLON NEWLINE ;
 
@@ -12,7 +12,13 @@ hasBlock : HAS OPEN_PARENTHESIS NEWLINE parameterList CLOSE_PARENTHESIS AS INSTA
 
 parameterList : parameter (COMMA NEWLINE parameter)* NEWLINE ;
 
-parameter : parameterType parameterName (WITH DEFAULT parameterDefaultValue)? ;
+parameter : parameterIsOptional? parameterType parameterName (((FROM optionList)? (WITH DEFAULT parameterDefaultValue)?) | (EQUALS parameterFixedValue)) ;
+
+uninstallInstruction : UNINSTALL programName SEMICOLON NEWLINE ;
+
+executeInstruction: EXECUTE installerPath WITH INSTALLATION_PARAMETERS SEMICOLON NEWLINE ;
+
+installerPath : QUOTED_TEXT ;
 
 programName : QUOTED_TEXT ;
 
@@ -22,7 +28,15 @@ parameterType : WORD ;
 
 parameterName : WORD ;
 
-parameterDefaultValue : WORD ;
+parameterDefaultValue : WORD | QUOTED_TEXT ;
+
+parameterFixedValue : WORD | QUOTED_TEXT ;
+
+parameterIsOptional : OPTIONAL ;
+
+optionList: OPEN_SQUARE_BRACKET option (COMMA option)* CLOSE_SQUARE_BRACKET;
+
+option: WORD | QUOTED_TEXT ;
 
 /*
  * Lexer Rules
@@ -44,7 +58,15 @@ DEFAULT : 'DEFAULT' | 'default' ;
 
 AS : 'AS' | 'as' ;
 
+FROM : 'FROM' | 'from' ;
+
+UNINSTALL : 'UNINSTALL' | 'uninstall' ;
+
+EXECUTE : 'EXECUTE' | 'execute' ;
+
 INSTALLATION_PARAMETERS : 'installation_parameters' ;
+
+OPTIONAL : 'optional' ;
 
 WORD : (LOWERCASE | UPPERCASE | DIGIT)+ ;
 
@@ -57,6 +79,12 @@ COMMA : ',' ;
 OPEN_PARENTHESIS : '(' ;
 
 CLOSE_PARENTHESIS : ')' ;
+
+OPEN_SQUARE_BRACKET : '[' ;
+
+CLOSE_SQUARE_BRACKET : ']' ;
+
+EQUALS : '=' ;
 
 WHITESPACE : [ \t\n]+ -> skip ;
 

@@ -36,27 +36,33 @@ public partial class AISLParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		FIND=1, AT=2, HAS=3, WITH=4, DEFAULT=5, AS=6, INSTALLATION_PARAMETERS=7, 
-		WORD=8, QUOTED_TEXT=9, SEMICOLON=10, COMMA=11, OPEN_PARENTHESIS=12, CLOSE_PARENTHESIS=13, 
-		WHITESPACE=14, NEWLINE=15;
+		FIND=1, AT=2, HAS=3, WITH=4, DEFAULT=5, AS=6, FROM=7, UNINSTALL=8, EXECUTE=9, 
+		INSTALLATION_PARAMETERS=10, OPTIONAL=11, WORD=12, QUOTED_TEXT=13, SEMICOLON=14, 
+		COMMA=15, OPEN_PARENTHESIS=16, CLOSE_PARENTHESIS=17, OPEN_SQUARE_BRACKET=18, 
+		CLOSE_SQUARE_BRACKET=19, EQUALS=20, WHITESPACE=21, NEWLINE=22;
 	public const int
 		RULE_script = 0, RULE_findInstruction = 1, RULE_hasBlock = 2, RULE_parameterList = 3, 
-		RULE_parameter = 4, RULE_programName = 5, RULE_installationsPath = 6, 
-		RULE_parameterType = 7, RULE_parameterName = 8, RULE_parameterDefaultValue = 9;
+		RULE_parameter = 4, RULE_uninstallInstruction = 5, RULE_executeInstruction = 6, 
+		RULE_installerPath = 7, RULE_programName = 8, RULE_installationsPath = 9, 
+		RULE_parameterType = 10, RULE_parameterName = 11, RULE_parameterDefaultValue = 12, 
+		RULE_parameterFixedValue = 13, RULE_parameterIsOptional = 14, RULE_optionList = 15, 
+		RULE_option = 16;
 	public static readonly string[] ruleNames = {
 		"script", "findInstruction", "hasBlock", "parameterList", "parameter", 
-		"programName", "installationsPath", "parameterType", "parameterName", 
-		"parameterDefaultValue"
+		"uninstallInstruction", "executeInstruction", "installerPath", "programName", 
+		"installationsPath", "parameterType", "parameterName", "parameterDefaultValue", 
+		"parameterFixedValue", "parameterIsOptional", "optionList", "option"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, null, null, null, null, "'installation_parameters'", 
-		null, null, "';'", "','", "'('", "')'"
+		null, null, null, null, null, null, null, null, null, null, "'installation_parameters'", 
+		"'optional'", null, null, "';'", "','", "'('", "')'", "'['", "']'", "'='"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "FIND", "AT", "HAS", "WITH", "DEFAULT", "AS", "INSTALLATION_PARAMETERS", 
-		"WORD", "QUOTED_TEXT", "SEMICOLON", "COMMA", "OPEN_PARENTHESIS", "CLOSE_PARENTHESIS", 
-		"WHITESPACE", "NEWLINE"
+		null, "FIND", "AT", "HAS", "WITH", "DEFAULT", "AS", "FROM", "UNINSTALL", 
+		"EXECUTE", "INSTALLATION_PARAMETERS", "OPTIONAL", "WORD", "QUOTED_TEXT", 
+		"SEMICOLON", "COMMA", "OPEN_PARENTHESIS", "CLOSE_PARENTHESIS", "OPEN_SQUARE_BRACKET", 
+		"CLOSE_SQUARE_BRACKET", "EQUALS", "WHITESPACE", "NEWLINE"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -94,9 +100,15 @@ public partial class AISLParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public FindInstructionContext findInstruction() {
 			return GetRuleContext<FindInstructionContext>(0);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExecuteInstructionContext executeInstruction() {
+			return GetRuleContext<ExecuteInstructionContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Eof() { return GetToken(AISLParser.Eof, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public HasBlockContext hasBlock() {
 			return GetRuleContext<HasBlockContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public UninstallInstructionContext uninstallInstruction() {
+			return GetRuleContext<UninstallInstructionContext>(0);
 		}
 		public ScriptContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -119,19 +131,31 @@ public partial class AISLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 20;
+			State = 34;
 			findInstruction();
-			State = 22;
+			State = 36;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==HAS) {
 				{
-				State = 21;
+				State = 35;
 				hasBlock();
 				}
 			}
 
-			State = 24;
+			State = 39;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==UNINSTALL) {
+				{
+				State = 38;
+				uninstallInstruction();
+				}
+			}
+
+			State = 41;
+			executeInstruction();
+			State = 42;
 			Match(Eof);
 			}
 		}
@@ -177,17 +201,17 @@ public partial class AISLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 26;
+			State = 44;
 			Match(FIND);
-			State = 27;
+			State = 45;
 			programName();
-			State = 28;
+			State = 46;
 			Match(AT);
-			State = 29;
+			State = 47;
 			installationsPath();
-			State = 30;
+			State = 48;
 			Match(SEMICOLON);
-			State = 31;
+			State = 49;
 			Match(NEWLINE);
 			}
 		}
@@ -236,23 +260,23 @@ public partial class AISLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 33;
+			State = 51;
 			Match(HAS);
-			State = 34;
+			State = 52;
 			Match(OPEN_PARENTHESIS);
-			State = 35;
+			State = 53;
 			Match(NEWLINE);
-			State = 36;
+			State = 54;
 			parameterList();
-			State = 37;
+			State = 55;
 			Match(CLOSE_PARENTHESIS);
-			State = 38;
+			State = 56;
 			Match(AS);
-			State = 39;
+			State = 57;
 			Match(INSTALLATION_PARAMETERS);
-			State = 40;
+			State = 58;
 			Match(SEMICOLON);
-			State = 41;
+			State = 59;
 			Match(NEWLINE);
 			}
 		}
@@ -303,27 +327,27 @@ public partial class AISLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 43;
+			State = 61;
 			parameter();
-			State = 49;
+			State = 67;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 44;
+				State = 62;
 				Match(COMMA);
-				State = 45;
+				State = 63;
 				Match(NEWLINE);
-				State = 46;
+				State = 64;
 				parameter();
 				}
 				}
-				State = 51;
+				State = 69;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 52;
+			State = 70;
 			Match(NEWLINE);
 			}
 		}
@@ -344,6 +368,17 @@ public partial class AISLParser : Parser {
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ParameterNameContext parameterName() {
 			return GetRuleContext<ParameterNameContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterIsOptionalContext parameterIsOptional() {
+			return GetRuleContext<ParameterIsOptionalContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQUALS() { return GetToken(AISLParser.EQUALS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterFixedValueContext parameterFixedValue() {
+			return GetRuleContext<ParameterFixedValueContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FROM() { return GetToken(AISLParser.FROM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public OptionListContext optionList() {
+			return GetRuleContext<OptionListContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WITH() { return GetToken(AISLParser.WITH, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DEFAULT() { return GetToken(AISLParser.DEFAULT, 0); }
@@ -371,24 +406,210 @@ public partial class AISLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 54;
-			parameterType();
-			State = 55;
-			parameterName();
-			State = 59;
+			State = 73;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==WITH) {
+			if (_la==OPTIONAL) {
 				{
-				State = 56;
-				Match(WITH);
-				State = 57;
-				Match(DEFAULT);
-				State = 58;
-				parameterDefaultValue();
+				State = 72;
+				parameterIsOptional();
 				}
 			}
 
+			State = 75;
+			parameterType();
+			State = 76;
+			parameterName();
+			State = 88;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case WITH:
+			case FROM:
+			case COMMA:
+			case NEWLINE:
+				{
+				{
+				State = 79;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==FROM) {
+					{
+					State = 77;
+					Match(FROM);
+					State = 78;
+					optionList();
+					}
+				}
+
+				State = 84;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==WITH) {
+					{
+					State = 81;
+					Match(WITH);
+					State = 82;
+					Match(DEFAULT);
+					State = 83;
+					parameterDefaultValue();
+					}
+				}
+
+				}
+				}
+				break;
+			case EQUALS:
+				{
+				{
+				State = 86;
+				Match(EQUALS);
+				State = 87;
+				parameterFixedValue();
+				}
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class UninstallInstructionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode UNINSTALL() { return GetToken(AISLParser.UNINSTALL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ProgramNameContext programName() {
+			return GetRuleContext<ProgramNameContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMICOLON() { return GetToken(AISLParser.SEMICOLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEWLINE() { return GetToken(AISLParser.NEWLINE, 0); }
+		public UninstallInstructionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_uninstallInstruction; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUninstallInstruction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public UninstallInstructionContext uninstallInstruction() {
+		UninstallInstructionContext _localctx = new UninstallInstructionContext(Context, State);
+		EnterRule(_localctx, 10, RULE_uninstallInstruction);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 90;
+			Match(UNINSTALL);
+			State = 91;
+			programName();
+			State = 92;
+			Match(SEMICOLON);
+			State = 93;
+			Match(NEWLINE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ExecuteInstructionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EXECUTE() { return GetToken(AISLParser.EXECUTE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public InstallerPathContext installerPath() {
+			return GetRuleContext<InstallerPathContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WITH() { return GetToken(AISLParser.WITH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INSTALLATION_PARAMETERS() { return GetToken(AISLParser.INSTALLATION_PARAMETERS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMICOLON() { return GetToken(AISLParser.SEMICOLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEWLINE() { return GetToken(AISLParser.NEWLINE, 0); }
+		public ExecuteInstructionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_executeInstruction; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExecuteInstruction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ExecuteInstructionContext executeInstruction() {
+		ExecuteInstructionContext _localctx = new ExecuteInstructionContext(Context, State);
+		EnterRule(_localctx, 12, RULE_executeInstruction);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 95;
+			Match(EXECUTE);
+			State = 96;
+			installerPath();
+			State = 97;
+			Match(WITH);
+			State = 98;
+			Match(INSTALLATION_PARAMETERS);
+			State = 99;
+			Match(SEMICOLON);
+			State = 100;
+			Match(NEWLINE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class InstallerPathContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode QUOTED_TEXT() { return GetToken(AISLParser.QUOTED_TEXT, 0); }
+		public InstallerPathContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_installerPath; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitInstallerPath(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public InstallerPathContext installerPath() {
+		InstallerPathContext _localctx = new InstallerPathContext(Context, State);
+		EnterRule(_localctx, 14, RULE_installerPath);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 102;
+			Match(QUOTED_TEXT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -420,11 +641,11 @@ public partial class AISLParser : Parser {
 	[RuleVersion(0)]
 	public ProgramNameContext programName() {
 		ProgramNameContext _localctx = new ProgramNameContext(Context, State);
-		EnterRule(_localctx, 10, RULE_programName);
+		EnterRule(_localctx, 16, RULE_programName);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 61;
+			State = 104;
 			Match(QUOTED_TEXT);
 			}
 		}
@@ -457,11 +678,11 @@ public partial class AISLParser : Parser {
 	[RuleVersion(0)]
 	public InstallationsPathContext installationsPath() {
 		InstallationsPathContext _localctx = new InstallationsPathContext(Context, State);
-		EnterRule(_localctx, 12, RULE_installationsPath);
+		EnterRule(_localctx, 18, RULE_installationsPath);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 63;
+			State = 106;
 			Match(QUOTED_TEXT);
 			}
 		}
@@ -494,11 +715,11 @@ public partial class AISLParser : Parser {
 	[RuleVersion(0)]
 	public ParameterTypeContext parameterType() {
 		ParameterTypeContext _localctx = new ParameterTypeContext(Context, State);
-		EnterRule(_localctx, 14, RULE_parameterType);
+		EnterRule(_localctx, 20, RULE_parameterType);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 65;
+			State = 108;
 			Match(WORD);
 			}
 		}
@@ -531,11 +752,11 @@ public partial class AISLParser : Parser {
 	[RuleVersion(0)]
 	public ParameterNameContext parameterName() {
 		ParameterNameContext _localctx = new ParameterNameContext(Context, State);
-		EnterRule(_localctx, 16, RULE_parameterName);
+		EnterRule(_localctx, 22, RULE_parameterName);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 67;
+			State = 110;
 			Match(WORD);
 			}
 		}
@@ -552,6 +773,7 @@ public partial class AISLParser : Parser {
 
 	public partial class ParameterDefaultValueContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WORD() { return GetToken(AISLParser.WORD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode QUOTED_TEXT() { return GetToken(AISLParser.QUOTED_TEXT, 0); }
 		public ParameterDefaultValueContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -568,12 +790,218 @@ public partial class AISLParser : Parser {
 	[RuleVersion(0)]
 	public ParameterDefaultValueContext parameterDefaultValue() {
 		ParameterDefaultValueContext _localctx = new ParameterDefaultValueContext(Context, State);
-		EnterRule(_localctx, 18, RULE_parameterDefaultValue);
+		EnterRule(_localctx, 24, RULE_parameterDefaultValue);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 69;
-			Match(WORD);
+			State = 112;
+			_la = TokenStream.LA(1);
+			if ( !(_la==WORD || _la==QUOTED_TEXT) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterFixedValueContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WORD() { return GetToken(AISLParser.WORD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode QUOTED_TEXT() { return GetToken(AISLParser.QUOTED_TEXT, 0); }
+		public ParameterFixedValueContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterFixedValue; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterFixedValue(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterFixedValueContext parameterFixedValue() {
+		ParameterFixedValueContext _localctx = new ParameterFixedValueContext(Context, State);
+		EnterRule(_localctx, 26, RULE_parameterFixedValue);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 114;
+			_la = TokenStream.LA(1);
+			if ( !(_la==WORD || _la==QUOTED_TEXT) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ParameterIsOptionalContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPTIONAL() { return GetToken(AISLParser.OPTIONAL, 0); }
+		public ParameterIsOptionalContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameterIsOptional; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParameterIsOptional(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterIsOptionalContext parameterIsOptional() {
+		ParameterIsOptionalContext _localctx = new ParameterIsOptionalContext(Context, State);
+		EnterRule(_localctx, 28, RULE_parameterIsOptional);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 116;
+			Match(OPTIONAL);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class OptionListContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_SQUARE_BRACKET() { return GetToken(AISLParser.OPEN_SQUARE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public OptionContext[] option() {
+			return GetRuleContexts<OptionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public OptionContext option(int i) {
+			return GetRuleContext<OptionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_SQUARE_BRACKET() { return GetToken(AISLParser.CLOSE_SQUARE_BRACKET, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(AISLParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(AISLParser.COMMA, i);
+		}
+		public OptionListContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_optionList; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOptionList(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public OptionListContext optionList() {
+		OptionListContext _localctx = new OptionListContext(Context, State);
+		EnterRule(_localctx, 30, RULE_optionList);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 118;
+			Match(OPEN_SQUARE_BRACKET);
+			State = 119;
+			option();
+			State = 124;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 120;
+				Match(COMMA);
+				State = 121;
+				option();
+				}
+				}
+				State = 126;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 127;
+			Match(CLOSE_SQUARE_BRACKET);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class OptionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode WORD() { return GetToken(AISLParser.WORD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode QUOTED_TEXT() { return GetToken(AISLParser.QUOTED_TEXT, 0); }
+		public OptionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_option; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IAISLVisitor<TResult> typedVisitor = visitor as IAISLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOption(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public OptionContext option() {
+		OptionContext _localctx = new OptionContext(Context, State);
+		EnterRule(_localctx, 32, RULE_option);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 129;
+			_la = TokenStream.LA(1);
+			if ( !(_la==WORD || _la==QUOTED_TEXT) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -589,59 +1017,103 @@ public partial class AISLParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x11', 'J', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x18', '\x86', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
-		'\x3', '\x2', '\x3', '\x2', '\x5', '\x2', '\x19', '\n', '\x2', '\x3', 
-		'\x2', '\x3', '\x2', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x4', '\x3', 
+		'\x4', '\f', '\t', '\f', '\x4', '\r', '\t', '\r', '\x4', '\xE', '\t', 
+		'\xE', '\x4', '\xF', '\t', '\xF', '\x4', '\x10', '\t', '\x10', '\x4', 
+		'\x11', '\t', '\x11', '\x4', '\x12', '\t', '\x12', '\x3', '\x2', '\x3', 
+		'\x2', '\x5', '\x2', '\'', '\n', '\x2', '\x3', '\x2', '\x5', '\x2', '*', 
+		'\n', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x3', '\x3', 
+		'\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', 
+		'\x3', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', 
 		'\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', 
-		'\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x5', '\x3', 
-		'\x5', '\x3', '\x5', '\x3', '\x5', '\a', '\x5', '\x32', '\n', '\x5', '\f', 
-		'\x5', '\xE', '\x5', '\x35', '\v', '\x5', '\x3', '\x5', '\x3', '\x5', 
-		'\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', 
-		'\x5', '\x6', '>', '\n', '\x6', '\x3', '\a', '\x3', '\a', '\x3', '\b', 
-		'\x3', '\b', '\x3', '\t', '\x3', '\t', '\x3', '\n', '\x3', '\n', '\x3', 
-		'\v', '\x3', '\v', '\x3', '\v', '\x2', '\x2', '\f', '\x2', '\x4', '\x6', 
-		'\b', '\n', '\f', '\xE', '\x10', '\x12', '\x14', '\x2', '\x2', '\x2', 
-		'\x42', '\x2', '\x16', '\x3', '\x2', '\x2', '\x2', '\x4', '\x1C', '\x3', 
-		'\x2', '\x2', '\x2', '\x6', '#', '\x3', '\x2', '\x2', '\x2', '\b', '-', 
-		'\x3', '\x2', '\x2', '\x2', '\n', '\x38', '\x3', '\x2', '\x2', '\x2', 
-		'\f', '?', '\x3', '\x2', '\x2', '\x2', '\xE', '\x41', '\x3', '\x2', '\x2', 
-		'\x2', '\x10', '\x43', '\x3', '\x2', '\x2', '\x2', '\x12', '\x45', '\x3', 
-		'\x2', '\x2', '\x2', '\x14', 'G', '\x3', '\x2', '\x2', '\x2', '\x16', 
-		'\x18', '\x5', '\x4', '\x3', '\x2', '\x17', '\x19', '\x5', '\x6', '\x4', 
-		'\x2', '\x18', '\x17', '\x3', '\x2', '\x2', '\x2', '\x18', '\x19', '\x3', 
-		'\x2', '\x2', '\x2', '\x19', '\x1A', '\x3', '\x2', '\x2', '\x2', '\x1A', 
-		'\x1B', '\a', '\x2', '\x2', '\x3', '\x1B', '\x3', '\x3', '\x2', '\x2', 
-		'\x2', '\x1C', '\x1D', '\a', '\x3', '\x2', '\x2', '\x1D', '\x1E', '\x5', 
-		'\f', '\a', '\x2', '\x1E', '\x1F', '\a', '\x4', '\x2', '\x2', '\x1F', 
-		' ', '\x5', '\xE', '\b', '\x2', ' ', '!', '\a', '\f', '\x2', '\x2', '!', 
-		'\"', '\a', '\x11', '\x2', '\x2', '\"', '\x5', '\x3', '\x2', '\x2', '\x2', 
-		'#', '$', '\a', '\x5', '\x2', '\x2', '$', '%', '\a', '\xE', '\x2', '\x2', 
-		'%', '&', '\a', '\x11', '\x2', '\x2', '&', '\'', '\x5', '\b', '\x5', '\x2', 
-		'\'', '(', '\a', '\xF', '\x2', '\x2', '(', ')', '\a', '\b', '\x2', '\x2', 
-		')', '*', '\a', '\t', '\x2', '\x2', '*', '+', '\a', '\f', '\x2', '\x2', 
-		'+', ',', '\a', '\x11', '\x2', '\x2', ',', '\a', '\x3', '\x2', '\x2', 
-		'\x2', '-', '\x33', '\x5', '\n', '\x6', '\x2', '.', '/', '\a', '\r', '\x2', 
-		'\x2', '/', '\x30', '\a', '\x11', '\x2', '\x2', '\x30', '\x32', '\x5', 
-		'\n', '\x6', '\x2', '\x31', '.', '\x3', '\x2', '\x2', '\x2', '\x32', '\x35', 
-		'\x3', '\x2', '\x2', '\x2', '\x33', '\x31', '\x3', '\x2', '\x2', '\x2', 
-		'\x33', '\x34', '\x3', '\x2', '\x2', '\x2', '\x34', '\x36', '\x3', '\x2', 
-		'\x2', '\x2', '\x35', '\x33', '\x3', '\x2', '\x2', '\x2', '\x36', '\x37', 
-		'\a', '\x11', '\x2', '\x2', '\x37', '\t', '\x3', '\x2', '\x2', '\x2', 
-		'\x38', '\x39', '\x5', '\x10', '\t', '\x2', '\x39', '=', '\x5', '\x12', 
-		'\n', '\x2', ':', ';', '\a', '\x6', '\x2', '\x2', ';', '<', '\a', '\a', 
-		'\x2', '\x2', '<', '>', '\x5', '\x14', '\v', '\x2', '=', ':', '\x3', '\x2', 
-		'\x2', '\x2', '=', '>', '\x3', '\x2', '\x2', '\x2', '>', '\v', '\x3', 
-		'\x2', '\x2', '\x2', '?', '@', '\a', '\v', '\x2', '\x2', '@', '\r', '\x3', 
-		'\x2', '\x2', '\x2', '\x41', '\x42', '\a', '\v', '\x2', '\x2', '\x42', 
-		'\xF', '\x3', '\x2', '\x2', '\x2', '\x43', '\x44', '\a', '\n', '\x2', 
-		'\x2', '\x44', '\x11', '\x3', '\x2', '\x2', '\x2', '\x45', '\x46', '\a', 
-		'\n', '\x2', '\x2', '\x46', '\x13', '\x3', '\x2', '\x2', '\x2', 'G', 'H', 
-		'\a', '\n', '\x2', '\x2', 'H', '\x15', '\x3', '\x2', '\x2', '\x2', '\x5', 
-		'\x18', '\x33', '=',
+		'\x4', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\a', '\x5', 
+		'\x44', '\n', '\x5', '\f', '\x5', '\xE', '\x5', 'G', '\v', '\x5', '\x3', 
+		'\x5', '\x3', '\x5', '\x3', '\x6', '\x5', '\x6', 'L', '\n', '\x6', '\x3', 
+		'\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x5', '\x6', 'R', '\n', 
+		'\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x5', '\x6', 'W', '\n', 
+		'\x6', '\x3', '\x6', '\x3', '\x6', '\x5', '\x6', '[', '\n', '\x6', '\x3', 
+		'\a', '\x3', '\a', '\x3', '\a', '\x3', '\a', '\x3', '\a', '\x3', '\b', 
+		'\x3', '\b', '\x3', '\b', '\x3', '\b', '\x3', '\b', '\x3', '\b', '\x3', 
+		'\b', '\x3', '\t', '\x3', '\t', '\x3', '\n', '\x3', '\n', '\x3', '\v', 
+		'\x3', '\v', '\x3', '\f', '\x3', '\f', '\x3', '\r', '\x3', '\r', '\x3', 
+		'\xE', '\x3', '\xE', '\x3', '\xF', '\x3', '\xF', '\x3', '\x10', '\x3', 
+		'\x10', '\x3', '\x11', '\x3', '\x11', '\x3', '\x11', '\x3', '\x11', '\a', 
+		'\x11', '}', '\n', '\x11', '\f', '\x11', '\xE', '\x11', '\x80', '\v', 
+		'\x11', '\x3', '\x11', '\x3', '\x11', '\x3', '\x12', '\x3', '\x12', '\x3', 
+		'\x12', '\x2', '\x2', '\x13', '\x2', '\x4', '\x6', '\b', '\n', '\f', '\xE', 
+		'\x10', '\x12', '\x14', '\x16', '\x18', '\x1A', '\x1C', '\x1E', ' ', '\"', 
+		'\x2', '\x3', '\x3', '\x2', '\xE', '\xF', '\x2', '|', '\x2', '$', '\x3', 
+		'\x2', '\x2', '\x2', '\x4', '.', '\x3', '\x2', '\x2', '\x2', '\x6', '\x35', 
+		'\x3', '\x2', '\x2', '\x2', '\b', '?', '\x3', '\x2', '\x2', '\x2', '\n', 
+		'K', '\x3', '\x2', '\x2', '\x2', '\f', '\\', '\x3', '\x2', '\x2', '\x2', 
+		'\xE', '\x61', '\x3', '\x2', '\x2', '\x2', '\x10', 'h', '\x3', '\x2', 
+		'\x2', '\x2', '\x12', 'j', '\x3', '\x2', '\x2', '\x2', '\x14', 'l', '\x3', 
+		'\x2', '\x2', '\x2', '\x16', 'n', '\x3', '\x2', '\x2', '\x2', '\x18', 
+		'p', '\x3', '\x2', '\x2', '\x2', '\x1A', 'r', '\x3', '\x2', '\x2', '\x2', 
+		'\x1C', 't', '\x3', '\x2', '\x2', '\x2', '\x1E', 'v', '\x3', '\x2', '\x2', 
+		'\x2', ' ', 'x', '\x3', '\x2', '\x2', '\x2', '\"', '\x83', '\x3', '\x2', 
+		'\x2', '\x2', '$', '&', '\x5', '\x4', '\x3', '\x2', '%', '\'', '\x5', 
+		'\x6', '\x4', '\x2', '&', '%', '\x3', '\x2', '\x2', '\x2', '&', '\'', 
+		'\x3', '\x2', '\x2', '\x2', '\'', ')', '\x3', '\x2', '\x2', '\x2', '(', 
+		'*', '\x5', '\f', '\a', '\x2', ')', '(', '\x3', '\x2', '\x2', '\x2', ')', 
+		'*', '\x3', '\x2', '\x2', '\x2', '*', '+', '\x3', '\x2', '\x2', '\x2', 
+		'+', ',', '\x5', '\xE', '\b', '\x2', ',', '-', '\a', '\x2', '\x2', '\x3', 
+		'-', '\x3', '\x3', '\x2', '\x2', '\x2', '.', '/', '\a', '\x3', '\x2', 
+		'\x2', '/', '\x30', '\x5', '\x12', '\n', '\x2', '\x30', '\x31', '\a', 
+		'\x4', '\x2', '\x2', '\x31', '\x32', '\x5', '\x14', '\v', '\x2', '\x32', 
+		'\x33', '\a', '\x10', '\x2', '\x2', '\x33', '\x34', '\a', '\x18', '\x2', 
+		'\x2', '\x34', '\x5', '\x3', '\x2', '\x2', '\x2', '\x35', '\x36', '\a', 
+		'\x5', '\x2', '\x2', '\x36', '\x37', '\a', '\x12', '\x2', '\x2', '\x37', 
+		'\x38', '\a', '\x18', '\x2', '\x2', '\x38', '\x39', '\x5', '\b', '\x5', 
+		'\x2', '\x39', ':', '\a', '\x13', '\x2', '\x2', ':', ';', '\a', '\b', 
+		'\x2', '\x2', ';', '<', '\a', '\f', '\x2', '\x2', '<', '=', '\a', '\x10', 
+		'\x2', '\x2', '=', '>', '\a', '\x18', '\x2', '\x2', '>', '\a', '\x3', 
+		'\x2', '\x2', '\x2', '?', '\x45', '\x5', '\n', '\x6', '\x2', '@', '\x41', 
+		'\a', '\x11', '\x2', '\x2', '\x41', '\x42', '\a', '\x18', '\x2', '\x2', 
+		'\x42', '\x44', '\x5', '\n', '\x6', '\x2', '\x43', '@', '\x3', '\x2', 
+		'\x2', '\x2', '\x44', 'G', '\x3', '\x2', '\x2', '\x2', '\x45', '\x43', 
+		'\x3', '\x2', '\x2', '\x2', '\x45', '\x46', '\x3', '\x2', '\x2', '\x2', 
+		'\x46', 'H', '\x3', '\x2', '\x2', '\x2', 'G', '\x45', '\x3', '\x2', '\x2', 
+		'\x2', 'H', 'I', '\a', '\x18', '\x2', '\x2', 'I', '\t', '\x3', '\x2', 
+		'\x2', '\x2', 'J', 'L', '\x5', '\x1E', '\x10', '\x2', 'K', 'J', '\x3', 
+		'\x2', '\x2', '\x2', 'K', 'L', '\x3', '\x2', '\x2', '\x2', 'L', 'M', '\x3', 
+		'\x2', '\x2', '\x2', 'M', 'N', '\x5', '\x16', '\f', '\x2', 'N', 'Z', '\x5', 
+		'\x18', '\r', '\x2', 'O', 'P', '\a', '\t', '\x2', '\x2', 'P', 'R', '\x5', 
+		' ', '\x11', '\x2', 'Q', 'O', '\x3', '\x2', '\x2', '\x2', 'Q', 'R', '\x3', 
+		'\x2', '\x2', '\x2', 'R', 'V', '\x3', '\x2', '\x2', '\x2', 'S', 'T', '\a', 
+		'\x6', '\x2', '\x2', 'T', 'U', '\a', '\a', '\x2', '\x2', 'U', 'W', '\x5', 
+		'\x1A', '\xE', '\x2', 'V', 'S', '\x3', '\x2', '\x2', '\x2', 'V', 'W', 
+		'\x3', '\x2', '\x2', '\x2', 'W', '[', '\x3', '\x2', '\x2', '\x2', 'X', 
+		'Y', '\a', '\x16', '\x2', '\x2', 'Y', '[', '\x5', '\x1C', '\xF', '\x2', 
+		'Z', 'Q', '\x3', '\x2', '\x2', '\x2', 'Z', 'X', '\x3', '\x2', '\x2', '\x2', 
+		'[', '\v', '\x3', '\x2', '\x2', '\x2', '\\', ']', '\a', '\n', '\x2', '\x2', 
+		']', '^', '\x5', '\x12', '\n', '\x2', '^', '_', '\a', '\x10', '\x2', '\x2', 
+		'_', '`', '\a', '\x18', '\x2', '\x2', '`', '\r', '\x3', '\x2', '\x2', 
+		'\x2', '\x61', '\x62', '\a', '\v', '\x2', '\x2', '\x62', '\x63', '\x5', 
+		'\x10', '\t', '\x2', '\x63', '\x64', '\a', '\x6', '\x2', '\x2', '\x64', 
+		'\x65', '\a', '\f', '\x2', '\x2', '\x65', '\x66', '\a', '\x10', '\x2', 
+		'\x2', '\x66', 'g', '\a', '\x18', '\x2', '\x2', 'g', '\xF', '\x3', '\x2', 
+		'\x2', '\x2', 'h', 'i', '\a', '\xF', '\x2', '\x2', 'i', '\x11', '\x3', 
+		'\x2', '\x2', '\x2', 'j', 'k', '\a', '\xF', '\x2', '\x2', 'k', '\x13', 
+		'\x3', '\x2', '\x2', '\x2', 'l', 'm', '\a', '\xF', '\x2', '\x2', 'm', 
+		'\x15', '\x3', '\x2', '\x2', '\x2', 'n', 'o', '\a', '\xE', '\x2', '\x2', 
+		'o', '\x17', '\x3', '\x2', '\x2', '\x2', 'p', 'q', '\a', '\xE', '\x2', 
+		'\x2', 'q', '\x19', '\x3', '\x2', '\x2', '\x2', 'r', 's', '\t', '\x2', 
+		'\x2', '\x2', 's', '\x1B', '\x3', '\x2', '\x2', '\x2', 't', 'u', '\t', 
+		'\x2', '\x2', '\x2', 'u', '\x1D', '\x3', '\x2', '\x2', '\x2', 'v', 'w', 
+		'\a', '\r', '\x2', '\x2', 'w', '\x1F', '\x3', '\x2', '\x2', '\x2', 'x', 
+		'y', '\a', '\x14', '\x2', '\x2', 'y', '~', '\x5', '\"', '\x12', '\x2', 
+		'z', '{', '\a', '\x11', '\x2', '\x2', '{', '}', '\x5', '\"', '\x12', '\x2', 
+		'|', 'z', '\x3', '\x2', '\x2', '\x2', '}', '\x80', '\x3', '\x2', '\x2', 
+		'\x2', '~', '|', '\x3', '\x2', '\x2', '\x2', '~', '\x7F', '\x3', '\x2', 
+		'\x2', '\x2', '\x7F', '\x81', '\x3', '\x2', '\x2', '\x2', '\x80', '~', 
+		'\x3', '\x2', '\x2', '\x2', '\x81', '\x82', '\a', '\x15', '\x2', '\x2', 
+		'\x82', '!', '\x3', '\x2', '\x2', '\x2', '\x83', '\x84', '\t', '\x2', 
+		'\x2', '\x2', '\x84', '#', '\x3', '\x2', '\x2', '\x2', '\n', '&', ')', 
+		'\x45', 'K', 'Q', 'V', 'Z', '~',
 	};
 
 	public static readonly ATN _ATN =

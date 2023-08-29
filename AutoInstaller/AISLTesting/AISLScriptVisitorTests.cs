@@ -12,9 +12,12 @@ public class AISLScriptVisitorTests
 
     private List<ParameterInfo> ExpectedParameterList = new()
     {
-        new() { Type = "number", Name = "Port", DefaultValue = "8080"},
-        new() { Type = "string", Name = "ServerName", DefaultValue = null!},
-        new() { Type = "flag", Name = "Tick", DefaultValue = null!}
+        new() { Type = "number", Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = "string", Name = "ServerName", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = "choice", Name = "DropDown", DefaultValue = null, IsOptional = false, FixedValue = null, Options = new() { "option1", "option2"} },
+        new() { Type = "flag", Name = "Tick", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = "string", Name = "FixedParameter", DefaultValue = null, IsOptional = false, FixedValue = "FixedValue", Options = null },
+        new() { Type = "string", Name = "OptionalValue", DefaultValue = null, IsOptional = true, FixedValue = null, Options = null }
     };
 
     public AISLScriptVisitorTests()
@@ -44,11 +47,26 @@ public class AISLScriptVisitorTests
     }
 
     [Fact]
-    public void ParameterListIsValid()
+    public void UninstallIsValid()
     {
-        for (int i = 0; i < ExpectedParameterList.Count; i++)
-        {
-            Assert.Equal(ExpectedParameterList[i], _programInfo.ParameterList[i]);
-        }
+        Assert.True(_programInfo.Uninstall);
+    }
+
+    [Fact]
+    public void InstallerPathIsValid()
+    {
+        Assert.Equal(@"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi", _programInfo.InstallerPath);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    public void ParameterIsValid(int index)
+    {
+        Assert.Equal(ExpectedParameterList[index], _programInfo.ParameterList[index]);
     }
 }
