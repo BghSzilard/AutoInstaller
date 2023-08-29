@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AutoInstaller.ViewModels"
+		xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:services="using:AutoInstaller.Services"
@@ -24,23 +25,25 @@
 	
 	<Grid>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
-			<RowDefinition Height="10*"></RowDefinition>
 		</Grid.RowDefinitions>
-		<Menu Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
-			<MenuItem Header="File">
+		
+		<Menu Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#009999">
+			<MenuItem Header="File" Foreground="White" FontSize="">
 				<MenuItem Header="Set configuration path" Command="{Binding ConfigureFolderCommand}"></MenuItem>
 			</MenuItem>
-			<MenuItem Header="Home"></MenuItem>
+			<MenuItem Header="Home" Foreground="White"></MenuItem>
+			<Image Source="C:\Users\Rares\Dropbox\My PC (DESKTOP-P06UPBI)\Desktop\AutoInstaller\AutoInstaller\AutoInstaller\AutoInstaller\Resources\siemenslogo.png" Width="100" Height="50" Margin="570 0 0 0 "/>
 		</Menu>
 		<SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
 			<SplitView.Pane>
-				<StackPanel>
+				<StackPanel Background="#009999" >
 					<StackPanel Orientation="Horizontal">
-						<Button Content="Add" HorizontalAlignment="Center" Margin="40 15 0 20" Command="{Binding AddProgramCommand}"></Button>
-						<Button Content="Install" HorizontalAlignment="Center" Margin="30 15 0 20" Command="{Binding AddProgramCommand}"></Button>
+						<Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center" Margin="40 15 0 20" Command="{Binding AddProgramCommand}"></Button>
+						<Button Content="Install" Foreground="White" Background="#009999" HorizontalAlignment="Center" Margin="30 15 0 20" Command="{Binding AddProgramCommand}"></Button>
 					</StackPanel>
-					<TextBlock Text="Program list"></TextBlock>
+					<TextBlock Text="Program list" Foreground="White"></TextBlock>
 				</StackPanel>
 			</SplitView.Pane>
 
