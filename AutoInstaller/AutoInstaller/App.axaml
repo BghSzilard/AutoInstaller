@@ -2,14 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AutoInstaller.App"
              xmlns:local="using:AutoInstaller"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+
+	<Application.Styles>
+		<FluentTheme/>
+		<!--<StyleInclude Source="avares://Material.Icons.Avalonia/App.axaml"/>-->
+	</Application.Styles>
 </Application>

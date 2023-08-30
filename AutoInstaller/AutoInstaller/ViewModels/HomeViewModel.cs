@@ -2,7 +2,7 @@
 
 namespace AutoInstaller.ViewModels;
 
-public sealed partial class HomeViewModel : ObservableObject
+public partial class HomeViewModel : ObservableObject
 {
 
 }

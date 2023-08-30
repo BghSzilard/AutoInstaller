@@ -1,4 +1,5 @@
 ﻿using AISL;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AutoInstaller.ViewModels;
 
@@ -33,8 +35,14 @@ public partial class AddViewModel : ObservableObject
         ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
     }
 
+    private readonly Window _window;
+    public AddViewModel(Window window)
+    {
+        _window = window;
+    }
+
     [RelayCommand(CanExecute = nameof(IsParameterDataValid))]
-    public void AddParameter()
+    private void AddParameter()
     {
         ParameterData parameter = new()
         {
@@ -48,13 +56,13 @@ public partial class AddViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsParameterSelected))]
-    public void RemoveParameter()
+    private void RemoveParameter()
     {
         Parameters.Remove(SelectedParameter!.Value);
     }
 
     [RelayCommand(CanExecute = nameof(IsProgramDataValid))]
-    public void AddProgram()
+    private void AddProgram()
     {
         ProgramData programData = new() // remember to add data here
         {
@@ -65,6 +73,22 @@ public partial class AddViewModel : ObservableObject
             Uninstall = true // hardcoded for now, will be changed
         };
         ProgramService.SaveProgram(programData);
+    }
+
+    [RelayCommand]
+    private async Task SelectInstallationsFolder()
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select a folder",
+        };
+
+        var selectedFolder = await dialog.ShowAsync(_window);
+
+        if (!string.IsNullOrEmpty(selectedFolder))
+        {
+            InstallationsPath = selectedFolder;
+        }
     }
 
     private bool IsParameterDataValid()

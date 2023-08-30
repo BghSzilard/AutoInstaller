@@ -46,6 +46,8 @@ namespace AutoInstaller
                 {
                     DataContext = serviceCollection.CreateService<MainWindowViewModel>(),
                 };
+
+                serviceCollection.AddSingleton(desktop.MainWindow);
             }
 
             base.OnFrameworkInitializationCompleted();
