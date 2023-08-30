@@ -3,20 +3,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:AutoInstaller.ViewModels"
+			 xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AutoInstaller.Views.AddPage"
 			 x:DataType="vm:AddViewModel"
-			 x:CompileBindings="True"
-             x:Class="AutoInstaller.Views.AddPage">
+			 x:CompileBindings="True">
 	
-	<UserControl.DataContext>
-		<vm:AddViewModel/>
-	</UserControl.DataContext>
+	<Design.DataContext>
+		<vm:AddViewModel>
+			<x:Arguments>
+				<x:Null/>
+			</x:Arguments>
+		</vm:AddViewModel>
+	</Design.DataContext>
 	
 	<StackPanel>
 		<TextBlock Text="Name"/>
 		<TextBox Margin="0 0 100 0" Text="{Binding Name}"/>
-		<TextBlock Text="Installations path"/>
-		<TextBox Margin="0 0 100 0" Text="{Binding InstallationsPath}"/>
+		<TextBlock Text="Installations directory"/>
+		<Button Content="Select folder" Command="{Binding SelectInstallationsFolderCommand}"/>
+		<TextBlock Text="{Binding InstallationsPath}"/>
 		<TextBlock Text="Version"/>
 		<ComboBox Margin="0 0 100 0" ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}"/>
 		<TextBlock Text="Parameters"/>

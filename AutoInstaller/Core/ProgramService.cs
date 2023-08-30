@@ -21,14 +21,14 @@ public static class ProgramService
 
     public static void SaveProgram(ProgramData programData)
     {
-        string programsPath = Path.Combine(_databasePath, "Programs");
+        string programPath = Path.Combine(_databasePath, "Programs", programData.Name!);
 
-        if (!Directory.Exists(programsPath))
+        if (!Directory.Exists(programPath))
         {
-            Directory.CreateDirectory(programsPath);
+            Directory.CreateDirectory(programPath);
         }
 
-        string filePath = Path.Combine(programsPath, $"{programData.Version}.aisl");
+        string filePath = Path.Combine(programPath, $"{programData.Version}.aisl");
 
         //File.WriteAllText(filePath, AISLScriptBuilder.Build(programData));
         using StreamWriter writer = new(filePath);
@@ -78,7 +78,7 @@ public static class ProgramService
             Uninstall = true
         };
 
-        writer.Write(AISLScriptBuilder.Build(mockData));
+        writer.Write(AISLScriptBuilder.Build(programData));
     }
 
     public static List<string> FindVersionSubdirectories(string directoryPath)

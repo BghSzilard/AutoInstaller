@@ -9,11 +9,9 @@
 			 x:DataType="vm:HomeViewModel"
 			 x:CompileBindings="True"
              x:Class="AutoInstaller.Views.HomePage">
-	<UserControl.DataContext>
-		<vm:HomeViewModel></vm:HomeViewModel>
-	</UserControl.DataContext>
 	
-
-
+	<Design.DataContext>
+		<vm:HomeViewModel/>
+	</Design.DataContext>
 	
 </UserControl>
