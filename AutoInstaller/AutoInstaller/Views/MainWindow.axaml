@@ -13,25 +13,25 @@
         Title="AutoInstaller"
 		x:CompileBindings="True">
 
-    <Design.DataContext>
+	<Design.DataContext>
 		<vm:MainWindowViewModel>
-		    <x:Arguments>
-			    <core:ServiceCollection></core:ServiceCollection>
+			<x:Arguments>
+				<core:ServiceCollection></core:ServiceCollection>
 				<core:PageService></core:PageService>
 				<services:NavigationService></services:NavigationService>
 			</x:Arguments>
 		</vm:MainWindowViewModel>
-    </Design.DataContext>
-	
+	</Design.DataContext>
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
 		</Grid.RowDefinitions>
-		
+
 		<Menu Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#009999">
 			<MenuItem Header="File" Foreground="White" FontSize="">
-				<MenuItem Header="Set configuration path" Command="{Binding ConfigureFolderCommand}"></MenuItem>
+				<!--<MenuItem Header="Set configuration path" Command="{Binding ConfigureFolderCommand}"></MenuItem>-->
 			</MenuItem>
 			<MenuItem Header="Home" Foreground="White"></MenuItem>
 			<Image Source="../Resources/siemenslogo.png" Width="100" Height="50" Margin="570 0 0 0 "/>
@@ -51,4 +51,4 @@
 		</SplitView>
 	</Grid>
 
-	</Window>
+</Window>
