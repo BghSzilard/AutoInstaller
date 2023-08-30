@@ -17,7 +17,7 @@ public static class ProgramService
         if (!Directory.Exists(_databasePath))
         {
             Directory.CreateDirectory(_databasePath);
-            Directory.CreateDirectory(Path.Combine(_databasePath, _programsFolderName));
+            //Directory.CreateDirectory(Path.Combine(_databasePath, _programsFolderName));
         }
     }
 
