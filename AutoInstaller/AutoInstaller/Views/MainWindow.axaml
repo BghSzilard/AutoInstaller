@@ -34,7 +34,7 @@
 				<MenuItem Header="Set configuration path" Command="{Binding ConfigureFolderCommand}"></MenuItem>
 			</MenuItem>
 			<MenuItem Header="Home" Foreground="White"></MenuItem>
-			<Image Source="C:\Users\Rares\Dropbox\My PC (DESKTOP-P06UPBI)\Desktop\AutoInstaller\AutoInstaller\AutoInstaller\AutoInstaller\Resources\siemenslogo.png" Width="100" Height="50" Margin="570 0 0 0 "/>
+			<Image Source="../Resources/siemenslogo.png" Width="100" Height="50" Margin="570 0 0 0 "/>
 		</Menu>
 		<SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
 			<SplitView.Pane>
