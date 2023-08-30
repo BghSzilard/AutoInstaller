@@ -13,7 +13,9 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
 		<ListBox Grid.Row="0" ItemsSource="{Binding Programs}"></ListBox>
+		<Button Grid.Row="1" Content="Install" Command="{Binding InstallProgramCommand}"></Button>
 	</Grid>
 </UserControl>

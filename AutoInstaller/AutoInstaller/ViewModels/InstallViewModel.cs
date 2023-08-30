@@ -24,45 +24,17 @@ public sealed partial class InstallViewModel : ObservableObject
         {
             Name = "Test Installer",
             InstallationsPath = @"C:\Users\sziba\Desktop\BraveBrowserSetup-BRV010.exe",
-            ParameterList = new()
-            {
-                new ParameterData()
-                {
-                    Type = ParameterType.number,
-                    Name = "Port",
-                    DefaultValue = "8080",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.@string,
-                    Name = "ServerName",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.choice,
-                    Name = "DropDown",
-                    Options = new() { "option1", "option2" },
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.flag,
-                    Name = "Tick",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.@string,
-                    Name = "FixedParameter",
-                    FixedValue = "FixedValue"
-                },
-                new ParameterData()
-                {
-                    IsOptional = true,
-                    Type = ParameterType.@string,
-                    Name = "OptionalValue"
-                }
-            },
-            InstallerPath = @"C:\Users\sziba\Desktop\BraveBrowserSetup-BRV010.exe",
+            //ParameterList = new()
+            //{
+            //    new ParameterData()
+            //    {
+            //        Name = "APPDIR",
+            //        DefaultValue = "C:\\Users\\sziba\\Desktop\\New folder"
+            //    }
+            //},
+            InstallerPath = @"D:\Summer School 2023\asd\asd\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi",
             Uninstall = true
         };
+        PowershellExecutor.RunPowershellInstaller(mockData);
     }
 }

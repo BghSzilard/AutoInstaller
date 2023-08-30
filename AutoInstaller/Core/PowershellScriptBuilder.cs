@@ -1,15 +1,22 @@
 ﻿using AISL;
+using System.Diagnostics;
 
 namespace Core
 {
     public static class PowershellScriptBuilder
     {
-        public static string BuildPowershellInstallScript(ProgramData programData)
+        public static void BuildPowershellInstallScript(Process process, ProgramData programData)
         {
-            string script = "";
-            script += programData.InstallerPath;
-            script += " /qb+";
-            return script;
+            process.StartInfo.FileName = "msiexec";
+            process.StartInfo.Arguments = $" /i \"{programData.InstallerPath}\" ";
+            if (programData.ParameterList != null)
+            {
+                foreach (var parameter in programData.ParameterList)
+                {
+                    process.StartInfo.Arguments += $" {parameter.Name} = \"{parameter.DefaultValue}\"";
+                }
+            }
+            process.StartInfo.Arguments += "/qb+";
         }
     }
 }
