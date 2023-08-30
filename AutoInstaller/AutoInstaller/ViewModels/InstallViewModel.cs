@@ -1,5 +1,6 @@
 ﻿using AISL;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Core;
 using System.Collections.ObjectModel;
 
@@ -63,7 +64,5 @@ public sealed partial class InstallViewModel : ObservableObject
             InstallerPath = @"C:\Users\sziba\Desktop\BraveBrowserSetup-BRV010.exe",
             Uninstall = true
         };
-
-        PowershellExecutor.RunPowershellInstaller();
     }
 }
