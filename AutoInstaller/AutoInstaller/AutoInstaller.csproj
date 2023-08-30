@@ -12,6 +12,10 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\siemenslogo.png" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.2" />
@@ -22,6 +26,7 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.2" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
     <PackageReference Include="System.Management.Automation" Version="7.3.6" />
   </ItemGroup>
 
@@ -40,5 +45,12 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <AvaloniaResource Include="Resources\siemenslogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaResource>
   </ItemGroup>
 </Project>
