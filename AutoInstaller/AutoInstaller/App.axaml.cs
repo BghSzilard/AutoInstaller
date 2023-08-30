@@ -29,8 +29,8 @@ namespace AutoInstaller
             serviceCollection.AddSingleton<AddPage>();
             serviceCollection.AddSingleton<AddViewModel>();
 
-            serviceCollection.AddSingleton<InstallPage>();
-            serviceCollection.AddSingleton<InstallViewModel>();
+            serviceCollection.AddScope<InstallPage>();
+            serviceCollection.AddScope<InstallViewModel>();
 
             PageService pageService = serviceCollection.GetService<PageService>();
             pageService.RegisterPage<HomePage, HomeViewModel>("Demo");

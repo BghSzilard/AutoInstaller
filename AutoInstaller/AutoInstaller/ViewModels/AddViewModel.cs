@@ -24,10 +24,15 @@ public partial class AddViewModel : ObservableObject
 
     [ObservableProperty] private ParameterData? _selectedParameter;
 
-    [ObservableProperty] private ParameterType _selectedParameterType;
+    [ObservableProperty] private ParameterType? _selectedParameterType = null;
     [ObservableProperty] private string? _parameterName;
     [ObservableProperty] private string? _parameterDefaultValue;
+    [ObservableProperty] private string? _parameterFixedValue;
     [ObservableProperty] private bool _parameterIsOptional;
+
+    [ObservableProperty] private bool _isWithoutValueChecked = true;
+    [ObservableProperty] private bool _isWithDefaultValueChecked = false;
+    [ObservableProperty] private bool _isWithFixedValueChecked = false;
 
     partial void OnInstallationsPathChanged(string? value)
     {
@@ -47,9 +52,10 @@ public partial class AddViewModel : ObservableObject
         ParameterData parameter = new()
         {
             IsOptional = ParameterIsOptional,
-            Type = SelectedParameterType,
+            Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
             Name = ParameterName!,
             DefaultValue = ParameterDefaultValue,
+            FixedValue = ParameterFixedValue
         };
 
         Parameters.Add(parameter);

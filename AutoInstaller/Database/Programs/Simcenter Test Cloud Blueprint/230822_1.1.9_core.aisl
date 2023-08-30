@@ -1,4 +1,6 @@
 FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
-
+HAS ( 
+	optional string APPDIR WITH DEFAULT C:\
+) AS installation_parameters;
 UNINSTALL "Simcenter Test Cloud Blueprint";
 EXECUTE "" WITH installation_parameters;
