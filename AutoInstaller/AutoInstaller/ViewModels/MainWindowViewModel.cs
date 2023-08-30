@@ -5,14 +5,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace AutoInstaller.ViewModels
 {
     public sealed partial class MainWindowViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string _configurationFolder = "C:\\Users\\sziba\\Desktop\\Programs";
+        public ObservableCollection<string> Programs { get; set; } = new();
+
         private readonly ServiceCollection _serviceCollection;
         [ObservableProperty]
         private UserControl? _content;
@@ -41,6 +42,11 @@ namespace AutoInstaller.ViewModels
             {
                 ButtonClick(pageService.Pages[type]);
             };
+
+            foreach (var program in ProgramService.FindPrograms())
+            {
+                Programs.Add(program);
+            }
         }
 
         [RelayCommand]
@@ -96,10 +102,10 @@ namespace AutoInstaller.ViewModels
             Navigation.CurrentPageType = typeof(AddPage);
         }
 
-        //[RelayCommand]
-        //public void InstallProgram()
-        //{
-        //    Navigation.CurrentPageType = typeof(InstallPage);
-        //}
+        [RelayCommand]
+        public void InstallProgram()
+        {
+            Navigation.CurrentPageType = typeof(InstallPage);
+        }
     }
 }

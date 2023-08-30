@@ -6,12 +6,13 @@ namespace Core;
 public static class ProgramService
 {
     private static readonly string _databasePath;
-
+    private static readonly string _databaseName = "Database";
+    private static readonly string _programsFolderName = "Programs";
     static ProgramService()
     {
         string databasePath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
             (current, _) => Path.GetDirectoryName(current)!);
-        _databasePath = Path.Combine(databasePath, "Database");
+        _databasePath = Path.Combine(databasePath, _databaseName);
 
         if (!Directory.Exists(_databasePath))
         {
@@ -21,7 +22,7 @@ public static class ProgramService
 
     public static void SaveProgram(ProgramData programData)
     {
-        string programPath = Path.Combine(_databasePath, "Programs", programData.Name!);
+        string programPath = Path.Combine(_databasePath, _programsFolderName, programData.Name!);
 
         if (!Directory.Exists(programPath))
         {
@@ -80,16 +81,30 @@ public static class ProgramService
 
         writer.Write(AISLScriptBuilder.Build(programData));
     }
-
-    public static List<string> FindVersionSubdirectories(string directoryPath)
+    public static List<string> FindSubdirectories(string directoryPath)
     {
         List<string> versionDirectories = Directory.GetDirectories(directoryPath).ToList();
-
+        return versionDirectories;
+    }
+    public static List<string> FindVersionSubdirectories(string directoryPath)
+    {
+        List<string> versionDirectories = FindSubdirectories(directoryPath);
         versionDirectories.RemoveAll(directory => Directory.GetFiles(directory, "*.msi").Length == 0);
 
         List<string> versions = new();
         versionDirectories.ForEach(directory => versions.Add(directory.Replace(@$"{directoryPath}\", string.Empty)));
 
         return versions;
+    }
+    public static List<string> FindPrograms()
+    {
+        var subdirectories = FindSubdirectories(Path.Combine(_databasePath, _programsFolderName));
+        foreach (var index in Enumerable.Range(0, subdirectories.Count))
+        {
+            subdirectories[index] = subdirectories[index]
+            .Replace(Path.Combine(_databasePath, _programsFolderName), "")
+            .Replace("\\", "");
+        }
+        return subdirectories;
     }
 }

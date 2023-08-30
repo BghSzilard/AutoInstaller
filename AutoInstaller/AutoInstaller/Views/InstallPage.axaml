@@ -10,34 +10,10 @@
 	<UserControl.DataContext>
 		<vm:InstallViewModel></vm:InstallViewModel>
 	</UserControl.DataContext>
-	<!--<StackPanel>
-		<TextBlock Text="Name"/>
-		<TextBox Margin="0 0 100 0" Text="{Binding Name}"/>
-		<Button Content="Find versions" Command="{Binding FindVersionsCommand}"></Button>
-		<TextBlock Text="Version"/>
-		<ComboBox ItemsSource="{Binding versions}" Margin="0 0 100 0" SelectedItem="{Binding Version}"/>
-		<TextBlock Text="Installation source"/>
-		<TextBox Margin="0 0 100 0" Text="{Binding InstallationPath}"/>
-		<TextBlock Text="Parameters"/>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Name" Margin="5 5 10 0" />
-			<TextBox Text="{Binding NewParameter.Name}"/>
-			<TextBlock Text="Value" Margin="5 5 10 0"/>
-			<TextBox Text="{Binding NewParameter.Value}"/>
-			<Button Content="+" Margin="20 0 0 0 " Command="{Binding AddParameterCommand}"/>
-			<Button Content="-" Margin="20 0 0 0 " Command="{Binding RemoveParameterCommand}" />
-		</StackPanel>
-		<ListBox ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{Binding Name}" Margin="5"/>
-						<TextBlock Text=":" Margin="5"></TextBlock>
-						<TextBlock Text="{Binding Value}" Margin="5"/>
-					</StackPanel>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-		<Button Content="Add" Command="{Binding InstallProgramCommand}"></Button>
-	</StackPanel>-->
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+		</Grid.RowDefinitions>
+		<ListBox Grid.Row="0" ItemsSource="{Binding Programs}"></ListBox>
+	</Grid>
 </UserControl>
