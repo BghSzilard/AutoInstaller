@@ -49,6 +49,10 @@ public sealed partial class InstallViewModel : ObservableObject
         if (value != null)
         {
             var programData = ProgramService.GetProgramData(SelectedProgram, value);
+            if (programData == null) // programData is null if the selected version doesn't have an AISL file associated
+            {
+                return;
+            }
             programData.ParameterList.ForEach(parameter => Parameters.Add(new(parameter)));
         }
     }

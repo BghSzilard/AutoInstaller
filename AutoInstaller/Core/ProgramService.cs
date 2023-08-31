@@ -115,6 +115,10 @@ public static class ProgramService
     public static ProgramData GetProgramData(string programName, string versionName)
     {
         string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
-        return ScriptDataExtractor.GetProgramData(scriptPath);
+        if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
+        {
+            return ScriptDataExtractor.GetProgramData(scriptPath);
+        }
+        return null!;
     }
 }
