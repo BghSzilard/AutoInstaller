@@ -42,7 +42,6 @@
 						<Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center" Margin="40 15 0 20" Command="{Binding AddProgramCommand}"></Button>
 						<Button Content="Install" Foreground="White" Background="#009999" HorizontalAlignment="Center" Margin="30 15 0 20" Command="{Binding InstallProgramCommand}"></Button>
 					</StackPanel>
-					<TextBlock Text="Program list" Foreground="White"></TextBlock>
 				</StackPanel>
 			</SplitView.Pane>
 

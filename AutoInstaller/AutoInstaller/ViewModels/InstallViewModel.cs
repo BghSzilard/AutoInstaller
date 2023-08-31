@@ -23,15 +23,14 @@ public sealed partial class InstallViewModel : ObservableObject
         ProgramData mockData = new()
         {
             Name = "Test Installer",
-            InstallationsPath = @"C:\Users\sziba\Desktop\BraveBrowserSetup-BRV010.exe",
-            //ParameterList = new()
-            //{
-            //    new ParameterData()
-            //    {
-            //        Name = "APPDIR",
-            //        DefaultValue = "C:\\Users\\sziba\\Desktop\\New folder"
-            //    }
-            //},
+            ParameterList = new()
+            {
+                new ParameterData()
+                {
+                    Name = "APPDIR",
+                    DefaultValue = "C:\\Users\\sziba\\Desktop\\NewFolder"
+                }
+            },
             InstallerPath = @"D:\Summer School 2023\asd\asd\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi",
             Uninstall = true
         };

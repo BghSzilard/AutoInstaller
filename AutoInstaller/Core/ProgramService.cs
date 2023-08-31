@@ -108,4 +108,17 @@ public static class ProgramService
         }
         return subdirectories;
     }
+    public static string FindInstallerPath(string versionPath)
+    {
+        var installerPath = Directory.GetFiles(versionPath, "*.msi");
+        if (installerPath.Length == 0)
+        {
+            throw new Exception("Couldn't find any files with msi extension");
+        }
+        if (installerPath.Length > 1)
+        {
+            throw new Exception("More files with msi extension found");
+        }
+        return installerPath[0];
+    }
 }

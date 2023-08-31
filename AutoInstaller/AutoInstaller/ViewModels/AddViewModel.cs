@@ -6,6 +6,7 @@ using Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,7 +77,8 @@ public partial class AddViewModel : ObservableObject
             InstallationsPath = InstallationsPath,
             ParameterList = Parameters.ToList(),
             Version = SelectedVersion,
-            Uninstall = true // hardcoded for now, will be changed
+            Uninstall = true, // hardcoded for now, will be changed
+            InstallerPath = ProgramService.FindInstallerPath(Path.Combine(InstallationsPath!, SelectedVersion!))
         };
         ProgramService.SaveProgram(programData);
     }

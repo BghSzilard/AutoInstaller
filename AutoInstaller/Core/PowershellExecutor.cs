@@ -25,11 +25,5 @@ namespace Core
             process.WaitForExit();
 
         }
-        public static void BuildScript(Process process, ProgramData programData)
-        {
-            //string powerShellCode = " \"D:\\Summer School 2023\\asd\\asd\\230822_1.1.9_core\\Simcenter Test Cloud Blueprint Setup.msi\"";
-
-            //process.StartInfo.Arguments += powerShellCode;
-        }
     }
 }
