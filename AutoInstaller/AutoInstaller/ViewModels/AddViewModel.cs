@@ -62,6 +62,8 @@ public partial class AddViewModel : ObservableObject
             IsValid = false;
             throw new DataValidationException("Invalid Name");
         }
+
+        IsValid = true;
     }
 
     partial void OnSelectedVersionChanged(string? value)
