@@ -2,71 +2,54 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
 namespace AutoInstaller.ViewModels;
 
 public sealed partial class InstallViewModel : ObservableObject
 {
-    public ObservableCollection<string> Programs { get; set; } = new();
-    public ObservableCollection<string> Versions { get; set; } = new();
-    public ObservableCollection<ParameterData> Parameters { get; set; } = new();
+    public ObservableCollection<string> Programs { get; }
+    public ObservableCollection<string> Versions { get; } = new();
+    public ObservableCollection<ParameterDataViewModel> Parameters { get; } = new();
+
     [ObservableProperty] private string _selectedProgram;
     [ObservableProperty] private string _selectedVersion;
+
     public InstallViewModel()
     {
-        foreach (var program in ProgramService.FindPrograms())
-        {
-            Programs.Add(program);
-        }
+        Programs = new(ProgramService.FindPrograms());
     }
 
     [RelayCommand]
-    public void InstallProgram()
+    public void InstallProgram() // check if program is selected
     {
-        //ProgramData mockData = new()
-        //{
-        //    Name = "Test Installer",
-        //    ParameterList = new()
-        //    {
-        //        new ParameterData()
-        //        {
-        //            Name = "APPDIR",
-        //            DefaultValue = @"C:\"
-        //        }
-        //    },
-        //    InstallerPath = @"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi",
-        //    Uninstall = true
-        //};
-        ProgramData programData = new()
+        ProgramData programData = ProgramService.GetProgramData(SelectedProgram, SelectedVersion);
+        programData.ParameterList.Clear();
+        foreach (var parameter in Parameters)
         {
-            Name = SelectedProgram,
-            ParameterList = new(),
-            InstallerPath = ProgramService.GetAISLScriptData(SelectedProgram, SelectedVersion).InstallerPath
-        };
-        foreach (var param  in Parameters)
-        {
-            programData.ParameterList.Add(param);
+            programData.ParameterList.Add(parameter.ParameterData);
         }
         PowershellExecutor.RunPowershellInstaller(programData);
     }
+
     partial void OnSelectedProgramChanged(string value)
     {
         Versions.Clear();
-        var programInfo = ScriptInfoExtractor.GetProgramInfo(value);
-        var path = programInfo.InstallationsPath;
-        foreach (var directory in ProgramService.FindVersionSubdirectories(path))
+        if (value != null)
         {
-            Versions.Add(directory);
+            var versions = ProgramService.FindVersionsOfProgram(value);
+            versions.ForEach(version => Versions.Add(version));
         }
     }
+
     partial void OnSelectedVersionChanged(string value)
     {
         Parameters.Clear();
-        var programInfo = ScriptInfoExtractor.GetVersionInfo(SelectedProgram, value);
-        foreach (var param in programInfo.ParameterList)
+        if (value != null)
         {
-            Parameters.Add(param);
+            var programData = ProgramService.GetProgramData(SelectedProgram, value);
+            programData.ParameterList.ForEach(parameter => Parameters.Add(new(parameter)));
         }
     }
 }

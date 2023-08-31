@@ -7,11 +7,13 @@ public static class AISLScriptBuilder
     private static string AddFindStatement(string script, ProgramData programData)
     {
         script += $@"FIND ""{programData.Name}"" AT ""{programData.InstallationsPath}"";";
+        script += "\n";
         return script;
     }
+
     private static string AddParametersStatement(string script, ProgramData programData)
     {
-        script += "\nHAS ( \n";
+        script += "HAS ( \n";
         foreach (var parameter in programData.ParameterList)
         {
             script += "\t";
@@ -20,10 +22,19 @@ public static class AISLScriptBuilder
                 script += "optional ";
             }
             script += $"{parameter.Type} {parameter.Name}";
+
             if (parameter.FixedValue != null)
             {
-                script += $@" = ""{parameter.FixedValue}""";
+                if (parameter.Type == ParameterType.@string)
+                {
+                    script += $" = \"{parameter.FixedValue}\"";
+                }
+                else
+                {
+                    script += $" = {parameter.FixedValue}";
+                }
             }
+
             if (parameter.Options != null)
             {
                 script += " FROM [";
@@ -34,9 +45,18 @@ public static class AISLScriptBuilder
                 script = script.Remove(script.Length - 2);
                 script += "]";
             }
+
             if (parameter.DefaultValue != null)
             {
-                script += $" WITH DEFAULT {parameter.DefaultValue}";
+                if (parameter.Type == ParameterType.@string)
+                {
+                    script += $" WITH DEFAULT \"{parameter.DefaultValue}\"";
+                }
+                else
+                {
+                    script += $" WITH DEFAULT {parameter.DefaultValue}";
+                }
+                
             }
             script += ",\n";
         }
@@ -44,23 +64,26 @@ public static class AISLScriptBuilder
         script += "\n) AS installation_parameters;";
         return script;
     }
+
     private static string AddUninstallStatement(string script, ProgramData programData)
     {
         script += "\n";
         script += $@"UNINSTALL ""{programData.Name}"";";
         return script;
     }
+
     private static string AddExecuteStatement(string script, ProgramData programData)
     {
         script += "\n";
         script += $@"EXECUTE ""{programData.InstallerPath}"" WITH installation_parameters;";
         return script;
     }
+
     public static string Build(ProgramData programData)
     {
-        string script = "";
+        string script = string.Empty;
         script = AddFindStatement(script, programData);
-        if (programData.ParameterList.Count != 0 )
+        if (programData.ParameterList.Count != 0)
         {
             script = AddParametersStatement(script, programData);
         }

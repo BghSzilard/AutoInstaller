@@ -8,7 +8,7 @@ public enum ParameterType
     flag
 }
 
-public struct ParameterData
+public class ParameterData
 {
     public bool IsOptional { get; set; }
     public ParameterType Type { get; set; }
@@ -16,6 +16,7 @@ public struct ParameterData
     public string? DefaultValue { get; set; }
     public string? FixedValue { get; set; }
     public List<string>? Options { get; set; }
+    public string? Value { get; set; }
 
     public override bool Equals(object? obj)
     {

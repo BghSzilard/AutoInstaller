@@ -13,7 +13,7 @@ namespace Core
             {
                 foreach (var parameter in programData.ParameterList)
                 {
-                    process.StartInfo.Arguments += $"{parameter.Name}=\"{parameter.DefaultValue}\" ";
+                    process.StartInfo.Arguments += $"{parameter.Name}=\"{parameter.Value}\" ";
                 }
             }
             process.StartInfo.Arguments += "/qb+";

@@ -1,7 +1,7 @@
 FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
 HAS (
 	number Port WITH DEFAULT 8080,
-	string ServerName,
+	string ServerName WITH DEFAULT "C:\",
 	choice DropDown FROM ["option1", "option2"],
 	flag Tick,
 	string FixedParameter = "FixedValue",

@@ -9,6 +9,7 @@ public static class ProgramService
     public static readonly string _programsPath;
     private static readonly string _databaseFolderName = "Database";
     private static readonly string _programsFolderName = "Programs";
+
     static ProgramService()
     {
         string databasePath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
@@ -42,7 +43,7 @@ public static class ProgramService
         writer.Write(AISLScriptBuilder.Build(programData));
     }
 
-    public static List<string> FindFiles(string directoryPath)
+    public static string FindMostRecentFileInDirectory(string directoryPath)
     {
         DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
         FileInfo[] files = directoryInfo.GetFiles();
@@ -50,14 +51,12 @@ public static class ProgramService
         if (files.Length > 0)
         {
             FileInfo mostRecentFile = files.OrderByDescending(f => f.LastWriteTime).First();
+            return mostRecentFile.Name;
         }
         else
         {
-            throw new Exception("Could not find file");
+            throw new Exception("There are no files in this directory");
         }
-
-        List<string> fileNames = files.Select(f => f.Name).ToList();
-        return fileNames;
     }
 
     public static List<string> FindSubdirectories(string directoryPath)
@@ -103,9 +102,19 @@ public static class ProgramService
         return installerPath[0];
     }
 
-    public static ProgramData GetAISLScriptData(string programName, string versionName)
+    public static List<string> FindVersionsOfProgram(string programName)
     {
-        string path = Path.Combine(_programsPath, programName, versionName + ".aisl");
-        return ScriptInfoExtractor.GetScriptInfo(path);
+        string programPath = Path.Combine(_programsPath, programName);
+        string mostRecentFilePath = Path.Combine(programPath, FindMostRecentFileInDirectory(programPath));
+
+        string? installationsPath = ScriptDataExtractor.GetProgramData(mostRecentFilePath).InstallationsPath;
+
+        return FindVersionSubdirectories(installationsPath!);
+    }
+
+    public static ProgramData GetProgramData(string programName, string versionName)
+    {
+        string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
+        return ScriptDataExtractor.GetProgramData(scriptPath);
     }
 }
