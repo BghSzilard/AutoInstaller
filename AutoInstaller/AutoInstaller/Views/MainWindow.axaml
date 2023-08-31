@@ -48,7 +48,7 @@
                             </Button>
                             <Button Content="Install" Foreground="White" Background="#009999"
                                     HorizontalAlignment="Center"
-                                    Command="{Binding AddProgramCommand}">
+                                    Command="{Binding InstallProgramCommand}">
                             </Button>
                         </StackPanel>
                     </StackPanel>
