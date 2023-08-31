@@ -1,5 +1,6 @@
 ﻿using AISL;
 using Avalonia.Controls;
+using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
@@ -19,6 +20,7 @@ public partial class AddViewModel : ObservableObject
     [ObservableProperty] private string? _name;
     [ObservableProperty] private string? _installationsPath;
     [ObservableProperty] private string? _selectedVersion;
+    [ObservableProperty] private bool? _isValid;
 
     public ObservableCollection<string> Versions { get; set; } = new();
     public ObservableCollection<ParameterData> Parameters { get; set; } = new();
@@ -36,9 +38,38 @@ public partial class AddViewModel : ObservableObject
     [ObservableProperty] private bool _isWithFixedValueChecked = false;
 
     partial void OnInstallationsPathChanged(string? value)
-    {
-        Versions.Clear();
-        ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
+    {   
+        //if(string.IsNullOrEmpty(value))
+        //{
+        //    throw new DataValidationException("Invalid path");
+        //}
+        //Versions.Clear();
+        //if(ProgramService.FindVersionSubdirectories(value!).Count == 0)
+        //{
+        //    throw new DataValidationException("Invalid path");
+        //}
+        //else
+        //{
+            ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
+        //}
+       
+    }
+
+    partial void OnNameChanged(string? value)
+    {   
+        if (string.IsNullOrEmpty(value))
+        {
+            throw new DataValidationException("Invalid Name");
+        }
+    }
+
+    partial void OnSelectedVersionChanged(string? value)
+    {   
+        // Not good yet
+        //if (string.IsNullOrEmpty(value))
+        //{
+        //    throw new NotImplementedException("Invalid Version");
+        //}
     }
 
     private readonly Window _window;
@@ -101,11 +132,14 @@ public partial class AddViewModel : ObservableObject
 
     private bool IsParameterDataValid()
     {
+        //IsValid = !string.IsNullOrEmpty(Name);
+     
         return true;
     }
 
     private bool IsProgramDataValid()
-    {
+    {   
+
         return true;
     }
 
