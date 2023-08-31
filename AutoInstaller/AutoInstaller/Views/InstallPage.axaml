@@ -15,7 +15,24 @@
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
-		<ListBox Grid.Row="0" ItemsSource="{Binding Programs}"></ListBox>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Programs}" SelectedItem="{Binding SelectedProgram}"></ListBox>
+		<ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}"></ListBox>
+		<ListBox Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Parameters}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Name}"/>
+						<TextBox Text="{Binding DefaultValue}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
 		<Button Grid.Row="1" Content="Install" Command="{Binding InstallProgramCommand}"></Button>
 	</Grid>
 </UserControl>

@@ -6,7 +6,7 @@ namespace Core;
 public static class ProgramService
 {
     private static readonly string _databasePath;
-    private static readonly string _programsPath;
+    public static readonly string _programsPath;
     private static readonly string _databaseFolderName = "Database";
     private static readonly string _programsFolderName = "Programs";
     static ProgramService()
@@ -37,56 +37,27 @@ public static class ProgramService
         }
 
         string filePath = Path.Combine(programPath, $"{programData.Version}.aisl");
-
-        //File.WriteAllText(filePath, AISLScriptBuilder.Build(programData));
         using StreamWriter writer = new(filePath);
 
-        ProgramData mockData = new()
-        {
-            Name = "Simcenter Test Cloud Blueprint",
-            InstallationsPath = "D:\\Siemens\\tcb",
-            ParameterList = new()
-            {
-                new ParameterData()
-                {
-                    Type = ParameterType.number,
-                    Name = "Port",
-                    DefaultValue = "8080",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.@string,
-                    Name = "ServerName",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.choice,
-                    Name = "DropDown",
-                    Options = new() { "option1", "option2" },
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.flag,
-                    Name = "Tick",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.@string,
-                    Name = "FixedParameter",
-                    FixedValue = "FixedValue"
-                },
-                new ParameterData()
-                {
-                    IsOptional = true,
-                    Type = ParameterType.@string,
-                    Name = "OptionalValue"
-                }
-            },
-            InstallerPath = "D:\\Siemens\\tcb\\230822_1.1.9_core\\Simcenter Test Cloud Blueprint Setup.msi",
-            Uninstall = true
-        };
-
         writer.Write(AISLScriptBuilder.Build(programData));
+    }
+
+    public static List<string> FindFiles(string directoryPath)
+    {
+        DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+        FileInfo[] files = directoryInfo.GetFiles();
+
+        if (files.Length > 0)
+        {
+            FileInfo mostRecentFile = files.OrderByDescending(f => f.LastWriteTime).First();
+        }
+        else
+        {
+            throw new Exception("Could not find file");
+        }
+
+        List<string> fileNames = files.Select(f => f.Name).ToList();
+        return fileNames;
     }
 
     public static List<string> FindSubdirectories(string directoryPath)
@@ -130,5 +101,11 @@ public static class ProgramService
             throw new Exception("More files with msi extension found");
         }
         return installerPath[0];
+    }
+
+    public static ProgramData GetAISLScriptData(string programName, string versionName)
+    {
+        string path = Path.Combine(_programsPath, programName, versionName + ".aisl");
+        return ScriptInfoExtractor.GetScriptInfo(path);
     }
 }
