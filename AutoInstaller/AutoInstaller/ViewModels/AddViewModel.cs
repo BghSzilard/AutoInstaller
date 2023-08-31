@@ -20,7 +20,7 @@ public partial class AddViewModel : ObservableObject
     [ObservableProperty] private string? _name;
     [ObservableProperty] private string? _installationsPath;
     [ObservableProperty] private string? _selectedVersion;
-    [ObservableProperty] private bool? _isValid;
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(AddProgramCommand))] private bool _isValid;
 
     public ObservableCollection<string> Versions { get; set; } = new();
     public ObservableCollection<ParameterData> Parameters { get; set; } = new();
@@ -59,6 +59,7 @@ public partial class AddViewModel : ObservableObject
     {   
         if (string.IsNullOrEmpty(value))
         {
+            IsValid = false;
             throw new DataValidationException("Invalid Name");
         }
     }
@@ -138,9 +139,8 @@ public partial class AddViewModel : ObservableObject
     }
 
     private bool IsProgramDataValid()
-    {   
-
-        return true;
+    {
+        return IsValid;
     }
 
     private bool IsParameterSelected()
