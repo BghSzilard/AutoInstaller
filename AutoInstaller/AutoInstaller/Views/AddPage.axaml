@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:AutoInstaller.ViewModels"
-			 xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
              x:Class="AutoInstaller.Views.AddPage"
 			 x:DataType="vm:AddViewModel"
 			 x:CompileBindings="True">
@@ -17,67 +17,81 @@
 		</vm:AddViewModel>
 	</Design.DataContext>
 
-	<Grid RowDefinitions="Auto Auto Auto Auto Auto 3* *" ColumnDefinitions="Auto *" Margin="10">
+	<Grid RowDefinitions="Auto Auto * Auto" Margin="10">
 
-		<TextBlock Text="Name" VerticalAlignment="Center"/>
-		<TextBox Grid.Column="1" Text="{Binding Name}" MinWidth="300" HorizontalAlignment="Left"/>
+		<TextBlock Text="Add Program" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="20"
+				   FontWeight="Bold" Margin="0 0 0 15"/>
+		<Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="2" Margin="0 0 0 5">
+			<Grid RowDefinitions="Auto Auto Auto * Auto" Margin="10">
 
-		<TextBlock Grid.Row="1" Text="Installations directory" VerticalAlignment="Center" Margin="0 0 5 0"/>
-		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="10">
-			<Button Content="Select folder" Command="{Binding SelectInstallationsFolderCommand}" Margin="0 5"/>
-			<TextBlock Text="{Binding InstallationsPath}" VerticalAlignment="Center"/>
-		</StackPanel>
+				<TextBlock Grid.Row="0" HorizontalAlignment="Center" FontSize="18"
+                           FontWeight="Bold"
+                           Text="Installer" VerticalAlignment="Center" Margin="0 0 0 10" />
 
-		<TextBlock  Grid.Row="2" Text="Version" VerticalAlignment="Center"/>
-		<ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}"/>
+				<Grid Grid.Row="1" RowDefinitions="Auto Auto Auto" ColumnDefinitions="Auto Auto * Auto">
+					<TextBlock Text="Name:" VerticalAlignment="Center" />
+					<TextBox
+                        Grid.Column="1"
+						Grid.ColumnSpan="3"
+                        Text="{Binding Name}"
+                        HorizontalAlignment="Stretch" />
 
-		<TextBlock Grid.Row="3" Text="Add parameter" VerticalAlignment="Center"/>
+					<TextBlock Grid.Row="1" Text="Installations directory:" VerticalAlignment="Center" Margin="0 0 5 0" />
+					<TextBox 
+                        Grid.Row="1" 
+                        Grid.Column="1" 
+                        Grid.ColumnSpan="2" 
+                        Text="{Binding InstallationsPath}" 
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Stretch"
+                        Margin="0 10 5 10"/>
+					<Button Grid.Row="1" Grid.Column="3" Command="{Binding SelectInstallationsFolderCommand}">
+						<icons:MaterialIcon Kind="Folder"></icons:MaterialIcon>
+                    </Button>
 
-		<Grid Grid.Row="3" Grid.Column="1" ColumnDefinitions="* * *" Margin="0 5">
-			<RadioButton Content="without value" IsChecked="{Binding IsWithoutValueChecked}"/>
-			<RadioButton Grid.Column="1" Content="with default value" IsChecked="{Binding IsWithDefaultValueChecked}"/>
-			<RadioButton Grid.Column="2" Content="with fixed value" IsChecked="{Binding IsWithFixedValueChecked}"/>
-		</Grid>
+					<TextBlock Grid.Row="2" Text="Version:" VerticalAlignment="Center"/>
+					<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding Versions}"
+							  SelectedItem="{Binding SelectedVersion}"/>
+				</Grid>
+			</Grid>
+		</Border>
 
-		<StackPanel Grid.Row="4" Grid.ColumnSpan="2">
-			<StackPanel Orientation="Horizontal" Spacing="20" IsVisible="{Binding IsWithoutValueChecked}">
-				<CheckBox IsChecked="{Binding ParameterIsOptional}" Content="Optional"/>
-				<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}" PlaceholderText="Type"/>
-				<TextBox Text="{Binding ParameterName}" Watermark="Name"/>
-				<Button Content="Add parameter" Command="{Binding AddParameterCommand}"/>
-			</StackPanel>
+		<Border Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="2" Margin="0 0 0 5">
+			<Grid RowDefinitions="Auto Auto *" ColumnDefinitions="Auto *" Margin="10">
 
-			<StackPanel Orientation="Horizontal" Spacing="20" IsVisible="{Binding IsWithDefaultValueChecked}">
-				<CheckBox IsChecked="{Binding ParameterIsOptional}" Content="Optional"/>
-				<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}" PlaceholderText="Type"/>
-				<TextBox Text="{Binding ParameterName}" Watermark="Name"/>
-				<TextBox Grid.Column="2" Text="{Binding ParameterDefaultValue}" Watermark="Default value"/>
-				<Button Content="Add parameter" Command="{Binding AddParameterCommand}"/>
-			</StackPanel>
+				<TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold" Text="Parameters" VerticalAlignment="Center" Margin="0 0 0 10"/>
 
-			<StackPanel Orientation="Horizontal" Spacing="20" IsVisible="{Binding IsWithFixedValueChecked}">
-				<CheckBox IsChecked="{Binding ParameterIsOptional}" Content="Optional"/>
-				<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}" PlaceholderText="Type"/>
-				<TextBox Text="{Binding ParameterName}" Watermark="Name"/>
-				<TextBox Grid.Column="2" Text="{Binding ParameterFixedValue}" Watermark="Fixed value"/>
-				<Button Content="Add parameter" Command="{Binding AddParameterCommand}"/>
-			</StackPanel>
-		</StackPanel>
-
-		<ListBox Grid.Row="5" Grid.ColumnSpan="2" ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" Margin="0 10">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
+				<StackPanel Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
 					<StackPanel Orientation="Horizontal" Spacing="20">
-						<TextBlock Text="{Binding Type}"/>
-						<TextBlock Text="{Binding Name}"/>
-						<TextBlock Text="{Binding DefaultValue}"/>
-						<TextBlock Text="{Binding FixedValue}"/>
-						<TextBlock Text="{Binding IsOptional}"/>
+						<CheckBox Content="Read-Only"></CheckBox>
+						<CheckBox IsChecked="{Binding ParameterIsOptional}" Content="Optional" />
+						<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}"
+                                  PlaceholderText="Type" />
+						<TextBox Text="{Binding ParameterName}" Watermark="Name" />
+						<TextBox Grid.Column="2" Text="{Binding ParameterDefaultValue}" Watermark="Value" />
+						<Button Content="Add parameter" Command="{Binding AddParameterCommand}" />
 					</StackPanel>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-		
-		<Button Grid.Row="6" Content="Add program" Command="{Binding AddProgramCommand}"/>
+				</StackPanel>
+
+				<ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Parameters}"
+                         SelectedItem="{Binding SelectedParameter}" Margin="0 10">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="20">
+								<TextBlock Text="{Binding Type}" />
+								<TextBlock Text="{Binding Name}" />
+								<TextBlock Text="{Binding DefaultValue}" />
+								<TextBlock Text="{Binding FixedValue}" />
+								<TextBlock Text="{Binding IsOptional}" />
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</Border>
+
+		<Button Grid.Row="3" Grid.ColumnSpan="2" Command="{Binding AddProgramCommand}" HorizontalAlignment="Right"
+                Content="Add Program">
+        </Button>
 	</Grid>
 </UserControl>
