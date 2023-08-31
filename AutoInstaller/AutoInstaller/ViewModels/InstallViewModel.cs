@@ -28,10 +28,10 @@ public sealed partial class InstallViewModel : ObservableObject
                 new ParameterData()
                 {
                     Name = "APPDIR",
-                    DefaultValue = "C:\\Users\\sziba\\Desktop\\NewFolder"
+                    DefaultValue = @"C:\"
                 }
             },
-            InstallerPath = @"D:\Summer School 2023\asd\asd\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi",
+            InstallerPath = @"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi",
             Uninstall = true
         };
         PowershellExecutor.RunPowershellInstaller(mockData);
