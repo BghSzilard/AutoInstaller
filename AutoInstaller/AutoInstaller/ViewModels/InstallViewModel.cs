@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AISL;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Core;
 using System.Collections.ObjectModel;
 
@@ -13,5 +15,25 @@ public sealed partial class InstallViewModel : ObservableObject
         {
             Programs.Add(program);
         }
+    }
+
+    [RelayCommand]
+    public void InstallProgram()
+    {
+        ProgramData mockData = new()
+        {
+            Name = "Test Installer",
+            ParameterList = new()
+            {
+                new ParameterData()
+                {
+                    Name = "APPDIR",
+                    DefaultValue = @"C:\"
+                }
+            },
+            InstallerPath = @"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi",
+            Uninstall = true
+        };
+        PowershellExecutor.RunPowershellInstaller(mockData);
     }
 }

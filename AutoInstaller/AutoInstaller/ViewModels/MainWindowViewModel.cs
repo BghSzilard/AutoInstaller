@@ -43,10 +43,10 @@ namespace AutoInstaller.ViewModels
                 ButtonClick(pageService.Pages[type]);
             };
 
-            foreach (var program in ProgramService.FindPrograms())
-            {
-                Programs.Add(program);
-            }
+            //foreach (var program in ProgramService.FindPrograms())
+            //{
+            //    Programs.Add(program);
+            //}
         }
 
         [RelayCommand]

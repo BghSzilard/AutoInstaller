@@ -26,28 +26,36 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
 		</Grid.RowDefinitions>
 
-		<Menu Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Background="#009999">
+        <StackPanel Background="#009999">
+            <Image Source="../Resources/siemenslogo.png" Height="20" Margin="10" HorizontalAlignment="Right"/>
+        </StackPanel>
+		<Menu Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#009999">
 			<MenuItem Header="File" Foreground="White" FontSize="">
 			</MenuItem>
 			<MenuItem Header="Home" Foreground="White"></MenuItem>
-			<Image Source="../Resources/siemenslogo.png" Width="100" Height="50" Margin="570 0 0 0 "/>
 		</Menu>
-		<SplitView Grid.Row="1" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
-			<SplitView.Pane>
-				<StackPanel Background="#009999" >
-					<StackPanel Orientation="Horizontal">
-						<Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center" Margin="40 15 0 20" Command="{Binding AddProgramCommand}"></Button>
-						<Button Content="Install" Foreground="White" Background="#009999" HorizontalAlignment="Center" Margin="30 15 0 20" Command="{Binding InstallProgramCommand}"></Button>
-					</StackPanel>
-					<TextBlock Text="Program list" Foreground="White"></TextBlock>
-				</StackPanel>
-			</SplitView.Pane>
+        <Border Grid.Row="2" BorderBrush="LightBlue" BorderThickness="1" Bounds="">
+            <SplitView IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
+                <SplitView.Pane>
+                    <StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center"
+                                    Command="{Binding AddProgramCommand}">
+                            </Button>
+                            <Button Content="Install" Foreground="White" Background="#009999"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding InstallProgramCommand}">
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </SplitView.Pane>
 
-			<UserControl Content="{Binding Content}"></UserControl>
-		</SplitView>
+                <UserControl Content="{Binding Content}"></UserControl>
+            </SplitView></Border>
 	</Grid>
 
 </Window>

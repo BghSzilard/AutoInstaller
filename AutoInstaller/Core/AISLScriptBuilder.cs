@@ -7,12 +7,11 @@ public static class AISLScriptBuilder
     private static string AddFindStatement(string script, ProgramData programData)
     {
         script += $@"FIND ""{programData.Name}"" AT ""{programData.InstallationsPath}"";";
-        script += "\n";
         return script;
     }
     private static string AddParametersStatement(string script, ProgramData programData)
     {
-        script += "HAS ( \n";
+        script += "\nHAS ( \n";
         foreach (var parameter in programData.ParameterList)
         {
             script += "\t";

@@ -6,24 +6,30 @@ namespace Core;
 public static class ProgramService
 {
     private static readonly string _databasePath;
-    private static readonly string _databaseName = "Database";
+    private static readonly string _programsPath;
+    private static readonly string _databaseFolderName = "Database";
     private static readonly string _programsFolderName = "Programs";
     static ProgramService()
     {
         string databasePath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
             (current, _) => Path.GetDirectoryName(current)!);
-        _databasePath = Path.Combine(databasePath, _databaseName);
 
+        _databasePath = Path.Combine(databasePath, _databaseFolderName);
         if (!Directory.Exists(_databasePath))
         {
             Directory.CreateDirectory(_databasePath);
-            Directory.CreateDirectory(Path.Combine(_databasePath, _programsFolderName));
+        }
+
+        _programsPath = Path.Combine(_databasePath, _programsFolderName);
+        if (!Directory.Exists(_programsPath))
+        {
+            Directory.CreateDirectory(_programsPath);
         }
     }
 
     public static void SaveProgram(ProgramData programData)
     {
-        string programPath = Path.Combine(_databasePath, _programsFolderName, programData.Name!);
+        string programPath = Path.Combine(_programsPath, programData.Name!);
 
         if (!Directory.Exists(programPath))
         {
@@ -82,11 +88,14 @@ public static class ProgramService
 
         writer.Write(AISLScriptBuilder.Build(programData));
     }
+
     public static List<string> FindSubdirectories(string directoryPath)
     {
-        List<string> versionDirectories = Directory.GetDirectories(directoryPath).ToList();
-        return versionDirectories;
+        List<string> subdirectories = Directory.GetDirectories(directoryPath).ToList();
+        return subdirectories;
     }
+
+    // todo: Application shouldn't crash when selecting a valid directory but to which access is denied (right now throws an UnauthorizedException when trying to pass the root drive path)
     public static List<string> FindVersionSubdirectories(string directoryPath)
     {
         List<string> versionDirectories = FindSubdirectories(directoryPath);
@@ -97,15 +106,46 @@ public static class ProgramService
 
         return versions;
     }
+
     public static List<string> FindPrograms()
     {
-        var subdirectories = FindSubdirectories(Path.Combine(_databasePath, _programsFolderName));
+        var subdirectories = FindSubdirectories(_programsPath);
         foreach (var index in Enumerable.Range(0, subdirectories.Count))
         {
             subdirectories[index] = subdirectories[index]
-            .Replace(Path.Combine(_databasePath, _programsFolderName), "")
-            .Replace("\\", "");
+                .Replace(_programsPath, "")
+                .Replace("\\", "");
         }
         return subdirectories;
+    }
+
+    public static string FindInstallerPath(string versionPath)
+    {
+        var installerPath = Directory.GetFiles(versionPath, "*.msi");
+        if (installerPath.Length == 0)
+        {
+            throw new Exception("Couldn't find any files with msi extension");
+        }
+        if (installerPath.Length > 1)
+        {
+            throw new Exception("More files with msi extension found");
+        }
+        return installerPath[0];
+    }
+
+    /// <summary>
+    /// This function tests if a Directory is 'Valid' or 'Invalid'.
+    /// Of course, validity is relative, but by our definition a 'Valid' Directory is the following:
+    /// <list type="bullet">
+    /// <item>non-empty string</item>
+    /// <item>points to an existing directory in the file system</item>
+    /// <item>has at least one subdirectory</item>
+    /// </list>
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static bool CheckDirectoryValidity(string? path)
+    {
+	    return !string.IsNullOrEmpty(path) && Directory.Exists(path) && ProgramService.FindVersionSubdirectories(path!).Count > 0;
     }
 }
