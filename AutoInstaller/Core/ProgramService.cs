@@ -103,6 +103,27 @@ public static class ProgramService
         return installerPath[0];
     }
 
+    public static List<string> FindVersionsOfProgram(string programName)
+    {
+	    string programPath = Path.Combine(_programsPath, programName);
+	    string mostRecentFilePath = Path.Combine(programPath, FindMostRecentFileInDirectory(programPath));
+
+	    string? installationsPath = ScriptDataExtractor.GetProgramData(mostRecentFilePath).InstallationsPath;
+
+	    return FindVersionSubdirectories(installationsPath!);
+    }
+
+    public static ProgramData GetProgramData(string programName, string versionName)
+    {
+	    string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
+	    if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
+	    {
+		    return ScriptDataExtractor.GetProgramData(scriptPath);
+	    }
+
+	    return null!;
+    }
+
     /// <summary>
     /// This function tests if a Directory is 'Valid' or 'Invalid'.
     /// Of course, validity is relative, but by our definition a 'Valid' Directory is the following:
