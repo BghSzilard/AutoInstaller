@@ -65,6 +65,7 @@ public static class ProgramService
         return subdirectories;
     }
 
+    // todo: Application shouldn't crash when selecting a valid directory but to which access is denied (right now throws an UnauthorizedException when trying to pass the root drive path)
     public static List<string> FindVersionSubdirectories(string directoryPath)
     {
         List<string> versionDirectories = FindSubdirectories(directoryPath);
@@ -114,11 +115,28 @@ public static class ProgramService
 
     public static ProgramData GetProgramData(string programName, string versionName)
     {
-        string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
-        if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
-        {
-            return ScriptDataExtractor.GetProgramData(scriptPath);
-        }
-        return null!;
+	    string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
+	    if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
+	    {
+		    return ScriptDataExtractor.GetProgramData(scriptPath);
+	    }
+
+	    return null!;
+    }
+
+    /// <summary>
+    /// This function tests if a Directory is 'Valid' or 'Invalid'.
+    /// Of course, validity is relative, but by our definition a 'Valid' Directory is the following:
+    /// <list type="bullet">
+    /// <item>non-empty string</item>
+    /// <item>points to an existing directory in the file system</item>
+    /// <item>has at least one subdirectory</item>
+    /// </list>
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static bool CheckDirectoryValidity(string? path)
+    {
+	    return !string.IsNullOrEmpty(path) && Directory.Exists(path) && ProgramService.FindVersionSubdirectories(path!).Count > 0;
     }
 }
