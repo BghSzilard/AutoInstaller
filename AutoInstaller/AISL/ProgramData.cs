@@ -8,7 +8,8 @@ public enum ParameterType
     flag
 }
 
-public class ParameterData
+// todo: simplify logic by having a single Value property and a bool that checks if the user wants a ReadOnly parameter Value (i.e. FixedValue) or ReadWrite (i.e. DefaultValue)
+public struct ParameterData
 {
     public bool IsOptional { get; set; }
     public ParameterType Type { get; set; }

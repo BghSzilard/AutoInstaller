@@ -86,38 +86,29 @@ public partial class AddViewModel : ObservableValidator
 	[RelayCommand(CanExecute = nameof(IsParameterDataValid))]
 	private void AddParameter()
 	{
-		//ParameterData parameter;
-		//if (ParameterIsReadOnly)
-		//{
-		//	parameter = new ParameterData
-		//	{
-		//		IsOptional = ParameterIsOptional,
-		//		Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
-		//		Name = ParameterName!,
-		//		DefaultValue = null,
-		//		FixedValue = ParameterValue
-		//	};
-		//}
-		//else
-		//{
-		//	parameter = new ParameterData
-		//	{
-		//		IsOptional = ParameterIsOptional,
-		//		Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
-		//		Name = ParameterName!,
-		//		DefaultValue = ParameterValue,
-		//		FixedValue = null
-		//	};
-		//}
-
-		ParameterData parameter = new()
+		ParameterData parameter;
+		if (ParameterIsReadOnly)
 		{
-			IsOptional = ParameterIsOptional,
-			Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
-			Name = ParameterName!,
-			DefaultValue = null,
-			FixedValue = "five"
-		};
+			parameter = new ParameterData
+			{
+				IsOptional = ParameterIsOptional,
+				Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
+				Name = ParameterName!,
+				DefaultValue = null,
+				FixedValue = ParameterValue
+			};
+		}
+		else
+		{
+			parameter = new ParameterData
+			{
+				IsOptional = ParameterIsOptional,
+				Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
+				Name = ParameterName!,
+				DefaultValue = ParameterValue,
+				FixedValue = null
+			};
+		}
 
 		Parameters.Add(parameter);
 	}
@@ -125,7 +116,7 @@ public partial class AddViewModel : ObservableValidator
 	[RelayCommand(CanExecute = nameof(IsParameterSelected))]
 	private void RemoveParameter()
 	{
-		Parameters.Remove(SelectedParameter!);
+		Parameters.Remove(SelectedParameter!.Value);
 	}
 
 	[RelayCommand(CanExecute = nameof(CanAddProgram))]
