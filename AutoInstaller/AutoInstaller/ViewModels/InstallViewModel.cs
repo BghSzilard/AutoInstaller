@@ -1,7 +1,11 @@
 ﻿using AISL;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
@@ -22,7 +26,7 @@ public sealed partial class InstallViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void InstallProgram() // check if program is selected
+    public async void InstallProgram() // check if program is selected
     {
         ProgramData programData = ProgramService.GetProgramData(SelectedProgram, SelectedVersion);
         programData.ParameterList.Clear();
@@ -30,7 +34,27 @@ public sealed partial class InstallViewModel : ObservableObject
         {
             programData.ParameterList.Add(parameter.ParameterData);
         }
-        PowershellExecutor.RunPowershellInstaller(programData);
+        string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(programData.InstallerPath);
+
+        if (installedProgramName is not null)
+        {
+            var box = MessageBoxManager
+                .GetMessageBoxStandard("Caption", "A version of this program was detected on your device. Continuing the installation" +
+                " will lead to its deletion. Do you wish to continue?",
+              ButtonEnum.YesNo);
+
+            var result = await box.ShowAsync();
+
+            if (result == ButtonResult.Yes)
+            {
+                PowershellExecutor.RunPowershellUninstaller(installedProgramName);
+                PowershellExecutor.RunPowershellInstaller(programData);
+            }
+        }
+        else
+        {
+            PowershellExecutor.RunPowershellInstaller(programData);
+        }
     }
 
     partial void OnSelectedProgramChanged(string value)

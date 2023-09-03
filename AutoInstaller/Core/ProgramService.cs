@@ -1,4 +1,5 @@
 ﻿using AISL;
+using Microsoft.Win32;
 using System.IO;
 
 namespace Core;
@@ -120,5 +121,52 @@ public static class ProgramService
             return ScriptDataExtractor.GetProgramData(scriptPath);
         }
         return null!;
+    }
+
+    public static List<string> GetAllProgramsFromComputer()
+    {
+        List<string> programNames = new List<string>();
+        string registry_key = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+        using (Microsoft.Win32.RegistryKey key = Registry.LocalMachine.OpenSubKey(registry_key))
+        {
+            foreach (string subkey_name in key.GetSubKeyNames())
+            {
+                using (RegistryKey subkey = key.OpenSubKey(subkey_name))
+                {
+                    programNames.Add((string)subkey.GetValue("DisplayName"));
+                }
+            }
+        }
+        return programNames;
+    }
+    public static string? GetInstalledProgramNameFromInstaller(string installerPath)
+    {
+        if (installerPath.EndsWith(".msi"))
+        {
+            installerPath = FindExePath(installerPath);
+        }
+        string programToInstall = GetProgramName(installerPath);
+        foreach (var installedProgram in GetAllProgramsFromComputer())
+        {
+            if (programToInstall == installedProgram)
+            {
+                return programToInstall;
+            }
+        }
+        return null;
+    }
+    private static string FindExePath(string msiPath)
+    {
+        string msiDirectory = Path.GetDirectoryName(msiPath);
+        if (msiDirectory != null)
+        {
+            var exePath = Directory.GetFiles(msiDirectory, "*.exe");
+            return exePath[0];
+        }
+        throw new Exception("Could not find .exe");
+    }
+    private static string GetProgramName(string installerPath)
+    {
+        return PowershellExecutor.RunPowershellGetNameScript(installerPath);
     }
 }
