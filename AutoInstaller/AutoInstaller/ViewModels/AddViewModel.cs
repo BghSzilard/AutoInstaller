@@ -50,11 +50,19 @@ public partial class AddViewModel : ObservableValidator
 	[Required(ErrorMessage = "Parameter must have a name")]
 	private string? _parameterName;
 
-	[ObservableProperty] private string? _parameterValue;
+	[ObservableProperty] 
+	[NotifyPropertyChangedFor(nameof(HasParameterValue))]
+	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
+	private string? _parameterValue;
+
 	[ObservableProperty] private bool _parameterIsOptional;
-	[ObservableProperty] private bool _parameterIsReadOnly;
+	[ObservableProperty]
+	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
+	private bool _parameterIsReadOnly;
 
 	public bool HasParameterName => !string.IsNullOrEmpty(ParameterName);
+
+	public bool HasParameterValue => !string.IsNullOrEmpty(ParameterValue);
 
 	public ObservableCollection<string> Versions { get; set; } = new();
 	public ObservableCollection<ParameterData> Parameters { get; set; } = new();
@@ -152,7 +160,7 @@ public partial class AddViewModel : ObservableValidator
 
 	private bool IsParameterDataValid()
 	{
-		return HasParameterName;
+		return HasParameterName && (ParameterIsReadOnly == HasParameterValue);
 	}
 
 	private bool CanAddProgram()

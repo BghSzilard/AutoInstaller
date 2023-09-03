@@ -65,7 +65,7 @@
 
 				<StackPanel Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
 					<StackPanel Orientation="Horizontal" Spacing="20">
-						<CheckBox Content="Read-Only"></CheckBox>
+						<CheckBox IsChecked="{Binding ParameterIsReadOnly}" Content="Read-Only"></CheckBox>
 						<CheckBox IsChecked="{Binding ParameterIsOptional}" Content="Optional" />
 						<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}"/>
 						<TextBox Text="{Binding ParameterName}" Watermark="Name" />
