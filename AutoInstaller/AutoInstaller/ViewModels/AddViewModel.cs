@@ -90,12 +90,6 @@ public partial class AddViewModel : ObservableValidator
 
 	}
 
-	partial void OnParameterValueChanged(string? value)
-	{
-		if (ParameterIsReadOnly != HasParameterValue)
-			throw new DataValidationException("Read-only parameter must have a value");
-	}
-
 	private readonly Window _window;
 	public AddViewModel(Window window)
 	{
@@ -172,7 +166,12 @@ public partial class AddViewModel : ObservableValidator
 
 	private bool IsParameterDataValid()
 	{
-		return HasParameterName && (ParameterIsReadOnly == HasParameterValue);
+		if (!HasParameterName)
+			return false;
+		if (ParameterIsReadOnly)
+			return HasParameterValue;
+
+		return true;
 	}
 
 	private bool CanAddProgram()
