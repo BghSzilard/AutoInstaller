@@ -300,4 +300,28 @@ public class AISLScriptVisitorTests
         Assert.Null(exception);
     }
 
+    [Fact]
+    public void OptionsMissingInsideSquareBrackets()
+    {
+        string scriptText = """
+        FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+        HAS (
+        	number Port WITH DEFAULT 8080,
+        	string ServerName WITH DEFAULT "C:\",
+        	choice DropDown FROM [],
+        	flag Tick,
+        	string FixedParameter = "FixedValue",
+        	optional string OptionalValue
+        ) AS installation_parameters;
+        UNINSTALL "Simcenter Test Cloud Blueprint";
+        EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+        """;
+
+
+
+        Exception exception = Assert.Throws<Exception>(() => ParseScript(scriptText));
+
+        output.WriteLine(exception.Message);
+    }
+
 }
