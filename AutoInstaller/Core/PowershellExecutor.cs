@@ -32,7 +32,7 @@ namespace Core
             process.WaitForExit();
         }
         
-        public static void RunPowershellUninstaller(string programName)
+        public static Task RunPowershellUninstallerAsync(string programName)
         {
             Process process = new Process();
             InitializeProcess(process);
@@ -42,7 +42,7 @@ namespace Core
             process.StandardInput.WriteLine(powershellScript);
             process.StandardInput.Close();
 
-            process.WaitForExit();
+            return process.WaitForExitAsync();
         }
         public static string RunPowershellGetNameScript(string installerPath)
         {

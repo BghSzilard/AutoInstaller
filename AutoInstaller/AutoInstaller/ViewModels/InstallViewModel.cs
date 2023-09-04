@@ -47,7 +47,7 @@ public sealed partial class InstallViewModel : ObservableObject
 
             if (result == ButtonResult.Yes)
             {
-                PowershellExecutor.RunPowershellUninstaller(installedProgramName);
+                PowershellExecutor.RunPowershellUninstallerAsync(installedProgramName);
                 PowershellExecutor.RunPowershellInstaller(programData);
             }
         }
