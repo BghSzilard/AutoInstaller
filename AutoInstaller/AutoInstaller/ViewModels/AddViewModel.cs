@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace AutoInstaller.ViewModels;
 
@@ -22,13 +23,13 @@ public partial class AddViewModel : ObservableValidator
 	//installer settings
 	[ObservableProperty,
 	 NotifyPropertyChangedFor(nameof(HasName), nameof(AreInstallerDetailsSet)),
-	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand)), Required(ErrorMessage = "Program Name cannot be empty")]
+	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand))]
 	private string? _name;
 
 	//todo add custom validator class
 	[ObservableProperty,
 	 NotifyPropertyChangedFor(nameof(HasValidDirectory), nameof(AreInstallerDetailsSet)),
-	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand)), Required(ErrorMessage = "Directory cannot be empty")]
+	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand))]
 	private string? _installationsPath;
 
 	[ObservableProperty] private string? _selectedVersion;
@@ -47,7 +48,6 @@ public partial class AddViewModel : ObservableValidator
 	[ObservableProperty] 
 	[NotifyPropertyChangedFor(nameof(HasParameterName))]
 	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
-	[Required(ErrorMessage = "Parameter must have a name")]
 	private string? _parameterName;
 
 	[ObservableProperty] 
@@ -67,21 +67,33 @@ public partial class AddViewModel : ObservableValidator
 	public ObservableCollection<string> Versions { get; set; } = new();
 	public ObservableCollection<ParameterData> Parameters { get; set; } = new();
 
+	partial void OnNameChanged(string? value)
+	{
+		if (string.IsNullOrEmpty(value))
+			throw new DataValidationException("Name cannot be empty");
+	}
+
+	
+
 	partial void OnInstallationsPathChanged(string? value)
 	{
 		Versions.Clear();
-		//if (string.IsNullOrEmpty(value))
-		//	throw new DataValidationException("Directory cannot be empty");
-		//if (!Directory.Exists(value))
-		//	throw new DataValidationException("Directory does not exist");
-		//if (ProgramService.FindVersionSubdirectories(value!).Count == 0)
-		//	throw new DataValidationException("Directory contains no Version folders");
+		if (string.IsNullOrEmpty(value))
+			throw new DataValidationException("Directory cannot be empty");
+		if (!Directory.Exists(value))
+			throw new DataValidationException("Directory does not exist");
 		if (ProgramService.CheckDirectoryValidity(value))
 		{
 			ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
 			SelectedVersion = Versions[0];
 		}
 
+	}
+
+	partial void OnParameterValueChanged(string? value)
+	{
+		if (ParameterIsReadOnly != HasParameterValue)
+			throw new DataValidationException("Read-only parameter must have a value");
 	}
 
 	private readonly Window _window;
