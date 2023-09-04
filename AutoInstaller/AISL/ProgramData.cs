@@ -40,4 +40,7 @@ public class ProgramData
     public string? InstallerPath { get; set; } // should it be here?
 
     public string? Version { get; set; }
+
+    public string? PathToInvokeAt { get; set; }
+    public string? InvokeBlock { get; set; }
 }
