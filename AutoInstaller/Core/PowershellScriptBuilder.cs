@@ -8,7 +8,7 @@ namespace Core
     {
         public static string BuildPowershellInstallScript(ProgramData programData)
         {
-            string powershellScript = $"msiexec /i \"{programData.InstallerPath}\" ";
+            string powershellScript = $"& \"{programData.InstallerPath}\" ";
             foreach (var parameter in programData.ParameterList)
             {
                 powershellScript += $"{parameter.Name}=\'\"{parameter.Value}\"\' ";
