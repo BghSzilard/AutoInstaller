@@ -81,8 +81,7 @@
 							<StackPanel Orientation="Horizontal" Spacing="20">
 								<TextBlock Text="{Binding Type}" />
 								<TextBlock Text="{Binding Name}" />
-								<TextBlock Text="{Binding DefaultValue}" />
-								<TextBlock Text="{Binding FixedValue}" />
+								<TextBlock Text="{Binding Value}" />
 								<TextBlock Text="{Binding IsOptional}" />
 							</StackPanel>
 						</DataTemplate>

@@ -16,12 +16,12 @@ public class AISLScriptVisitorTests
 
     private List<ParameterData> ExpectedParameterList = new()
     {
-        new() { Type = ParameterType.number, Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.@string, Name = "ServerName", DefaultValue = @"C:\", IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.choice, Name = "DropDown", DefaultValue = null, IsOptional = false, FixedValue = null, Options = new() { "option1", "option2"} },
-        new() { Type = ParameterType.flag, Name = "Tick", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.@string, Name = "FixedParameter", DefaultValue = null, IsOptional = false, FixedValue = "FixedValue", Options = null },
-        new() { Type = ParameterType.@string, Name = "OptionalValue", DefaultValue = null, IsOptional = true, FixedValue = null, Options = null }
+        new() { Type = ParameterType.number, Name = "Port", Value = "8080", IsOptional = false, IsReadOnly = false, Options = null },
+        new() { Type = ParameterType.@string, Name = "ServerName", Value = @"C:\", IsOptional = false, IsReadOnly = false, Options = null },
+        new() { Type = ParameterType.choice, Name = "DropDown", Value = null, IsOptional = false, IsReadOnly = false, Options = new() { "option1", "option2"} },
+        new() { Type = ParameterType.flag, Name = "Tick", Value = null, IsOptional = false, IsReadOnly = false, Options = null },
+        new() { Type = ParameterType.@string, Name = "FixedParameter", Value = "FixedValue", IsOptional = false, IsReadOnly = true, Options = null },
+        new() { Type = ParameterType.@string, Name = "OptionalValue", Value = null, IsOptional = true, IsReadOnly = false, Options = null }
     };
 
     public AISLScriptVisitorTests(ITestOutputHelper output)
@@ -54,16 +54,14 @@ public class AISLScriptVisitorTests
     }
 
     [Theory]
-    [InlineData("Simcenter Test Cloud Blueprint", @"D:\Siemens\tcb", true, @"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi")]
+    [InlineData("Simcenter Test Cloud Blueprint", @"D:\Siemens\tcb", @"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi")]
     public void ProgramDataPropertiesAreValid(
     string expectedName,
     string expectedInstallationsPath,
-    bool expectedUninstall,
     string expectedInstallerPath)
     {
         Assert.Equal(expectedName, _programData.Name);
         Assert.Equal(expectedInstallationsPath, _programData.InstallationsPath);
-        Assert.Equal(expectedUninstall, _programData.Uninstall);
         Assert.Equal(expectedInstallerPath, _programData.InstallerPath);
     }
 

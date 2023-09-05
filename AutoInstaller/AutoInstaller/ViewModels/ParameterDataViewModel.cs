@@ -11,7 +11,7 @@ public partial class ParameterDataViewModel : ObservableObject
     public ParameterDataViewModel(ParameterData parameterData)
     {
         ParameterData = parameterData;
-        Value = ParameterData.DefaultValue != null ? ParameterData.DefaultValue : null;
+        Value = ParameterData.Value;
         //Value = ParameterData.FixedValue != null ? ParameterData.FixedValue : null;
     }
 
