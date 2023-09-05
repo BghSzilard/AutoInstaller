@@ -74,30 +74,6 @@ public interface IAISLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExecuteInstruction([NotNull] AISLParser.ExecuteInstructionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.invokeInstruction"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInvokeInstruction([NotNull] AISLParser.InvokeInstructionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.invokeBlock"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInvokeBlock([NotNull] AISLParser.InvokeBlockContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.invokeLine"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInvokeLine([NotNull] AISLParser.InvokeLineContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.invokePath"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInvokePath([NotNull] AISLParser.InvokePathContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="AISLParser.installerPath"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -4,7 +4,7 @@ grammar AISL;
  * Parser Rules
  */
 
-script : findInstruction hasBlock? uninstallInstruction? executeInstruction invokeInstruction? EOF ;
+script : findInstruction hasBlock? uninstallInstruction? executeInstruction EOF ;
 
 findInstruction : FIND programName AT installationsPath SEMICOLON NEWLINE ;
 
@@ -17,13 +17,6 @@ parameter : parameterIsOptional? parameterType parameterName (((FROM optionList)
 uninstallInstruction : UNINSTALL programName SEMICOLON NEWLINE ;
 
 executeInstruction: EXECUTE installerPath WITH INSTALLATION_PARAMETERS SEMICOLON NEWLINE ;
-
-invokeInstruction: INVOKE OPEN_CURLY_BRACKET NEWLINE invokeBlock '} AT' invokePath SEMICOLON (NEWLINE)*;
-invokeBlock : (invokeLine NEWLINE)+ ;
-
-invokeLine : ANY_TEXT ;
-
-invokePath : QUOTED_TEXT | ANY_TEXT ;
 
 installerPath : QUOTED_TEXT ;
 
@@ -71,15 +64,13 @@ UNINSTALL : 'UNINSTALL' | 'uninstall' ;
 
 EXECUTE : 'EXECUTE' | 'execute' ;
 
-INVOKE : 'INVOKE' | 'invoke' ;
-
 INSTALLATION_PARAMETERS : 'installation_parameters' ;
 
 OPTIONAL : 'optional' ;
 
 WORD : (LOWERCASE | UPPERCASE | DIGIT)+ ;
 
-QUOTED_TEXT : '"' .+? '"' ;
+QUOTED_TEXT : '"' .*? '"' ;
 
 SEMICOLON : ';' ;
 
@@ -93,14 +84,8 @@ OPEN_SQUARE_BRACKET : '[' ;
 
 CLOSE_SQUARE_BRACKET : ']' ;
 
-OPEN_CURLY_BRACKET : '{' ;
-
-CLOSE_CURLY_BRACKET : '}' ;
-
 EQUALS : '=' ;
 
-NEWLINE : ('\r'? '\n' | '\r')+ ;
-
-ANY_TEXT : (~[\r\n])+? ;
-
 WHITESPACE : [ \t\n]+ -> skip ;
+
+NEWLINE : ('\r'? '\n' | '\r')+ ;

@@ -69,12 +69,4 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
 
         return _programData;
     }
-
-    public override ProgramData VisitInvokeInstruction([NotNull] InvokeInstructionContext context)
-    {
-        _programData.InvokeBlock = context.invokeBlock().GetText();
-
-        _programData.PathToInvokeAt = context.invokePath().GetText().Trim('"');
-        return _programData;
-    }
 }
