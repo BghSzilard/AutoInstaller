@@ -29,31 +29,38 @@
                            Text="Installer" VerticalAlignment="Center" Margin="0 0 0 10" />
 
 				<Grid Grid.Row="1" RowDefinitions="Auto Auto Auto" ColumnDefinitions="Auto Auto * Auto">
-					<TextBlock Text="Name:" VerticalAlignment="Center" />
+					<TextBlock Text="Name:" VerticalAlignment="Center" 
+                               Margin="0 0 0 10"/>
 					<TextBox
                         Grid.Column="1"
 						Grid.ColumnSpan="3"
                         Text="{Binding Name}"
-                        HorizontalAlignment="Stretch" />
+                        HorizontalAlignment="Stretch" 
+                        Margin="0 0 0 10"/>
 
-					<TextBlock Grid.Row="1" Text="Installations directory:" VerticalAlignment="Center" Margin="0 0 5 0" />
+					<TextBlock Grid.Row="1" Text="Installations Folder:" VerticalAlignment="Center" Margin="0 0 5 0"/>
+					<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                             VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"
+                             Text="{Binding InstallationsPathString}"
+                             IsReadOnly="True"/>
+                    <Button Grid.Row="1" Grid.Column="3" Command="{Binding SelectInstallationsFolderCommand}">
+                        <icons:MaterialIcon Kind="Folder"></icons:MaterialIcon>
+                    </Button>
+                    <TextBlock Grid.Row="2" Text="Executable Path:" VerticalAlignment="Center" Margin="0 0 5 0" />
 					<TextBox 
-                        Grid.Row="1" 
+                        Grid.Row="2" 
                         Grid.Column="1" 
                         Grid.ColumnSpan="2"
                         VerticalAlignment="Center" 
-						Text="{Binding InstallationsPath}"
+						Text="{Binding ExecutablePathString}"
                         HorizontalAlignment="Stretch"
                         Margin="0 10 5 10"
                         IsReadOnly="True">
                     </TextBox>
-					<Button Grid.Row="1" Grid.Column="3" Command="{Binding SelectInstallationsFolderCommand}">
-						<icons:MaterialIcon Kind="Folder"></icons:MaterialIcon>
+					<Button Grid.Row="2" Grid.Column="3" Command="{Binding SelectExecutableCommand}">
+						<icons:MaterialIcon Kind="File"></icons:MaterialIcon>
                     </Button>
 
-					<TextBlock Grid.Row="2" Text="Version:" VerticalAlignment="Center"/>
-					<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding Versions}"
-							  SelectedItem="{Binding SelectedVersion}"/>
 				</Grid>
 			</Grid>
 		</Border>
