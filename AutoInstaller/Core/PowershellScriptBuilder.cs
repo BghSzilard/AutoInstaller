@@ -1,4 +1,5 @@
 ﻿using AISL;
+using Microsoft.PowerShell.Commands;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -6,9 +7,10 @@ namespace Core
 {
     public static class PowershellScriptBuilder
     {
-        public static string BuildPowershellInstallScript(ProgramData programData)
+        public static string BuildPowershellInstallScript(ProgramData programData, string selectedVersion)
         {
-            string powershellScript = $"& \"{programData.InstallerPath}\" ";
+            string absoluteExecutablePath = Path.Combine(programData.InstallationsPath, selectedVersion, programData.InstallerPath);
+            string powershellScript = $"& \"{absoluteExecutablePath}\" ";
             foreach (var parameter in programData.ParameterList)
             {
                 powershellScript += $"{parameter.Name}=\'\"{parameter.Value}\"\' ";

@@ -98,17 +98,14 @@ public static class ProgramService
 	    return subdirectories;
     }
 
-    public static List<string> FindVersionsOfProgram(string programName)
+    public static List<string> FindVersionsOfProgram(ProgramData programData)
     {
-        string programPath = Path.Combine(_programsPath, programName);
-        string mostRecentFilePath = Path.Combine(programPath, FindMostRecentFileInDirectory(programPath));
-
-        string? installationsPath = ScriptDataExtractor.GetProgramData(mostRecentFilePath).InstallationsPath;
-
-        return GetVersions(GetMainApplicationFolder(installationsPath));
+	    string programPath = programData.InstallationsPath;
+	    
+        return GetVersions(programPath);
     }
 
-    public static ProgramData GetProgramData(string programName, string versionName)
+    public static ProgramData GetProgramData(string programName)
     {
 	    string scriptPath = Path.Combine(_programsPath, programName, $"config.aisl");
 	    if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
@@ -196,9 +193,9 @@ public static class ProgramService
 	    return installerDirInfo.Parent.Parent.Name;
     }
 
-    public static List<string> GetVersions(string mainApplicationFolder)
+    public static List<string> GetVersions(string installationPath)
     {
-	    return FindSubdirectories(mainApplicationFolder);
+	    return FindSubdirectories(installationPath);
     }
 
     public static bool CheckFolderPathValidity(string? installationPathString)

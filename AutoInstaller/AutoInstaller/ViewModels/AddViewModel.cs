@@ -102,7 +102,7 @@ public partial class AddViewModel : ObservableValidator
 		//if (!File.Exists(value.Path.AbsolutePath))
 		//	throw new DataValidationException("Directory does not exist");
 
-		string absoluteExecutablePath = value.Path.AbsolutePath;
+		string absoluteExecutablePath = value.Path.AbsolutePath.Replace("%20", " ");
 		if (!absoluteExecutablePath.Contains(InstallationsPathString!))
 		{
 			//throw new DataValidationException("Executable Path not relative to Installations Path");

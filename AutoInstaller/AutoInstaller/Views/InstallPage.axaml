@@ -35,6 +35,5 @@
 
 			<Button Grid.Row="2" Content="Install" Command="{Binding InstallProgramCommand}" HorizontalAlignment="Right" Margin="10"/>
 		</Grid>
-
 	</Grid>
 </UserControl>

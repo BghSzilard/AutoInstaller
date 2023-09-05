@@ -19,11 +19,11 @@ namespace Core
 
             process.StartInfo = psi;
         }
-        public static void RunPowershellInstaller(ProgramData programData)
+        public static void RunPowershellInstaller(ProgramData programData, string selectedVersion)
         {
             Process process = new();
             InitializeProcess(process);
-            string powershellScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData);
+            string powershellScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData, selectedVersion);
 
             process.Start();
             process.StandardInput.WriteLine(powershellScript);
