@@ -23,15 +23,15 @@ public static class AISLScriptBuilder
             }
             script += $"{parameter.Type} {parameter.Name}";
 
-            if (parameter.FixedValue != null)
+            if (parameter.IsReadOnly == true)
             {
                 if (parameter.Type == ParameterType.@string)
                 {
-                    script += $" = \"{parameter.FixedValue}\"";
+                    script += $" = \"{parameter.Value}\"";
                 }
                 else
                 {
-                    script += $" = {parameter.FixedValue}";
+                    script += $" = {parameter.Value}";
                 }
             }
 
@@ -46,17 +46,17 @@ public static class AISLScriptBuilder
                 script += "]";
             }
 
-            if (parameter.DefaultValue != null)
+            if (parameter.Value != null)
             {
                 if (parameter.Type == ParameterType.@string)
                 {
-                    script += $" WITH DEFAULT \"{parameter.DefaultValue}\"";
+                    script += $" WITH DEFAULT \"{parameter.Value}\"";
                 }
                 else
                 {
-                    script += $" WITH DEFAULT {parameter.DefaultValue}";
+                    script += $" WITH DEFAULT {parameter.Value}";
                 }
-                
+
             }
             script += ",\n";
         }
@@ -87,10 +87,7 @@ public static class AISLScriptBuilder
         {
             script = AddParametersStatement(script, programData);
         }
-        if (programData.Uninstall)
-        {
-            script = AddUninstallStatement(script, programData);
-        }
+        script = AddUninstallStatement(script, programData);
         script = AddExecuteStatement(script, programData);
         return script;
     }

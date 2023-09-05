@@ -13,12 +13,6 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
         return _programData;
     }
 
-    public override ProgramData VisitUninstallInstruction([NotNull] UninstallInstructionContext context)
-    {
-        _programData.Uninstall = true;
-        return _programData;
-    }
-
     public override ProgramData VisitExecuteInstruction([NotNull] ExecuteInstructionContext context)
     {
         _programData.InstallerPath = context.installerPath().GetText().Trim('"');
@@ -47,7 +41,7 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
 
         if (context.parameterDefaultValue() != null)
         {
-            parameter.DefaultValue = context.parameterDefaultValue().GetText().Trim('"');
+            parameter.Value = context.parameterDefaultValue().GetText().Trim('"');
         }
 
         if (context.parameterIsOptional() != null)
@@ -62,7 +56,8 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
 
         if (context.parameterFixedValue() != null)
         {
-            parameter.FixedValue = context.parameterFixedValue().GetText().Trim('"');
+            parameter.Value = context.parameterFixedValue().GetText().Trim('"');
+            parameter.IsReadOnly = true;
         }
 
         _programData.ParameterList.Add(parameter);

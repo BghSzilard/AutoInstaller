@@ -9,3 +9,7 @@ HAS (
 ) AS installation_parameters;
 UNINSTALL "Simcenter Test Cloud Blueprint";
 EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+INVOKE {
+	Copy-Item "whatever" "wherever"
+	Copy-Item "whatever" | { "wherever" }
+} AT "relative\path";

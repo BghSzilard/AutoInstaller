@@ -38,7 +38,7 @@ public static class ProgramService
             Directory.CreateDirectory(programPath);
         }
 
-        string filePath = Path.Combine(programPath, $"{programData.Version}.aisl");
+        string filePath = Path.Combine(programPath, $"config.aisl");
         using StreamWriter writer = new(filePath);
 
         writer.Write(AISLScriptBuilder.Build(programData));
@@ -110,7 +110,7 @@ public static class ProgramService
 
     public static ProgramData GetProgramData(string programName, string versionName)
     {
-	    string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
+	    string scriptPath = Path.Combine(_programsPath, programName, $"config.aisl");
 	    if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
 	    {
 		    return ScriptDataExtractor.GetProgramData(scriptPath);
