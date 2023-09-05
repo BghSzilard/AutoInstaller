@@ -163,7 +163,7 @@ public partial class AddViewModel : ObservableValidator
         ProgramData programData = new() // remember to add data here
         {
             Name = Name,
-            InstallationsPath = InstallationsPath,
+            InstallationsPath = InstallationsPathString,
             ParameterList = Parameters.ToList(),
             InstallerPath = ExecutablePathString
         };
