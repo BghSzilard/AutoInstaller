@@ -60,33 +60,21 @@ public static class ProgramService
         }
     }
 
-    public static List<string> FindSubdirectories(string directoryPath)
-    {
-        List<string> subdirectories = Directory.GetDirectories(directoryPath).ToList();
-        return subdirectories;
-    }
-
     // todo: Application shouldn't crash when selecting a valid directory but to which access is denied (right now throws an UnauthorizedException when trying to pass the root drive path)
-    public static List<string> FindVersionSubdirectories(string directoryPath)
-    {
-        List<string> versionDirectories = FindSubdirectories(directoryPath);
-        versionDirectories.RemoveAll(directory => Directory.GetFiles(directory, "*.msi").Length == 0);
+    //public static List<string> FindVersionSubdirectories(string directoryPath)
+    //{
+    //    List<string> versionDirectories = FindSubdirectories(directoryPath);
+    //    versionDirectories.RemoveAll(directory => Directory.GetFiles(directory, "*.msi").Length == 0);
 
-        List<string> versions = new();
-        versionDirectories.ForEach(directory => versions.Add(directory.Replace(@$"{directoryPath}\", string.Empty)));
+    //    List<string> versions = new();
+    //    versionDirectories.ForEach(directory => versions.Add(directory.Replace(@$"{directoryPath}\", string.Empty)));
 
-        return versions;
-    }
+    //    return versions;
+    //}
 
     public static List<string> FindPrograms()
     {
         var subdirectories = FindSubdirectories(_programsPath);
-        foreach (var index in Enumerable.Range(0, subdirectories.Count))
-        {
-            subdirectories[index] = subdirectories[index]
-                .Replace(_programsPath, "")
-                .Replace("\\", "");
-        }
         return subdirectories;
     }
 
@@ -104,14 +92,20 @@ public static class ProgramService
         return installerPath[0];
     }
 
+    public static List<string> FindSubdirectories(string directoryPath)
+    {
+	    List<string> subdirectories = Directory.GetDirectories(directoryPath).Select(d => new DirectoryInfo(d).Name).ToList();
+	    return subdirectories;
+    }
+
     public static List<string> FindVersionsOfProgram(string programName)
     {
-	    string programPath = Path.Combine(_programsPath, programName);
-	    string mostRecentFilePath = Path.Combine(programPath, FindMostRecentFileInDirectory(programPath));
+        string programPath = Path.Combine(_programsPath, programName);
+        string mostRecentFilePath = Path.Combine(programPath, FindMostRecentFileInDirectory(programPath));
 
-	    string? installationsPath = ScriptDataExtractor.GetProgramData(mostRecentFilePath).InstallationsPath;
+        string? installationsPath = ScriptDataExtractor.GetProgramData(mostRecentFilePath).InstallationsPath;
 
-	    return FindVersionSubdirectories(installationsPath!);
+        return GetVersions(GetMainApplicationFolder(installationsPath));
     }
 
     public static ProgramData GetProgramData(string programName, string versionName)
@@ -136,9 +130,9 @@ public static class ProgramService
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public static bool CheckDirectoryValidity(string? path)
+    public static bool CheckFilePathValidity(string? path, string? installfolderPath)
     {
-	    return !string.IsNullOrEmpty(path) && Directory.Exists(path) && ProgramService.FindVersionSubdirectories(path!).Count > 0;
+	    return !string.IsNullOrEmpty(path) && File.Exists(path) && path.Contains(installfolderPath);
     }
 
     public static List<string> GetAllProgramsFromComputer()
@@ -186,5 +180,30 @@ public static class ProgramService
     private static string GetProgramName(string installerPath)
     {
         return PowershellExecutor.RunPowershellGetNameScript(installerPath);
+    }
+
+    public static string GetMainApplicationFolder(string? installerPath)
+    {
+	    DirectoryInfo installerDirInfo = new DirectoryInfo(installerPath!);
+
+	    return installerDirInfo.Parent.Parent.Parent.FullName;
+    }
+
+    public static string GetApplicationVersion(string? installerPath)
+    {
+	    DirectoryInfo installerDirInfo = new DirectoryInfo(installerPath!);
+
+	    return installerDirInfo.Parent.Parent.Name;
+    }
+
+    public static List<string> GetVersions(string mainApplicationFolder)
+    {
+	    return FindSubdirectories(mainApplicationFolder);
+    }
+
+    public static bool CheckFolderPathValidity(string? installationPathString)
+    {
+	    return !string.IsNullOrEmpty(installationPathString)
+	           && Directory.Exists(installationPathString);
     }
 }
