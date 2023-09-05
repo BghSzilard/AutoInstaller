@@ -5,6 +5,7 @@ using Core;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace AutoInstaller.ViewModels;
 
@@ -31,7 +32,7 @@ public sealed partial class InstallViewModel : ObservableObject
         {
             programData.ParameterList.Add(parameter.ParameterData);
         }
-        string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(programData.InstallerPath);
+        string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(Path.Combine(programData.InstallationsPath, SelectedVersion, programData.InstallerPath));
 
         if (installedProgramName is not null)
         {
@@ -52,7 +53,7 @@ public sealed partial class InstallViewModel : ObservableObject
                 await uninstallTask;
                 //custommessageBox.Close();
 
-                PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion);
+                //PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion);
             }
         }
         else
