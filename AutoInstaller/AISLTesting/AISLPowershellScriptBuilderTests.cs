@@ -2,7 +2,6 @@
 using Antlr4.Runtime;
 using Core;
 using Newtonsoft.Json.Linq;
-using System.Management.Automation;
 using System.Runtime.InteropServices;
 using System.Text;
 using Xunit.Abstractions;
@@ -32,7 +31,7 @@ public class AISLPowershellScriptBuilderTests
 
         string selectedVersion = "230822_1.1.9_core";
 
-        string generatedScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData, selectedVersion);
+        string generatedScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData, selectedVersion, true);
 
         Assert.Equal(scriptTest, generatedScript);
     }

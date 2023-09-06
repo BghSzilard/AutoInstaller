@@ -31,7 +31,7 @@ public class PowershellExecutorTests
 
         string selectedVersion = "230726_1.1.8_core";
 
-        PowershellExecutor.RunPowershellInstaller(programData, selectedVersion);
+        PowershellExecutor.RunPowershellInstaller(programData, selectedVersion, true);
     }
 
     [Fact]
