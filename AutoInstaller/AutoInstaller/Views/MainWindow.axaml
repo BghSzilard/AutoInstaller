@@ -55,23 +55,12 @@
                 </Button>
 			</StackPanel>
 		</Grid>
-		<!--<SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="100" CompactPaneLength="55">
-                <SplitView.Pane>
-                    <StackPanel Background="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Background}">
-                        <StackPanel Orientation="Vertical">
-                            <Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center"
-                                    Command="{Binding AddProgramCommand}">
-                            </Button>
-                            <Button Content="Install" Foreground="White" Background="#009999"
-                                    HorizontalAlignment="Center"
-                                    Command="{Binding InstallProgramCommand}">
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </SplitView.Pane>
-            </SplitView>-->
         <UserControl Grid.Column="1" Grid.Row="2" Content="{Binding Content}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      Margin="0 0 5 0"/>
-	</Grid>
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" 
+                   Text="{Binding NotificationService.NotificationText}" 
+                   VerticalAlignment="Center" HorizontalAlignment="Left" 
+                   Margin="10 0 0 0" Foreground="White" TextWrapping="Wrap"/>
+    </Grid>
 
 </Window>
