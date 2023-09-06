@@ -31,6 +31,5 @@ namespace Core
             powershellScript += "\n$programName";
             return powershellScript;
         }
-
     }
 }

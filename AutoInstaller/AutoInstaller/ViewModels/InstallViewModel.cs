@@ -17,7 +17,7 @@ public sealed partial class InstallViewModel : ObservableObject
 
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof (InstallProgramCommand))] private string _selectedProgram;
     [ObservableProperty] private string _selectedVersion;
-
+    [ObservableProperty] private bool _copyInstaller;
     public InstallViewModel()
     {
         Programs = new(ProgramService.FindPrograms());
@@ -32,6 +32,13 @@ public sealed partial class InstallViewModel : ObservableObject
         {
             programData.ParameterList.Add(parameter.ParameterData);
         }
+
+        if (CopyInstaller)
+        {
+            ProgramService.CopyProgramVersion(programData, programData.InstallationsPath, SelectedVersion);
+        }
+
+        
         string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(Path.Combine(programData.InstallationsPath, SelectedVersion, programData.InstallerPath));
 
         if (installedProgramName is not null)
@@ -53,7 +60,7 @@ public sealed partial class InstallViewModel : ObservableObject
                 await uninstallTask;
                 //custommessageBox.Close();
 
-                //PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion);
+                PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion);
             }
         }
         else

@@ -34,6 +34,7 @@
 			</ListBox>
 
 			<Button Grid.Row="2" Content="Install" Command="{Binding InstallProgramCommand}" HorizontalAlignment="Right" Margin="10"/>
+			<CheckBox Content="Copy locally before install" IsChecked="{Binding CopyInstaller}"></CheckBox>
 		</Grid>
 	</Grid>
 </UserControl>
