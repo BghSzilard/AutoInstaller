@@ -61,13 +61,12 @@ public static class AISLScriptBuilder
             script += ",\n";
         }
         script = script.Remove(script.Length - 2);
-        script += "\n) AS installation_parameters;";
+        script += "\n) AS installation_parameters;\n";
         return script;
     }
 
     private static string AddUninstallStatement(string script, ProgramData programData)
     {
-        script += "\n";
         script += $@"UNINSTALL ""{programData.Name}"";";
         return script;
     }

@@ -87,7 +87,6 @@ public class AISLScriptVisitorTests
             ) AS installation_parameters;
             UNINSTALL "Simcenter Test Cloud Blueprint";
             EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
-            
             """;
 
 	    AntlrInputStream inputStream = new AntlrInputStream(scriptText);
@@ -322,8 +321,6 @@ public class AISLScriptVisitorTests
         UNINSTALL "Simcenter Test Cloud Blueprint";
         EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
         """;
-
-
 
         Exception exception = Assert.Throws<Exception>(() => ParseScript(scriptText));
 
