@@ -152,51 +152,6 @@ public static class ProgramService
 		}
 		return programNames;
 	}
-	public static string? GetInstalledProgramNameFromInstaller(string installerPath)
-	{
-		if (installerPath.EndsWith(".msi"))
-		{
-			installerPath = FindExePath(installerPath);
-		}
-		string programToInstall = GetProgramName(installerPath);
-		foreach (var installedProgram in GetAllProgramsFromComputer())
-		{
-			if (programToInstall == installedProgram)
-			{
-				return programToInstall;
-			}
-		}
-		return null;
-	}
-	private static string FindExePath(string msiPath)
-	{
-		string msiDirectory = Path.GetDirectoryName(msiPath);
-		if (msiDirectory != null)
-		{
-			var exePath = Directory.GetFiles(msiDirectory, "*.exe");
-			return exePath[0];
-		}
-		throw new Exception("Could not find .exe");
-	}
-	private static string GetProgramName(string installerPath)
-	{
-		return PowershellExecutor.RunPowershellGetNameScript(installerPath);
-	}
-
-	public static string GetMainApplicationFolder(string? installerPath)
-	{
-		DirectoryInfo installerDirInfo = new DirectoryInfo(installerPath!);
-
-		return installerDirInfo.Parent.Parent.Parent.FullName;
-	}
-
-	public static string GetApplicationVersion(string? installerPath)
-	{
-		DirectoryInfo installerDirInfo = new DirectoryInfo(installerPath!);
-
-		return installerDirInfo.Parent.Parent.Name;
-	}
-
 	public static List<string> GetVersions(string installationPath)
 	{
 		return FindSubdirectories(installationPath);

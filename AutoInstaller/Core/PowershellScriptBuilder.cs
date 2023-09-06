@@ -42,11 +42,5 @@ namespace Core
             string powershellScript = $"Start-Process -FilePath \"cmd.exe\" -ArgumentList \'/c msiexec /x {productCode} /passive\' -Wait";
             return powershellScript;
         }
-        public static string BuildPowershelGetNameScript(string installerPath)
-        {
-            string powershellScript = $"$programName = (Get-Item '{installerPath}').VersionInfo.ProductName";
-            powershellScript += "\n$programName";
-            return powershellScript;
-        }
     }
 }

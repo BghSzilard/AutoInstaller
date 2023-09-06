@@ -46,23 +46,5 @@ namespace Core
 
             return process.WaitForExitAsync();
         }
-        public static string RunPowershellGetNameScript(string installerPath)
-        {
-            Process process = new Process();
-            InitializeProcess(process);
-            process.StartInfo.Arguments = "-NoLogo -NoProfile -NonInteractive -Command -";
-            string powershellScript = PowershellScriptBuilder.BuildPowershelGetNameScript(installerPath);
-
-            process.Start();
-            process.StandardInput.WriteLine(powershellScript);
-            process.StandardInput.Close();
-            string output = process.StandardOutput.ReadToEnd()
-                .Replace("\n", string.Empty)
-                .Replace("\r", string.Empty)
-                .Replace("\t", string.Empty);
-
-            process.WaitForExit();
-            return output;
-        }
     }
 }
