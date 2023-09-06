@@ -31,17 +31,25 @@ public class AISLScriptVisitorTests
         string scriptText = """
             FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
             HAS (
-            	number Port WITH DEFAULT 8080,
-            	string ServerName WITH DEFAULT "C:\",
-            	choice DropDown FROM ["option1", "option2"],
-            	flag Tick,
-            	string FixedParameter = "FixedValue",
-            	optional string OptionalValue
+                number Port WITH DEFAULT 8080,
+                string ServerName WITH DEFAULT "C:\",
+                choice DropDown FROM ["option1", "option2"],
+                flag Tick,
+                string FixedParameter = "FixedValue",
+                OPTIONAL string OptionalValue,
             ) AS installation_parameters;
             UNINSTALL "Simcenter Test Cloud Blueprint";
             EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
-            """;
+            INVOKE AS INSTALL {
+                Copy-Item "whatever" "wherever"
+                Copy-Item "whatever" | \{ "wherever" \}
+            } AT "relative\path";
+            INVOKE AS UNINSTALL {
+                Copy-Item "whatever" "wherever" to uninstall
+                Copy-Item "whatever" | \{ "wherever" \}
+            } AT "relative\path";
 
+            """;
 
         AntlrInputStream inputStream = new AntlrInputStream(scriptText);
         AISLLexer aislLexer = new AISLLexer(inputStream);

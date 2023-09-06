@@ -1,5 +1,8 @@
 ﻿using AISL;
+using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -199,6 +202,36 @@ public static class ProgramService
 		return FindSubdirectories(installationPath);
 	}
 
+    public static bool CheckFolderPathValidity(string? installationPathString)
+    {
+	    return !string.IsNullOrEmpty(installationPathString)
+	           && Directory.Exists(installationPathString);
+    }
+    public static void CopyProgramVersion(ProgramData programData, string sourcePath, string version)
+    {
+        string destinationPath = Path.Combine(_programsPath, programData.Name);
+        int lastIndex = sourcePath.LastIndexOf('/');
+
+        string copiedFolderName = sourcePath.Substring(lastIndex + 1);
+        if (!Directory.Exists(destinationPath))
+        {
+            Directory.CreateDirectory(destinationPath);
+        }
+        string copiedFolderPath = Path.Combine(destinationPath, copiedFolderName);
+        programData.InstallationsPath = copiedFolderPath;
+
+        if(!Directory.Exists(copiedFolderPath))
+        {
+            Directory.CreateDirectory(copiedFolderPath);
+        }
+
+        string copiedVersionPath = Path.Combine(copiedFolderPath, version);
+        sourcePath = Path.Combine(sourcePath, version);
+        if (!Directory.Exists(copiedVersionPath))
+        {
+            FileSystem.CopyDirectory(sourcePath, copiedVersionPath, UIOption.AllDialogs);
+        }
+    }
 	public static bool CheckFolderPathValidity(string? installationPathString)
 	{
 		return !string.IsNullOrEmpty(installationPathString)

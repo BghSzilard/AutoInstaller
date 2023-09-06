@@ -8,7 +8,6 @@ public enum ParameterType
     flag
 }
 
-// todo: simplify logic by having a single Value property and a bool that checks if the user wants a ReadOnly parameter Value (i.e. FixedValue) or ReadWrite (i.e. DefaultValue)
 public class ParameterData
 {
     public bool IsOptional { get; set; }
@@ -36,6 +35,8 @@ public class ProgramData
     public string? InstallationsPath { get; set; }
     public List<ParameterData> ParameterList { get; set; } = new();
     public string? InstallerPath { get; set; }
-    public string? PathToInvokeAt { get; set; }
-    public string? InvokeBlock { get; set; }
+    public string? PathToInvokeInstallAt { get; set; }
+    public string? InvokeInstallBlock { get; set; }
+    public string? PathToInvokeUninstallAt { get; set; }
+    public string? InvokeUninstallBlock { get; set; }
 }

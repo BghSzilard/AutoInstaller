@@ -1,91 +1,61 @@
 grammar AISL;
-
-/*
- * Parser Rules
- */
-
-script : findInstruction hasBlock? uninstallInstruction? executeInstruction EOF ;
-
-findInstruction : FIND programName AT installationsPath SEMICOLON NEWLINE ;
-
-hasBlock : HAS OPEN_PARENTHESIS NEWLINE parameterList CLOSE_PARENTHESIS AS INSTALLATION_PARAMETERS SEMICOLON NEWLINE ;
-
-parameterList : parameter (COMMA NEWLINE parameter)* NEWLINE ;
-
-parameter : parameterIsOptional? parameterType parameterName (((FROM optionList)? (WITH DEFAULT parameterDefaultValue)?) | (EQUALS parameterFixedValue)) ;
-
-uninstallInstruction : UNINSTALL programName SEMICOLON NEWLINE ;
-
-executeInstruction: EXECUTE installerPath WITH INSTALLATION_PARAMETERS SEMICOLON NEWLINE ;
-
-installerPath : QUOTED_TEXT ;
-
-programName : QUOTED_TEXT ;
-
-installationsPath : QUOTED_TEXT ;
-
-parameterType : WORD ;
-
-parameterName : WORD ;
-
-parameterDefaultValue : WORD | QUOTED_TEXT ;
-
-parameterFixedValue : WORD | QUOTED_TEXT ;
-
-parameterIsOptional : OPTIONAL ;
-
-optionList: OPEN_SQUARE_BRACKET option (COMMA option)* CLOSE_SQUARE_BRACKET;
-
-option: WORD | QUOTED_TEXT ;
-
-/*
- * Lexer Rules
- */
+ 
+script : 
+  findInstruction 
+  hasBlock? 
+  uninstallInstruction? 
+  executeInstruction 
+  invokeInstallInstruction?
+  invokeUninstallInstruction?
+  EOF ;
+ 
+findInstruction : 
+  'FIND ' QUOTED_TEXT ' AT ' QUOTED_TEXT LINE_END;
+hasBlock : 
+  'HAS (' NEWLINE parameterList ') AS installation_parameters' LINE_END;
+parameterList : 
+  ('    ' parameter ',' NEWLINE)+ ;
+parameter :
+  choiceParameter | nonChoiceParameter;
+nonChoiceParameter :
+  OPTIONAL? TYPE WORD defaultOrFixed?;
+choiceParameter : 
+  OPTIONAL? 'choice ' WORD ' FROM ' optionList defaultOrFixed?;
+defaultOrFixed :
+  defaultParamValue | fixedParamValue;
+defaultParamValue :
+  ' WITH DEFAULT ' valueOrString;
+fixedParamValue :
+  ' = ' valueOrString;
+uninstallInstruction : 
+  'UNINSTALL ' QUOTED_TEXT LINE_END;
+executeInstruction: 
+  'EXECUTE ' QUOTED_TEXT 'WITH installation_parameters' LINE_END;
+invokeInstallInstruction: 
+  'INVOKE AS INSTALL {' anything '} AT ' QUOTED_TEXT LINE_END;
+invokeUninstallInstruction: 
+  'INVOKE AS UNINSTALL {' anything '} AT ' QUOTED_TEXT LINE_END;
+anything : 
+  ANY_AND_ESCAPED_CURLY+ ;
+  
+valueOrString : 
+  WORD | QUOTED_TEXT ;
+optionList : 
+  '[' valueOrString (',' valueOrString)* ']';
+ 
+TYPE : 'number' | 'string' | 'flag';
+WORD : (LOWERCASE | UPPERCASE | DIGIT)+ ;
+QUOTED_TEXT : '"' ANY+? '"' ;
+OPTIONAL : 'OPTIONAL ' ;
+ANY : ~[\r\n\t] ;
+ANY_AND_ESCAPED_CURLY : (~[{}] | '\\}' | '\\{') ;
 
 fragment LOWERCASE  : [a-z] ;
 fragment UPPERCASE  : [A-Z] ;
 fragment DIGIT      : [0-9] ;
-
-FIND : 'FIND' | 'find' ;
-
-AT : 'AT' | 'at' ;
-
-HAS : 'HAS' | 'has' ;
-
-WITH : 'WITH' | 'with' ;
-
-DEFAULT : 'DEFAULT' | 'default' ;
-
-AS : 'AS' | 'as' ;
-
-FROM : 'FROM' | 'from' ;
-
-UNINSTALL : 'UNINSTALL' | 'uninstall' ;
-
-EXECUTE : 'EXECUTE' | 'execute' ;
-
-INSTALLATION_PARAMETERS : 'installation_parameters' ;
-
-OPTIONAL : 'optional' ;
-
-WORD : (LOWERCASE | UPPERCASE | DIGIT)+ ;
-
-QUOTED_TEXT : '"' .*? '"' ;
-
-SEMICOLON : ';' ;
-
-COMMA : ',' ;
-
-OPEN_PARENTHESIS : '(' ;
-
-CLOSE_PARENTHESIS : ')' ;
-
-OPEN_SQUARE_BRACKET : '[' ;
-
-CLOSE_SQUARE_BRACKET : ']' ;
-
-EQUALS : '=' ;
-
+fragment SEMICOLON  : ';' ;
+ 
+LINE_END   : SEMICOLON NEWLINE ;
+NEWLINE    : ('\r'? '\n' | '\r')+ ;
+ 
 WHITESPACE : [ \t\n]+ -> skip ;
-
-NEWLINE : ('\r'? '\n' | '\r')+ ;

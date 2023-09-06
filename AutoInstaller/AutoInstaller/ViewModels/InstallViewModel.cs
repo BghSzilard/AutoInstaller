@@ -18,24 +18,31 @@ public sealed partial class InstallViewModel : ObservableObject
 	public ObservableCollection<string> Versions { get; } = new();
 	public ObservableCollection<ParameterDataViewModel> Parameters { get; } = new();
 
-	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand))] private string _selectedProgram;
-	[ObservableProperty] private string _selectedVersion;
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof (InstallProgramCommand))] private string _selectedProgram;
+    [ObservableProperty] private string _selectedVersion;
+    [ObservableProperty] private bool _copyInstaller;
+    public InstallViewModel()
+    {
+        Programs = new(ProgramService.FindPrograms());
+    }
 
-	public InstallViewModel()
-	{
-		Programs = new(ProgramService.FindPrograms());
-	}
+    [RelayCommand(CanExecute = nameof(IsProgramSelected))]
+    public async void InstallProgram() // check if program is selected
+    {
+        ProgramData programData = ProgramService.GetProgramData(SelectedProgram);
+        programData.ParameterList.Clear();
+        foreach (var parameter in Parameters)
+        {
+            programData.ParameterList.Add(parameter.ParameterData);
+        }
 
-	[RelayCommand(CanExecute = nameof(IsProgramSelected))]
-	public async void InstallProgram() // check if program is selected
-	{
-		ProgramData programData = ProgramService.GetProgramData(SelectedProgram);
-		programData.ParameterList.Clear();
-		foreach (var parameter in Parameters)
-		{
-			programData.ParameterList.Add(parameter.ParameterData);
-		}
-		//string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(programData.InstallerPath);
+        if (CopyInstaller)
+        {
+            ProgramService.CopyProgramVersion(programData, programData.InstallationsPath, SelectedVersion);
+        }
+
+        
+        //string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(Path.Combine(programData.InstallationsPath, SelectedVersion, programData.InstallerPath));
 
 		string? productCode = ProgramService.GetProductCode(SelectedProgram);
 
