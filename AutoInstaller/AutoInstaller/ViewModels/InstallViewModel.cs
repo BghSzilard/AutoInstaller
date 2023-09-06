@@ -20,7 +20,7 @@ public sealed partial class InstallViewModel : ObservableObject
 	public ObservableCollection<ParameterDataViewModel> Parameters { get; } = new();
 
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof (InstallProgramCommand))] private string _selectedProgram;
-    [ObservableProperty] private string _selectedVersion;
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand))] private string _selectedVersion;
     [ObservableProperty] private bool _copyInstaller;
     public InstallViewModel()
     {
@@ -95,7 +95,7 @@ public sealed partial class InstallViewModel : ObservableObject
 
 	bool IsProgramSelected()
 	{
-		return !string.IsNullOrWhiteSpace(SelectedProgram);
+		return !string.IsNullOrWhiteSpace(SelectedProgram) && !string.IsNullOrWhiteSpace(SelectedVersion);
 	}
 	partial void OnSelectedProgramChanged(string value)
 	{
