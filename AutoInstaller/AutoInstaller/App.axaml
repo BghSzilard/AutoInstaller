@@ -3,7 +3,8 @@
              x:Class="AutoInstaller.App"
              xmlns:local="using:AutoInstaller"
              RequestedThemeVariant="Light"
-             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 xmlns:notification="clr-namespace:Avalonia.Notification">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -14,4 +15,6 @@
 		<FluentTheme/>
         <materialIcons:MaterialIconStyles />
 	</Application.Styles>
+	
+	
 </Application>
