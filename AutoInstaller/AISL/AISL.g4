@@ -56,6 +56,6 @@ fragment DIGIT      : [0-9] ;
 fragment SEMICOLON  : ';' ;
  
 LINE_END   : SEMICOLON NEWLINE ;
-NEWLINE    : ('\r'? '\n' | '\r')+ ;
+NEWLINE    : ('\r\n' | '\r' | '\n')+ ;
  
 WHITESPACE : [ \t\n]+ -> skip ;
