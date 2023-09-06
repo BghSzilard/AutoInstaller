@@ -13,10 +13,10 @@ public static class AISLScriptBuilder
 
     private static string AddParametersStatement(string script, ProgramData programData)
     {
-        script += "HAS ( \n";
+        script += "HAS (\n";
         foreach (var parameter in programData.ParameterList)
         {
-            script += "\t";
+            script += "    ";
             if (parameter.IsOptional)
             {
                 script += "optional ";
@@ -34,7 +34,7 @@ public static class AISLScriptBuilder
                     script += $" = {parameter.Value}";
                 }
             }
-
+            
             if (parameter.Options != null)
             {
                 script += " FROM [";
@@ -56,11 +56,10 @@ public static class AISLScriptBuilder
                 {
                     script += $" WITH DEFAULT {parameter.Value}";
                 }
-
             }
             script += ",\n";
         }
-        script = script.Remove(script.Length - 2);
+        script = script.Remove(script.Length - 1);
         script += "\n) AS installation_parameters;\n";
         return script;
     }
