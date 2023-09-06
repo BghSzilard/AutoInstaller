@@ -13,6 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Remove="Models\**" />
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\siemenslogo.png" />
   </ItemGroup>
 
@@ -43,11 +50,6 @@
     <Compile Update="Views\HomePage.axaml.cs">
       <DependentUpon>HomePage.axaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 

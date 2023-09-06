@@ -39,7 +39,7 @@ namespace Core
             //powershellScript += "\n$MyApp.Uninstall()";
             //return powershellScript;
 
-            string powershellScript = $"Start-Process -FilePath -Wait \"cmd.exe\" -ArgumentList \'/c msiexec /x {productCode} /passive\'";
+            string powershellScript = $"Start-Process -FilePath \"cmd.exe\" -ArgumentList \'/c msiexec /x {productCode} /passive\' -Wait";
             return powershellScript;
         }
         public static string BuildPowershelGetNameScript(string installerPath)

@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace AutoInstaller.ViewModels;
 
@@ -88,7 +89,7 @@ public sealed partial class InstallViewModel : ObservableObject
 		}
 
 		await PowershellExecutor.RunPowershellUninstallerAsync(productCode);
-
+		
 		PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion, true);
 	}
 
