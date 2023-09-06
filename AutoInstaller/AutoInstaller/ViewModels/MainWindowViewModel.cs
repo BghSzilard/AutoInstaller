@@ -33,10 +33,10 @@ namespace AutoInstaller.ViewModels
             Navigation = navigation;
             Pages = pageService.Pages.Select(x => x.Value).ToList();
 
-            if (navigation.CurrentPageType is not null)
-            {
-                ButtonClick(pageService.Pages[navigation.CurrentPageType]);
-            }
+            //if (navigation.CurrentPageType is not null)
+            //{
+            //    ButtonClick(pageService.Pages[navigation.CurrentPageType]);
+            //}
 
             navigation.CurrentPageChanged += type =>
             {

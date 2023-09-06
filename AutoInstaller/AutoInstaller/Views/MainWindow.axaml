@@ -13,7 +13,7 @@
         Title="AutoInstaller"
 		x:CompileBindings="True">
 
-	<Design.DataContext>
+    <Design.DataContext>
 		<vm:MainWindowViewModel>
 			<x:Arguments>
 				<core:ServiceCollection></core:ServiceCollection>
@@ -23,25 +23,39 @@
 		</vm:MainWindowViewModel>
 	</Design.DataContext>
 
-	<Grid>
+	<Grid ColumnDefinitions="Auto *">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
 		</Grid.RowDefinitions>
 
-        <StackPanel Background="#009999">
-            <Image Source="../Resources/siemenslogo.png" Height="20" Margin="10" HorizontalAlignment="Right"/>
-        </StackPanel>
-		<Menu Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#009999">
-			<MenuItem Header="File" Foreground="White" FontSize="">
+		<StackPanel  Grid.ColumnSpan="2">
+			<Image Source="../Resources/siemenslogo.png" Height="12" Margin="10" HorizontalAlignment="Right"/>
+		</StackPanel>
+		<Menu Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+			<MenuItem Header="File" Foreground="White" FontSize="14">
 			</MenuItem>
-			<MenuItem Header="Home" Foreground="White"></MenuItem>
+			<MenuItem Header="Home" Foreground="White" FontSize="14"></MenuItem>
 		</Menu>
-        <Border Grid.Row="2" BorderBrush="LightBlue" BorderThickness="1" Bounds="">
-            <SplitView IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
+		<Grid ColumnDefinitions="Auto *" Grid.Row="2">
+			<StackPanel Orientation="Vertical" Grid.Column="0" Margin="10" Spacing="10">
+				<Button Foreground="White" Background="#009999" HorizontalAlignment="Stretch"
+						Command="{Binding AddProgramCommand}"
+                        HorizontalContentAlignment="Center">
+                    <icons:MaterialIcon Kind="Plus"></icons:MaterialIcon>
+                </Button>
+				<Button Foreground="White" Background="#009999"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
+						Command="{Binding InstallProgramCommand}">
+                    <icons:MaterialIcon Kind="Download"></icons:MaterialIcon>
+                </Button>
+			</StackPanel>
+		</Grid>
+		<!--<SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="100" CompactPaneLength="55">
                 <SplitView.Pane>
-                    <StackPanel>
+                    <StackPanel Background="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Background}">
                         <StackPanel Orientation="Vertical">
                             <Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center"
                                     Command="{Binding AddProgramCommand}">
@@ -53,9 +67,9 @@
                         </StackPanel>
                     </StackPanel>
                 </SplitView.Pane>
-
-                <UserControl Content="{Binding Content}"></UserControl>
-            </SplitView></Border>
+            </SplitView>-->
+        <UserControl Grid.Column="1" Grid.Row="2" Content="{Binding Content}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     Margin="0 0 5 0"/>
 	</Grid>
 
 </Window>

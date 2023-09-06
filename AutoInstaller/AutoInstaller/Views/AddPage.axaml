@@ -7,7 +7,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
              x:Class="AutoInstaller.Views.AddPage"
 			 x:DataType="vm:AddViewModel"
-			 x:CompileBindings="True">
+			 x:CompileBindings="True"
+             Background="White">
 
 	<Design.DataContext>
 		<vm:AddViewModel>
@@ -81,19 +82,21 @@
 					</StackPanel>
 				</StackPanel>
 
-				<ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Parameters}"
-                         SelectedItem="{Binding SelectedParameter}" Margin="0 10 0 0">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<StackPanel Orientation="Horizontal" Spacing="20">
-								<TextBlock Text="{Binding Type}" />
-								<TextBlock Text="{Binding Name}" />
-								<TextBlock Text="{Binding Value}" />
-								<TextBlock Text="{Binding IsOptional}" />
-							</StackPanel>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+                <ScrollViewer Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
+                    <ListBox ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" Margin="0 10 0 0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <TextBlock Text="{Binding Type}" />
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding Value}" />
+                                    <TextBlock Text="{Binding IsOptional}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+
 			</Grid>
 		</Border>
 
