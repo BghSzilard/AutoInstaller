@@ -15,6 +15,9 @@ namespace AutoInstaller.ViewModels
         public ObservableCollection<string> Programs { get; set; } = new();
 
         private readonly ServiceCollection _serviceCollection;
+
+        public NotificationService NotificationService { get; }
+
         [ObservableProperty]
         private UserControl? _content;
 
@@ -27,18 +30,19 @@ namespace AutoInstaller.ViewModels
         public List<PageData> Pages { get; }
         public NavigationService Navigation { get; }
 
-        public MainWindowViewModel(ServiceCollection serviceCollection, PageService pageService, NavigationService navigation)
+        public MainWindowViewModel(ServiceCollection serviceCollection, PageService pageService, NavigationService navigationService, NotificationService notificationService)
         {
             _serviceCollection = serviceCollection;
-            Navigation = navigation;
+            NotificationService = notificationService;
+            Navigation = navigationService;
             Pages = pageService.Pages.Select(x => x.Value).ToList();
 
-            if (navigation.CurrentPageType is not null)
+            if (navigationService.CurrentPageType is not null)
             {
-                ButtonClick(pageService.Pages[navigation.CurrentPageType]);
+                ButtonClick(pageService.Pages[navigationService.CurrentPageType]);
             }
 
-            navigation.CurrentPageChanged += type =>
+            navigationService.CurrentPageChanged += type =>
             {
                 ButtonClick(pageService.Pages[type]);
             };

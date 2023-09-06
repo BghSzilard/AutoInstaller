@@ -22,12 +22,13 @@ namespace AutoInstaller
             serviceCollection.AddSingleton(serviceCollection);
             serviceCollection.AddSingleton<PageService>();
             serviceCollection.AddSingleton<NavigationService>();
+            serviceCollection.AddSingleton<NotificationService>();
 
             serviceCollection.AddSingleton<HomePage>();
             serviceCollection.AddSingleton<HomeViewModel>();
 
-            serviceCollection.AddSingleton<AddPage>();
-            serviceCollection.AddSingleton<AddViewModel>();
+            serviceCollection.AddScope<AddPage>();
+            serviceCollection.AddScope<AddViewModel>();
 
             serviceCollection.AddScope<InstallPage>();
             serviceCollection.AddScope<InstallViewModel>();

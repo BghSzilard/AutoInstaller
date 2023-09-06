@@ -16,9 +16,10 @@
 	<Design.DataContext>
 		<vm:MainWindowViewModel>
 			<x:Arguments>
-				<core:ServiceCollection></core:ServiceCollection>
-				<core:PageService></core:PageService>
-				<services:NavigationService></services:NavigationService>
+				<core:ServiceCollection/>
+				<core:PageService/>
+				<services:NavigationService/>
+				<services:NotificationService/>
 			</x:Arguments>
 		</vm:MainWindowViewModel>
 	</Design.DataContext>
@@ -28,6 +29,7 @@
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="30"></RowDefinition>
 		</Grid.RowDefinitions>
 
         <StackPanel Background="#009999">
@@ -56,6 +58,9 @@
 
                 <UserControl Content="{Binding Content}"></UserControl>
             </SplitView></Border>
+		<Border Grid.Row="4" Background="#009999">
+			<TextBlock Text="{Binding NotificationService.NotificationText}" Background="#009999" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0 0 0" Foreground="White" TextWrapping="Wrap"/>
+		</Border>
 	</Grid>
 
 </Window>
