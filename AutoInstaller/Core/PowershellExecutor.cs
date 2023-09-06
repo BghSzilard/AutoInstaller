@@ -19,11 +19,11 @@ namespace Core
 
             process.StartInfo = psi;
         }
-        public static void RunPowershellInstaller(ProgramData programData, string selectedVersion)
+        public static void RunPowershellInstaller(ProgramData programData, string selectedVersion, bool logToFile)
         {
             Process process = new();
             InitializeProcess(process);
-            string powershellScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData, selectedVersion);
+            string powershellScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData, selectedVersion, logToFile);
 
             process.Start();
             process.StandardInput.WriteLine(powershellScript);
@@ -31,12 +31,13 @@ namespace Core
 
             process.WaitForExit();
         }
-        
-        public static Task RunPowershellUninstallerAsync(string programName)
+
+        public static Task RunPowershellUninstallerAsync(string productCode)
         {
             Process process = new Process();
             InitializeProcess(process);
-            string powershellScript = PowershellScriptBuilder.BuildPowershellUninstallScript(programName);
+
+            string powershellScript = PowershellScriptBuilder.BuildPowershellUninstallScript(productCode);
 
             process.Start();
             process.StandardInput.WriteLine(powershellScript);

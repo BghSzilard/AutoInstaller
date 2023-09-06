@@ -7,10 +7,24 @@ namespace Core
 {
     public static class PowershellScriptBuilder
     {
-        public static string BuildPowershellInstallScript(ProgramData programData, string selectedVersion)
+        public static string BuildPowershellInstallScript(ProgramData programData, string selectedVersion, bool logToFile)
         {
-            string absoluteExecutablePath = Path.Combine(programData.InstallationsPath, selectedVersion, programData.InstallerPath);
+	        string installsPath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
+		        (current, _) => Path.GetDirectoryName(current)!);
+
+	        installsPath = Path.Combine(installsPath, "Installs", programData.Name);
+	        if (!Directory.Exists(installsPath))
+	        {
+		        Directory.CreateDirectory(installsPath);
+	        }
+
+	        string absoluteExecutablePath = Path.Combine(programData.InstallationsPath, selectedVersion, programData.InstallerPath);
             string powershellScript = $"& \"{absoluteExecutablePath}\" ";
+            if (logToFile)
+            {
+	            powershellScript += "/Lp ";
+	            powershellScript += $"\"{Path.Combine(installsPath, "installLog.txt")}\" ";
+            }
             foreach (var parameter in programData.ParameterList)
             {
                 powershellScript += $"{parameter.Name}=\'\"{parameter.Value}\"\' ";
@@ -19,10 +33,13 @@ namespace Core
             return powershellScript;
         }
 
-        public static string BuildPowershellUninstallScript(string programName)
+        public static string BuildPowershellUninstallScript(string productCode)
         {
-            string powershellScript = $"$MyApp = Get-WmiObject -Class Win32_Product | Where-Object {{ $_.Name -eq '{programName}' }}";
-            powershellScript += "\n$MyApp.Uninstall()";
+            //string powershellScript = $"$MyApp = Get-WmiObject -Class Win32_Product | Where-Object {{ $_.Name -eq '{programName}' }}";
+            //powershellScript += "\n$MyApp.Uninstall()";
+            //return powershellScript;
+
+            string powershellScript = $"Start-Process -FilePath \"cmd.exe\" -ArgumentList \'/c msiexec /x {productCode} /passive\'";
             return powershellScript;
         }
         public static string BuildPowershelGetNameScript(string installerPath)
