@@ -36,6 +36,8 @@ public class ProgramData
     public string? InstallationsPath { get; set; }
     public List<ParameterData> ParameterList { get; set; } = new();
     public string? InstallerPath { get; set; }
-    public string? PathToInvokeAt { get; set; }
-    public string? InvokeBlock { get; set; }
+    public string? PathToInvokeInstallAt { get; set; }
+    public string? InvokeInstallBlock { get; set; }
+    public string? PathToInvokeUninstallAt { get; set; }
+    public string? InvokeUninstallBlock { get; set; }
 }
