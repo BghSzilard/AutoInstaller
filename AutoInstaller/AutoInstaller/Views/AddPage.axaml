@@ -32,13 +32,13 @@
                            Text="Installer" VerticalAlignment="Center" Margin="0 0 0 10" />
 
 				<Grid Grid.Row="1" RowDefinitions="Auto Auto Auto" ColumnDefinitions="Auto Auto * Auto">
-					<TextBlock Text="Name:" VerticalAlignment="Center" 
+					<TextBlock Text="Name:" VerticalAlignment="Center"
                                Margin="0 0 0 10"/>
 					<TextBox
                         Grid.Column="1"
 						Grid.ColumnSpan="3"
                         Text="{Binding Name}"
-                        HorizontalAlignment="Stretch" 
+                        HorizontalAlignment="Stretch"
                         Margin="0 0 0 10"/>
 
 					<TextBlock Grid.Row="1" Text="Installations Folder:" VerticalAlignment="Center" Margin="0 0 5 0"/>
@@ -46,64 +46,58 @@
                              VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 5 0"
                              Text="{Binding InstallationsPathString}"
                              IsReadOnly="True"/>
-                    <Button Grid.Row="1" Grid.Column="3" Command="{Binding SelectInstallationsFolderCommand}">
-                        <icons:MaterialIcon Kind="Folder"></icons:MaterialIcon>
-                    </Button>
-                    <TextBlock Grid.Row="2" Text="Executable Path:" VerticalAlignment="Center" Margin="0 0 5 0" />
-					<TextBox 
-                        Grid.Row="2" 
-                        Grid.Column="1" 
+					<Button Grid.Row="1" Grid.Column="3" Command="{Binding SelectInstallationsFolderCommand}">
+						<icons:MaterialIcon Kind="Folder"></icons:MaterialIcon>
+					</Button>
+					<TextBlock Grid.Row="2" Text="Executable Path:" VerticalAlignment="Center" Margin="0 0 5 0" />
+					<TextBox
+                        Grid.Row="2"
+                        Grid.Column="1"
                         Grid.ColumnSpan="2"
-                        VerticalAlignment="Center" 
+                        VerticalAlignment="Center"
 						Text="{Binding ExecutablePathString}"
                         HorizontalAlignment="Stretch"
                         Margin="0 10 5 10"
                         IsReadOnly="True">
-                    </TextBox>
+					</TextBox>
 					<Button Grid.Row="2" Grid.Column="3" Command="{Binding SelectExecutableCommand}">
 						<icons:MaterialIcon Kind="File"></icons:MaterialIcon>
-                    </Button>
-
+					</Button>
 				</Grid>
 			</Grid>
 		</Border>
 
 		<Border Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="2" Margin="0 0 0 5" IsEnabled="{Binding AreInstallerDetailsSet}">
-			<Grid RowDefinitions="Auto Auto *" ColumnDefinitions="Auto *" Margin="10">
+			<Grid RowDefinitions="Auto Auto Auto *" ColumnDefinitions="Auto *" Margin="10">
 
 				<TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold" Text="Parameters" VerticalAlignment="Center" Margin="0 0 0 10"/>
 
-				<StackPanel Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-					<StackPanel Orientation="Horizontal" Spacing="20">
-						<CheckBox IsChecked="{Binding ParameterIsReadOnly}" Content="Read-Only"></CheckBox>
-						<CheckBox IsChecked="{Binding ParameterIsOptional}" Content="Optional" />
-						<ComboBox ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}"/>
-						<TextBox Text="{Binding ParameterName}" Watermark="Name" />
-						<TextBox Grid.Column="2" Text="{Binding ParameterValue}" Watermark="Value" />
-						<Button Content="Add parameter" Command="{Binding AddParameterCommand}" />
-					</StackPanel>
-				</StackPanel>
+				<Grid ColumnDefinitions="* * * * *" Grid.Row="1" Grid.ColumnSpan="2" MaxWidth="800">
+					<CheckBox Grid.Column="0" IsChecked="{Binding ParameterIsReadOnly}" Content="Read-Only" HorizontalAlignment="Center"/>
+					<CheckBox Grid.Column="1" IsChecked="{Binding ParameterIsOptional}" Content="Optional" HorizontalAlignment="Center"/>
+					<ComboBox Grid.Column="2" ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}" HorizontalAlignment="Stretch"/>
+					<TextBox Grid.Column="3" Text="{Binding ParameterName}" Watermark="Name" Margin="2 0"/>
+					<TextBox Grid.Column="4" Text="{Binding ParameterValue}" Watermark="Value" />
+				</Grid>
 
-                <ScrollViewer Grid.Row="2" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
-                    <ListBox ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" Margin="0 10 0 0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="20">
-                                    <TextBlock Text="{Binding Type}" />
-                                    <TextBlock Text="{Binding Name}" />
-                                    <TextBlock Text="{Binding Value}" />
-                                    <TextBlock Text="{Binding IsOptional}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
+				<Button Grid.Row="2" Grid.ColumnSpan="2" Content="Add parameter" Command="{Binding AddParameterCommand}" HorizontalAlignment="Right" Margin="0 10"/>
 
+				<DataGrid Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" Margin="0 10 0 0" Background="White" 
+						  SelectionMode="Single" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="True"
+						  BorderThickness="1" BorderBrush="Gray" IsReadOnly="True" ColumnWidth="*" GridLinesVisibility="All">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Type"  Binding="{Binding Type}"/>
+						<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+						<DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
+						<DataGridCheckBoxColumn Header="Read-Only" Binding="{Binding IsReadOnly}"/>
+						<DataGridCheckBoxColumn Header="Optional" Binding="{Binding IsOptional}"/>
+					</DataGrid.Columns>
+				</DataGrid>
 			</Grid>
 		</Border>
 
 		<Button Grid.Row="3" Grid.ColumnSpan="2" Command="{Binding AddProgramCommand}" HorizontalAlignment="Right"
                 Content="Add Program">
-        </Button>
+		</Button>
 	</Grid>
 </UserControl>

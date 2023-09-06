@@ -14,6 +14,7 @@
 	<Application.Styles>
 		<FluentTheme/>
         <materialIcons:MaterialIconStyles />
+		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <Style Selector="DataValidationErrors">
             <Setter Property="Template">
                 <ControlTemplate>
