@@ -232,13 +232,8 @@ public static class ProgramService
             FileSystem.CopyDirectory(sourcePath, copiedVersionPath, UIOption.AllDialogs);
         }
     }
-	public static bool CheckFolderPathValidity(string? installationPathString)
-	{
-		return !string.IsNullOrEmpty(installationPathString)
-			   && Directory.Exists(installationPathString);
-	}
 
-	public static string GetProductCode(string selectedProgram)
+    public static string GetProductCode(string selectedProgram)
 	{
 		string installsPath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
 			(current, _) => Path.GetDirectoryName(current)!);

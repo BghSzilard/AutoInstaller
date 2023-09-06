@@ -108,17 +108,4 @@ public sealed partial class InstallViewModel : ObservableObject
 			programData.ParameterList.ForEach(parameter => Parameters.Add(new(parameter)));
 		}
 	}
-
-	//partial void OnSelectedVersionChanged(string value)
-	//{
-	//    if (value != null)
-	//    {
-	//        var programData = ProgramService.GetProgramData(SelectedProgram, );
-	//        if (programData == null)
-	//        {
-	//            return;
-	//        }
-	//        programData.ParameterList.ForEach(parameter => Parameters.Add(new(parameter)));
-	//    }
-	//}
 }
