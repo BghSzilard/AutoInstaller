@@ -28,7 +28,6 @@
 	<Grid ColumnDefinitions="Auto *">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
 			<RowDefinition Height="30"></RowDefinition>
 		</Grid.RowDefinitions>
@@ -36,32 +35,26 @@
 		<StackPanel  Grid.ColumnSpan="2">
 			<Image Source="../Resources/siemenslogo.png" Height="12" Margin="10" HorizontalAlignment="Right"/>
 		</StackPanel>
-		<Menu Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-			<MenuItem Header="File" Foreground="White" FontSize="14">
-			</MenuItem>
-			<MenuItem Header="Home" Foreground="White" FontSize="14"></MenuItem>
-		</Menu>
-		<Grid ColumnDefinitions="Auto *" Grid.Row="2">
-			<StackPanel Orientation="Vertical" Grid.Column="0" Margin="10" Spacing="10">
-				<Button Foreground="White" Background="#009999" HorizontalAlignment="Stretch"
+		<Grid ColumnDefinitions="Auto *" Grid.Row="1">
+			<StackPanel Orientation="Vertical" Grid.Column="0" Margin="10" Spacing="10" HorizontalAlignment="Stretch">
+				<Button Foreground="White" Background="Transparent" HorizontalAlignment="Stretch"
 						Command="{Binding AddProgramCommand}"
                         HorizontalContentAlignment="Center">
-                    <icons:MaterialIcon Kind="Plus"></icons:MaterialIcon>
+                    <icons:MaterialIcon Kind="Plus" Height="20" Width="20"/>
                 </Button>
-				<Button Foreground="White" Background="#009999"
+				<Button Foreground="White" Background="Transparent"
 						HorizontalAlignment="Stretch"
 						HorizontalContentAlignment="Center"
 						Command="{Binding InstallProgramCommand}">
-                    <icons:MaterialIcon Kind="Download"></icons:MaterialIcon>
+                    <icons:MaterialIcon Kind="Download" Height="20" Width="20"/>
                 </Button>
 			</StackPanel>
 		</Grid>
-        <UserControl Grid.Column="1" Grid.Row="2" Content="{Binding Content}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+        <UserControl Grid.Column="1" Grid.Row="1" Content="{Binding Content}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                      Margin="0 0 5 0"/>
-        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" 
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" 
                    Text="{Binding NotificationService.NotificationText}" 
                    VerticalAlignment="Center" HorizontalAlignment="Left" 
                    Margin="10 0 0 0" Foreground="White" TextWrapping="Wrap"/>
     </Grid>
-
 </Window>

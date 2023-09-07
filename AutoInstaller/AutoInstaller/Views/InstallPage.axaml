@@ -3,43 +3,77 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:AutoInstaller.ViewModels"
+			 xmlns:services="using:AutoInstaller.Services"
 			 xmlns:ir="using:Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AutoInstaller.Views.InstallPage"
 			 x:DataType="vm:InstallViewModel"
 			 x:CompileBindings="True"
              Background="White">
-	
-	<Design.DataContext>
-		<vm:InstallViewModel/>
-	</Design.DataContext>
-	
-	<Grid ColumnDefinitions="* * 2*" Margin="10">
-		<ListBox ItemsSource="{Binding Programs}" SelectedItem="{Binding SelectedProgram}"/>
-		
-		<ListBox Grid.Column="1" ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}" Margin="10 0"/>
 
-		<Grid Grid.Column="2" RowDefinitions="Auto * Auto">
-			
-			<TextBlock Text="{Binding SelectedProgram}" Margin="0 0 0 5" HorizontalAlignment="Center"
+	<Design.DataContext>
+		<vm:InstallViewModel>
+			<x:Arguments>
+				<x:Null/>
+				<services:NotificationService/>
+			</x:Arguments>
+		</vm:InstallViewModel>
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="* * 2*" Margin="10">
+
+		<Border BorderBrush="LightGray" BorderThickness="1" Margin="1 0">
+			<Grid RowDefinitions="Auto *">
+				<TextBlock Text="Programs" FontSize="18" FontWeight="Bold" Margin=" 5 10"/>
+				<ListBox Grid.Row="1" ItemsSource="{Binding Programs}" SelectedItem="{Binding SelectedProgram}" Background="White"/>
+			</Grid>
+		</Border>
+
+		<Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="1 0">
+			<Grid RowDefinitions="Auto *">
+				<TextBlock Text="Versions" FontSize="18" FontWeight="Bold" Margin=" 5 10"/>
+				<ListBox Grid.Row="1" ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion}" VerticalAlignment="Stretch" Background="White"/>
+			</Grid>
+		</Border>
+
+		<Grid Grid.Column="2" RowDefinitions="Auto Auto * Auto Auto" Margin="5 0" IsVisible="{Binding ProgramSectionIsVisbile}">
+
+			<TextBlock Text="{Binding SelectedProgram}" Margin="0 0 0 5" HorizontalAlignment="Left"
                        FontSize="20" FontWeight="Bold"/>
 			
-			<ListBox Grid.Row="1" ItemsSource="{Binding Parameters}">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="5 0"/>
-							<TextBox Text="{Binding Value}" VerticalAlignment="Center" MinWidth="300"/>
-						</StackPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
+			<Button Grid.Row="1" Content="Load parameters" Command="{Binding LoadParametersCommand}" Margin="0 5"/>
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                <CheckBox Content="Copy locally before install" IsChecked="{Binding CopyInstaller}"></CheckBox>
-                <Button Content="Install" Command="{Binding InstallProgramCommand}"
-                        HorizontalAlignment="Right" Margin="10" />
-            </StackPanel>
+			<Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="1" Margin="1 0">
+				<ListBox ItemsSource="{Binding Parameters}" Background="White">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid ColumnDefinitions="* 4*">
+								<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Margin="5 0"/>
+								<TextBox Grid.Column="1" Text="{Binding Value}" VerticalAlignment="Center"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Border>
+
+			<CheckBox Grid.Row="3" Content="Copy locally before install" IsChecked="{Binding CopyInstaller}"/>
+			<Button Grid.Row="4" Content="Save parameters" Command="{Binding SaveParametersCommand}" Margin="0 10 0 0"/>
+			<Button Grid.Row="4" Content="Install program" Command="{Binding InstallProgramCommand}" HorizontalAlignment="Right">
+				<Button.Styles>
+					<Style Selector="Button">
+						<Setter Property="Background" Value="#005c8e"/>
+						<Setter Property="Foreground" Value="White"/>
+						<Setter Property="BorderBrush" Value="#004e6e"/>
+						<Setter Property="BorderThickness" Value="1"/>
+					</Style>
+					<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Background" Value="#004c71"/>
+						<Setter Property="Foreground" Value="White"/>
+						<Setter Property="BorderBrush" Value="#004e6e"/>
+						<Setter Property="BorderThickness" Value="1"/>
+					</Style>
+				</Button.Styles>
+			</Button>
 		</Grid>
 	</Grid>
 </UserControl>

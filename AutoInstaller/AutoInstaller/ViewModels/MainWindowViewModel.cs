@@ -37,20 +37,15 @@ namespace AutoInstaller.ViewModels
             Navigation = navigationService;
             Pages = pageService.Pages.Select(x => x.Value).ToList();
 
-            //if (navigation.CurrentPageType is not null)
-            //{
-            //    ButtonClick(pageService.Pages[navigation.CurrentPageType]);
-            //}
+            if (Navigation.CurrentPageType is not null)
+            {
+                ButtonClick(pageService.Pages[Navigation.CurrentPageType]);
+            }
 
             navigationService.CurrentPageChanged += type =>
             {
                 ButtonClick(pageService.Pages[type]);
             };
-
-            //foreach (var program in ProgramService.FindPrograms())
-            //{
-            //    Programs.Add(program);
-            //}
         }
 
         [RelayCommand]
