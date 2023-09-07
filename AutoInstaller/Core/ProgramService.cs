@@ -2,8 +2,11 @@
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net.NetworkInformation;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Core;
@@ -185,5 +188,32 @@ public static class ProgramService
 		}
 
 		return string.Empty;
+	}
+	public static string SerializeParameters(List<ParameterData> parameters)
+	{
+		string json = JsonSerializer.Serialize(parameters);
+		return json;
+	}
+	public static List<ParameterData> DeserializeParameters(string json)
+	{
+		List <ParameterData> parameters = JsonSerializer.Deserialize<List<ParameterData>>(json);
+		return parameters;
+	}
+	public static bool AreParametersTheSame(List<ParameterData> setParameters,  List<ParameterData> loadedParameters)
+	{
+		if (setParameters.Count != loadedParameters.Count)
+		{
+			return false;
+		}
+		var setParameterNames = setParameters.Select(p => p.Name).ToList();
+		var loadedParameterNames = loadedParameters.Select(p => p.Name).ToList();
+		foreach (var parameterName in setParameterNames)
+		{
+			if (!loadedParameterNames.Contains(parameterName))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

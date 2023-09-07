@@ -39,6 +39,11 @@
                 <CheckBox Content="Copy locally before install" IsChecked="{Binding CopyInstaller}"></CheckBox>
                 <Button Content="Install" Command="{Binding InstallProgramCommand}"
                         HorizontalAlignment="Right" Margin="10" />
+				<StackPanel>
+					<Button Content="Load parameters" Command="{Binding LoadParametersCommand}"></Button>
+					<Button Content="Save parameters" Command="{Binding SaveParametersCommand}"></Button>
+				</StackPanel>
+				
             </StackPanel>
 		</Grid>
 	</Grid>
