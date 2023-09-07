@@ -167,7 +167,7 @@ public sealed partial class InstallViewModel : ObservableObject
             using var streamWriter = new StreamWriter(stream);
             // Write some content to the file.
             await streamWriter.WriteLineAsync(json);
-            _notificationService.NotificationText = "File saved";
+            _notificationService.NotificationText = "The parameters were saved";
         }
     }
 

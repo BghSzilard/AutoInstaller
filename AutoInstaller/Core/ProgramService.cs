@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Core;
@@ -191,12 +192,27 @@ public static class ProgramService
 	}
 	public static string SerializeParameters(List<ParameterData> parameters)
 	{
-		string json = JsonSerializer.Serialize(parameters);
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Converters =
+            {
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            }
+        };
+        string json = JsonSerializer.Serialize(parameters, options);
 		return json;
 	}
-	public static List<ParameterData> DeserializeParameters(string json)
+	public static List<ParameterData>? DeserializeParameters(string json)
 	{
-		List <ParameterData> parameters = JsonSerializer.Deserialize<List<ParameterData>>(json);
+        var options = new JsonSerializerOptions
+        {
+            Converters =
+            {
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            }
+        };
+        List<ParameterData>? parameters = JsonSerializer.Deserialize<List<ParameterData>>(json, options);
 		return parameters;
 	}
 	public static bool AreParametersTheSame(List<ParameterData> setParameters,  List<ParameterData> loadedParameters)
