@@ -55,6 +55,12 @@
                 </DataTemplate>
             </Setter>
         </Style>
+		<Style Selector="TextBox /template/ TextBlock#PART_Watermark">
+			<Setter Property="FontStyle" Value="Italic" />
+		</Style>
+		<Style Selector=":is(TemplatedControl)">
+			<Setter Property="FontFamily" Value="Segoe UI"/>
+		</Style>
 	</Application.Styles>
 	
 	
