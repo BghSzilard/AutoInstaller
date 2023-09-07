@@ -25,8 +25,8 @@ public partial class AddViewModel : ObservableValidator
 	//[ObservableProperty,
 	private string? _name;
 
-	[Required(ErrorMessage = "Name cannot be empty")]
 	[CustomValidation(typeof(AddViewModel), nameof(ValidateName))]
+	[Required(ErrorMessage = "Program name cannot be empty")]
 	public string? Name
 	{
 		get => _name;
@@ -75,6 +75,49 @@ public partial class AddViewModel : ObservableValidator
 		return ValidationResult.Success;
 	}
 
+	public static ValidationResult ValidateParameterName(string? v, ValidationContext context)
+	{
+		var addVM = context.ObjectInstance as AddViewModel;
+		if (string.IsNullOrEmpty(v) && addVM.AreInstallerDetailsSet)
+		{
+			return new ValidationResult("Parameter name cannot be empty");
+		}
+		if (addVM.Parameters.Any(p => v.Equals(p.Name)))
+		{
+			return new ValidationResult("Parameter already exists");
+		}
+
+		return ValidationResult.Success;
+	}
+
+	public static ValidationResult ValidateParameterValue(string? v, ValidationContext context)
+	{
+		var addVM = context.ObjectInstance as AddViewModel;
+		if (addVM.ParameterIsReadOnly && string.IsNullOrEmpty(v))
+			return new ValidationResult("Read-Only parameter must have a value");
+
+		switch (addVM.SelectedParameterType)
+		{
+			case ParameterType.number:
+				if (!int.TryParse(v, out var number))
+				{
+					return new ValidationResult("Parameter not a numerical value");
+				}
+
+				break;
+			case ParameterType.flag:
+				if (!v.Equals("0") && !v.Equals("1"))
+				{
+					return new ValidationResult("Parameter not a boolean value");
+				}
+
+				break;
+
+		}
+
+		return ValidationResult.Success;
+	}
+
 	public bool HasValidName => !string.IsNullOrEmpty(Name)
 	                            && !ProgramService.FindSubdirectories(ProgramService.ProgramsPath).Contains(Name)
 	                            && !HasErrors;
@@ -92,21 +135,42 @@ public partial class AddViewModel : ObservableValidator
     [NotifyCanExecuteChangedFor(nameof(RemoveParameterCommand))]
     private ParameterData? _selectedParameter;
 
-	[ObservableProperty] private ParameterType? _selectedParameterType = ParameterType.@string;
+	[ObservableProperty] 
+	[NotifyPropertyChangedFor(nameof(ParameterValue))]
+	private ParameterType? _selectedParameterType = ParameterType.@string;
 
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(HasParameterName))]
-	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
 	private string? _parameterName;
 
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(HasParameterValue))]
-	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
+	[CustomValidation(typeof(AddViewModel), nameof(ValidateParameterName))]
+	public string? ParameterName
+	{
+		get => _parameterName;
+		set
+		{
+			SetProperty(ref _parameterName, value, true);
+			OnPropertyChanged(nameof(HasParameterName));
+			AddParameterCommand.NotifyCanExecuteChanged();
+		}
+	}
+
 	private string? _parameterValue;
+
+		[CustomValidation(typeof(AddViewModel), nameof(ValidateParameterValue))]
+	public string? ParameterValue
+	{
+		get => _parameterValue;
+		set
+		{
+			SetProperty(ref _parameterValue, value, true);
+			OnPropertyChanged(nameof(HasParameterValue));
+			AddParameterCommand.NotifyCanExecuteChanged();
+		}
+	}
 
 	[ObservableProperty] private bool _parameterIsOptional;
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
+	[NotifyPropertyChangedFor(nameof(ParameterValue))]
 	private bool _parameterIsReadOnly;
 
 	public bool HasParameterName => !string.IsNullOrEmpty(ParameterName);
@@ -189,6 +253,11 @@ public partial class AddViewModel : ObservableValidator
 		};
 
 		Parameters.Add(parameter);
+		ParameterName = String.Empty;
+		ParameterValue = String.Empty;
+		ParameterIsReadOnly = false;
+		ParameterIsOptional = false;
+		SelectedParameterType = ParameterType.@string;
 	}
 
 	[RelayCommand(CanExecute = nameof(IsParameterSelected))]
