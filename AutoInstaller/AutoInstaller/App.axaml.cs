@@ -38,9 +38,6 @@ namespace AutoInstaller
             pageService.RegisterPage<AddPage, AddViewModel>("Add");
             pageService.RegisterPage<InstallPage, InstallViewModel>("Install");
 
-            NavigationService navigationService = serviceCollection.GetService<NavigationService>();
-            navigationService.CurrentPageType = typeof(HomePage);
-
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindow
@@ -50,6 +47,9 @@ namespace AutoInstaller
 
                 serviceCollection.AddSingleton(desktop.MainWindow);
             }
+
+            NavigationService navigationService = serviceCollection.GetService<NavigationService>();
+            navigationService.CurrentPageType = typeof(InstallPage);
 
             base.OnFrameworkInitializationCompleted();
         }

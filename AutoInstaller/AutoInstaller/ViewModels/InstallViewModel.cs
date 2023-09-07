@@ -26,13 +26,32 @@ public sealed partial class InstallViewModel : ObservableObject
     public ObservableCollection<string> Versions { get; } = new();
     public ObservableCollection<ParameterDataViewModel> Parameters { get; } = new();
 
-    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand)), 
-        NotifyCanExecuteChangedFor(nameof(SaveParametersCommand)), 
-        NotifyCanExecuteChangedFor(nameof(LoadParametersCommand))] private string _selectedProgram;
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand)),
         NotifyCanExecuteChangedFor(nameof(SaveParametersCommand)),
-        NotifyCanExecuteChangedFor(nameof(LoadParametersCommand))] private string _selectedVersion;
+        NotifyCanExecuteChangedFor(nameof(LoadParametersCommand))]
+    private string _selectedProgram;
+
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand)),
+        NotifyCanExecuteChangedFor(nameof(SaveParametersCommand)),
+        NotifyCanExecuteChangedFor(nameof(LoadParametersCommand))]
+    private string _selectedVersion;
+
     [ObservableProperty] private bool _copyInstaller;
+
+    [ObservableProperty] private bool _programSectionIsVisbile = false;
+
+    partial void OnSelectedVersionChanged(string value)
+    {
+        if (value != null)
+        {
+            ProgramSectionIsVisbile = true;
+        }
+        else
+        {
+            ProgramSectionIsVisbile = false;
+        }
+    }
+
     public InstallViewModel(Window window, NotificationService notificationService)
     {
         _window = window;
@@ -191,5 +210,4 @@ public sealed partial class InstallViewModel : ObservableObject
             }
         }
     }
-
 }
