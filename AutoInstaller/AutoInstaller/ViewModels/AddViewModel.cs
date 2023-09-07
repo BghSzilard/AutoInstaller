@@ -19,7 +19,6 @@ namespace AutoInstaller.ViewModels;
 
 public partial class AddViewModel : ObservableValidator
 {
-
 	public List<ParameterType> ParameterTypes { get; } = Enum.GetValues<ParameterType>().ToList();
 
 	//installer settings
@@ -89,7 +88,10 @@ public partial class AddViewModel : ObservableValidator
 	public bool AreInstallerDetailsSet => HasValidName && HasValidFolderPath && HasValidFilePath;
 
 	// parameter settings
-	[ObservableProperty] private ParameterData? _selectedParameter;
+	[ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RemoveParameterCommand))]
+    private ParameterData? _selectedParameter;
+
 	[ObservableProperty] private ParameterType? _selectedParameterType = ParameterType.@string;
 
 	[ObservableProperty]
@@ -170,9 +172,10 @@ public partial class AddViewModel : ObservableValidator
 	{
 		_window = window;
 		_notificationService = notificationService;
+
+		ParameterTypes.Remove(ParameterType.choice);
 	}
 
-	// todo: simplify logic by having a single Value property and a bool that checks if the user wants a ReadOnly parameter Value (i.e. FixedValue) or ReadWrite (i.e. DefaultValue)
 	[RelayCommand(CanExecute = nameof(IsParameterDataValid))]
 	private void AddParameter()
 	{
