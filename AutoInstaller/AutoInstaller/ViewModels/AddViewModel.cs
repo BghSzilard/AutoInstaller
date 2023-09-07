@@ -9,7 +9,10 @@ using Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AutoInstaller.ViewModels;
@@ -20,20 +23,34 @@ public partial class AddViewModel : ObservableValidator
 	public List<ParameterType> ParameterTypes { get; } = Enum.GetValues<ParameterType>().ToList();
 
 	//installer settings
-	[ObservableProperty,
-	 NotifyPropertyChangedFor(nameof(HasName), nameof(AreInstallerDetailsSet)),
-	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand))]
+	//[ObservableProperty,
 	private string? _name;
+
+	[Required(ErrorMessage = "Name cannot be empty")]
+	[CustomValidation(typeof(AddViewModel), nameof(ValidateName))]
+	public string? Name
+	{
+		get => _name;
+		set
+		{
+			SetProperty(ref _name, value, true);
+			OnPropertyChanged(nameof(AreInstallerDetailsSet));
+			AddProgramCommand.NotifyCanExecuteChanged();
+		}
+
+	}
 
 	//todo add custom validator class
 	[ObservableProperty,
 	 NotifyPropertyChangedFor(nameof(HasValidFilePath), nameof(AreInstallerDetailsSet)),
 	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand))]
+	[Required(ErrorMessage = "Executable path cannot be empty")]
 	private string? _executablePathString;
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(HasValidFolderPath), nameof(AreInstallerDetailsSet))]
 	[NotifyCanExecuteChangedFor(nameof(SelectExecutableCommand), nameof(AddProgramCommand))]
+	[Required(ErrorMessage = "Installations path cannot be empty")]
 	private string? _installationsPathString;
 
 	[ObservableProperty]
@@ -42,7 +59,26 @@ public partial class AddViewModel : ObservableValidator
 	[ObservableProperty]
 	private IStorageFile? _executablePath;
 
-	public bool HasName => !string.IsNullOrEmpty(Name);
+	public static ValidationResult ValidateName(string? v, ValidationContext context)
+	{
+		var programsList = ProgramService.FindSubdirectories(ProgramService.ProgramsPath);
+		if (programsList.Contains(v))
+		{
+			return new ValidationResult("Configuration already exists");
+		}
+
+		string pattern = "^([a-zA-Z0-9][^*/><?\"|:]*)$";
+		if (!Regex.IsMatch(v, pattern))
+		{
+			return new ValidationResult("Invalid folder name");
+		};
+
+		return ValidationResult.Success;
+	}
+
+	public bool HasValidName => !string.IsNullOrEmpty(Name)
+	                            && !ProgramService.FindSubdirectories(ProgramService.ProgramsPath).Contains(Name)
+	                            && !HasErrors;
 
 	public bool HasValidFilePath => ProgramService.CheckFilePathValidity(ExecutablePath?.Path.AbsolutePath.Replace("%20", " "), InstallationsPathString);
 
@@ -50,7 +86,7 @@ public partial class AddViewModel : ObservableValidator
 
 	public bool HasInstallationsFolder => !string.IsNullOrEmpty(InstallationsPathString);
 
-	public bool AreInstallerDetailsSet => HasName && HasValidFolderPath && HasValidFilePath;
+	public bool AreInstallerDetailsSet => HasValidName && HasValidFolderPath && HasValidFilePath;
 
 	// parameter settings
 	[ObservableProperty] private ParameterData? _selectedParameter;
@@ -78,22 +114,22 @@ public partial class AddViewModel : ObservableValidator
 	public ObservableCollection<string> Versions { get; set; } = new();
 	public ObservableCollection<ParameterData> Parameters { get; set; } = new();
 
-	partial void OnNameChanged(string? value)
-	{
-		if (string.IsNullOrEmpty(value))
-		{
-			AddProgramCommand.NotifyCanExecuteChanged();
-			throw new DataValidationException("Name cannot be empty");
-		}
-	}
+	//partial void OnNameChanged(string? value)
+	//{
+	//	//if (string.IsNullOrEmpty(value))
+	//	//{
+	//	//	AddProgramCommand.NotifyCanExecuteChanged();
+	//	//	throw new DataValidationException("Name cannot be empty");
+	//	//}
+	//}
 
 	partial void OnExecutablePathChanged(IStorageFile? value)
 	{
 		Versions.Clear();
 		if (value == null)
 		{
-			//ExecutablePathString = string.Empty;
-			throw new DataValidationException("Directory cannot be empty");
+			ExecutablePathString = string.Empty;
+			//throw new DataValidationException("Directory cannot be empty");
 		}
 		else
 		{
@@ -163,24 +199,12 @@ public partial class AddViewModel : ObservableValidator
 	{
 		ProgramData programData = new() // remember to add data here
 		{
-			Name = Name,
+			Name = Name?.Trim(' '),
 			InstallationsPath = InstallationsPathString,
 			ParameterList = Parameters.ToList(),
 			InstallerPath = ExecutablePathString
 		};
 		ProgramService.SaveProgram(programData);
-
-		//this.Manager
-		//        .CreateMessage()
-		//        .Animates(true)
-		//        .Background("#333")
-		//        .HasBadge("Info")
-		//        .HasMessage(
-		//            "Update will be installed on next application restart. This message will be dismissed after 5 seconds.")
-		//        .Dismiss().WithButton("Update now", button => { })
-		//        .Dismiss().WithButton("Release notes", button => { })
-		//        .Dismiss().WithDelay(TimeSpan.FromSeconds(10))
-		//        .Queue();
 
 		_notificationService.NotificationText = $"{Name} was added to your list of programs";
 	}

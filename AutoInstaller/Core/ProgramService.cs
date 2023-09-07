@@ -15,6 +15,9 @@ public static class ProgramService
 	private static readonly string _databaseFolderName = "Database";
 	private static readonly string _programsFolderName = "Programs";
 
+	public static string DatabasePath => _databasePath;
+	public static string ProgramsPath => _programsPath;
+
 	static ProgramService()
 	{
 		string databasePath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
