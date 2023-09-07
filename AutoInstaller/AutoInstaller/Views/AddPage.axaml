@@ -75,14 +75,17 @@
 				<Grid ColumnDefinitions="* * * * *" Grid.Row="1" Grid.ColumnSpan="2" MaxWidth="800">
 					<CheckBox Grid.Column="0" IsChecked="{Binding ParameterIsReadOnly}" Content="Read-Only" HorizontalAlignment="Center"/>
 					<CheckBox Grid.Column="1" IsChecked="{Binding ParameterIsOptional}" Content="Optional" HorizontalAlignment="Center"/>
-					<ComboBox Grid.Column="2" ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}" HorizontalAlignment="Stretch"/>
-					<TextBox Grid.Column="3" Text="{Binding ParameterName}" Watermark="Name" Margin="2 0"/>
-					<TextBox Grid.Column="4" Text="{Binding ParameterValue}" Watermark="Value" />
+					<ComboBox Grid.Column="2" ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}" HorizontalAlignment="Stretch" Margin="3 0"/>
+					<TextBox Grid.Column="3" Text="{Binding ParameterName}" Watermark="Name" Margin="3 0"/>
+					<TextBox Grid.Column="4" Text="{Binding ParameterValue}" Watermark="Value" Margin="3 0"/>
 				</Grid>
 
-				<Button Grid.Row="2" Grid.ColumnSpan="2" Content="Add parameter" Command="{Binding AddParameterCommand}" HorizontalAlignment="Right" Margin="0 10"/>
+				<StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 10" Spacing="10" HorizontalAlignment="Right">
+					<Button Content="Add parameter" Command="{Binding AddParameterCommand}"/>
+					<Button Content="Remove parameter" Command="{Binding RemoveParameterCommand}"/>
+				</StackPanel>
 
-				<DataGrid Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" Margin="0 10 0 0" Background="White" 
+				<DataGrid Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" Margin="0 1 0 0" Background="White"
 						  SelectionMode="Single" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="True"
 						  BorderThickness="1" BorderBrush="Gray" IsReadOnly="True" ColumnWidth="*" GridLinesVisibility="All">
 					<DataGrid.Columns>
@@ -97,7 +100,6 @@
 		</Border>
 
 		<Button Grid.Row="3" Grid.ColumnSpan="2" Command="{Binding AddProgramCommand}" HorizontalAlignment="Right"
-                Content="Add Program">
-		</Button>
+                Content="Add Program"/>
 	</Grid>
 </UserControl>

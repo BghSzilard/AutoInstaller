@@ -16,7 +16,6 @@ namespace AutoInstaller.ViewModels;
 
 public partial class AddViewModel : ObservableValidator
 {
-
 	public List<ParameterType> ParameterTypes { get; } = Enum.GetValues<ParameterType>().ToList();
 
 	//installer settings
@@ -53,7 +52,10 @@ public partial class AddViewModel : ObservableValidator
 	public bool AreInstallerDetailsSet => HasName && HasValidFolderPath && HasValidFilePath;
 
 	// parameter settings
-	[ObservableProperty] private ParameterData? _selectedParameter;
+	[ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RemoveParameterCommand))]
+    private ParameterData? _selectedParameter;
+
 	[ObservableProperty] private ParameterType? _selectedParameterType = ParameterType.@string;
 
 	[ObservableProperty]
@@ -134,9 +136,10 @@ public partial class AddViewModel : ObservableValidator
 	{
 		_window = window;
 		_notificationService = notificationService;
+
+		ParameterTypes.Remove(ParameterType.choice);
 	}
 
-	// todo: simplify logic by having a single Value property and a bool that checks if the user wants a ReadOnly parameter Value (i.e. FixedValue) or ReadWrite (i.e. DefaultValue)
 	[RelayCommand(CanExecute = nameof(IsParameterDataValid))]
 	private void AddParameter()
 	{
@@ -169,18 +172,6 @@ public partial class AddViewModel : ObservableValidator
 			InstallerPath = ExecutablePathString
 		};
 		ProgramService.SaveProgram(programData);
-
-		//this.Manager
-		//        .CreateMessage()
-		//        .Animates(true)
-		//        .Background("#333")
-		//        .HasBadge("Info")
-		//        .HasMessage(
-		//            "Update will be installed on next application restart. This message will be dismissed after 5 seconds.")
-		//        .Dismiss().WithButton("Update now", button => { })
-		//        .Dismiss().WithButton("Release notes", button => { })
-		//        .Dismiss().WithDelay(TimeSpan.FromSeconds(10))
-		//        .Queue();
 
 		_notificationService.NotificationText = $"{Name} was added to your list of programs";
 	}
