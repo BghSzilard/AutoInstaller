@@ -38,17 +38,17 @@ public sealed partial class InstallViewModel : ObservableObject
 
     [ObservableProperty] private bool _copyInstaller;
 
-    [ObservableProperty] private bool _programSectionIsVisbile = false;
+    [ObservableProperty] private bool _programSectionIsVisibile;
 
     partial void OnSelectedVersionChanged(string value)
     {
         if (value != null)
         {
-            ProgramSectionIsVisbile = true;
+            ProgramSectionIsVisibile = true;
         }
         else
         {
-            ProgramSectionIsVisbile = false;
+            ProgramSectionIsVisibile = false;
         }
     }
 
