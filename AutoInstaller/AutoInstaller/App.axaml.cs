@@ -22,12 +22,13 @@ namespace AutoInstaller
             serviceCollection.AddSingleton(serviceCollection);
             serviceCollection.AddSingleton<PageService>();
             serviceCollection.AddSingleton<NavigationService>();
+            serviceCollection.AddSingleton<NotificationService>();
 
             serviceCollection.AddSingleton<HomePage>();
             serviceCollection.AddSingleton<HomeViewModel>();
 
-            serviceCollection.AddSingleton<AddPage>();
-            serviceCollection.AddSingleton<AddViewModel>();
+            serviceCollection.AddScope<AddPage>();
+            serviceCollection.AddScope<AddViewModel>();
 
             serviceCollection.AddScope<InstallPage>();
             serviceCollection.AddScope<InstallViewModel>();
@@ -36,9 +37,6 @@ namespace AutoInstaller
             pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
             pageService.RegisterPage<AddPage, AddViewModel>("Add");
             pageService.RegisterPage<InstallPage, InstallViewModel>("Install");
-
-            NavigationService navigationService = serviceCollection.GetService<NavigationService>();
-            navigationService.CurrentPageType = typeof(HomePage);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -49,6 +47,9 @@ namespace AutoInstaller
 
                 serviceCollection.AddSingleton(desktop.MainWindow);
             }
+
+            NavigationService navigationService = serviceCollection.GetService<NavigationService>();
+            navigationService.CurrentPageType = typeof(InstallPage);
 
             base.OnFrameworkInitializationCompleted();
         }

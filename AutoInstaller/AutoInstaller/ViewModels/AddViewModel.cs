@@ -1,16 +1,18 @@
 ﻿using AISL;
+using AutoInstaller.Services;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AutoInstaller.ViewModels;
@@ -20,144 +22,328 @@ public partial class AddViewModel : ObservableValidator
 	public List<ParameterType> ParameterTypes { get; } = Enum.GetValues<ParameterType>().ToList();
 
 	//installer settings
-	[ObservableProperty,
-	 NotifyPropertyChangedFor(nameof(HasName), nameof(AreInstallerDetailsSet)),
-	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand)), Required(ErrorMessage = "Program Name cannot be empty")]
+	//[ObservableProperty,
 	private string? _name;
+
+	[CustomValidation(typeof(AddViewModel), nameof(ValidateName))]
+	[Required(ErrorMessage = "Program name cannot be empty")]
+	public string? Name
+	{
+		get => _name;
+		set
+		{
+			SetProperty(ref _name, value, true);
+			OnPropertyChanged(nameof(AreInstallerDetailsSet));
+			AddProgramCommand.NotifyCanExecuteChanged();
+		}
+
+	}
 
 	//todo add custom validator class
 	[ObservableProperty,
-	 NotifyPropertyChangedFor(nameof(HasValidDirectory), nameof(AreInstallerDetailsSet)),
-	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand)), Required(ErrorMessage = "Directory cannot be empty")]
-	private string? _installationsPath;
+	 NotifyPropertyChangedFor(nameof(HasValidFilePath), nameof(AreInstallerDetailsSet)),
+	 NotifyCanExecuteChangedFor(nameof(AddProgramCommand))]
+	[Required(ErrorMessage = "Executable path cannot be empty")]
+	private string? _executablePathString;
 
-	[ObservableProperty] private string? _selectedVersion;
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(HasValidFolderPath), nameof(AreInstallerDetailsSet))]
+	[NotifyCanExecuteChangedFor(nameof(SelectExecutableCommand), nameof(AddProgramCommand))]
+	[Required(ErrorMessage = "Installations path cannot be empty")]
+	private string? _installationsPathString;
 
-	public bool HasName => !string.IsNullOrEmpty(Name);
+	[ObservableProperty]
+	private IStorageFolder? _installationsFolder;
 
-	// todo: simplify with De Morgan Theorem
-	public bool HasValidDirectory => ProgramService.CheckDirectoryValidity(InstallationsPath);
+	[ObservableProperty]
+	private IStorageFile? _executablePath;
 
-	public bool AreInstallerDetailsSet => HasName && HasValidDirectory;
+	public static ValidationResult ValidateName(string? v, ValidationContext context)
+	{
+		var programsList = ProgramService.FindSubdirectories(ProgramService.ProgramsPath);
+		if (programsList.Contains(v))
+		{
+			return new ValidationResult("Configuration already exists");
+		}
+
+		string pattern = "^([a-zA-Z0-9][^*/><?\"|:]*)$";
+		if (!Regex.IsMatch(v, pattern))
+		{
+			return new ValidationResult("Invalid folder name");
+		};
+
+		return ValidationResult.Success;
+	}
+
+	public static ValidationResult ValidateParameterName(string? v, ValidationContext context)
+	{
+		var addVM = context.ObjectInstance as AddViewModel;
+		if (string.IsNullOrEmpty(v) && addVM.AreInstallerDetailsSet)
+		{
+			return new ValidationResult("Parameter name cannot be empty");
+		}
+		if (addVM.Parameters.Any(p => v.Equals(p.Name)))
+		{
+			return new ValidationResult("Parameter already exists");
+		}
+
+		return ValidationResult.Success;
+	}
+
+	public static ValidationResult ValidateParameterValue(string? v, ValidationContext context)
+	{
+		var addVM = context.ObjectInstance as AddViewModel;
+		if (addVM.ParameterIsReadOnly && string.IsNullOrEmpty(v))
+			return new ValidationResult("Read-Only parameter must have a value");
+
+		switch (addVM.SelectedParameterType)
+		{
+			case ParameterType.number:
+				if (!int.TryParse(v, out var number))
+				{
+					return new ValidationResult("Parameter not a numerical value");
+				}
+
+				break;
+			case ParameterType.flag:
+				if (!v.Equals("0") && !v.Equals("1"))
+				{
+					return new ValidationResult("Parameter not a boolean value");
+				}
+
+				break;
+
+		}
+
+		return ValidationResult.Success;
+	}
+
+	public bool HasValidName => !string.IsNullOrEmpty(Name)
+	                            && !ProgramService.FindSubdirectories(ProgramService.ProgramsPath).Contains(Name);
+
+	public bool HasValidFilePath => ProgramService.CheckFilePathValidity(ExecutablePath?.Path.AbsolutePath.Replace("%20", " "), InstallationsPathString);
+
+	public bool HasValidFolderPath => ProgramService.CheckFolderPathValidity(InstallationsPathString);
+
+	public bool HasInstallationsFolder => !string.IsNullOrEmpty(InstallationsPathString);
+
+	public bool AreInstallerDetailsSet => HasValidName && HasValidFolderPath && HasValidFilePath;
 
 	// parameter settings
-	[ObservableProperty] private ParameterData? _selectedParameter;
-	[ObservableProperty] private ParameterType? _selectedParameterType = ParameterType.@string;
+	[ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RemoveParameterCommand))]
+    private ParameterData? _selectedParameter;
 
 	[ObservableProperty] 
-	[NotifyPropertyChangedFor(nameof(HasParameterName))]
-	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
-	[Required(ErrorMessage = "Parameter must have a name")]
+	[NotifyPropertyChangedFor(nameof(ParameterValue))]
+	private ParameterType? _selectedParameterType = ParameterType.@string;
+
 	private string? _parameterName;
 
-	[ObservableProperty] private string? _parameterValue;
+	[CustomValidation(typeof(AddViewModel), nameof(ValidateParameterName))]
+	public string? ParameterName
+	{
+		get => _parameterName;
+		set
+		{
+			SetProperty(ref _parameterName, value, true);
+			OnPropertyChanged(nameof(HasParameterName));
+			AddParameterCommand.NotifyCanExecuteChanged();
+		}
+	}
+
+	private string? _parameterValue;
+
+		[CustomValidation(typeof(AddViewModel), nameof(ValidateParameterValue))]
+	public string? ParameterValue
+	{
+		get => _parameterValue;
+		set
+		{
+			SetProperty(ref _parameterValue, value, true);
+			OnPropertyChanged(nameof(HasParameterValue));
+			AddParameterCommand.NotifyCanExecuteChanged();
+		}
+	}
+
 	[ObservableProperty] private bool _parameterIsOptional;
-	[ObservableProperty] private bool _parameterIsReadOnly;
+	[ObservableProperty]
+	[NotifyCanExecuteChangedFor(nameof(AddParameterCommand))]
+	[NotifyPropertyChangedFor(nameof(ParameterValue))]
+	private bool _parameterIsReadOnly;
 
 	public bool HasParameterName => !string.IsNullOrEmpty(ParameterName);
+
+	public bool HasParameterValue => !string.IsNullOrEmpty(ParameterValue);
 
 	public ObservableCollection<string> Versions { get; set; } = new();
 	public ObservableCollection<ParameterData> Parameters { get; set; } = new();
 
-	partial void OnInstallationsPathChanged(string? value)
+	//partial void OnNameChanged(string? value)
+	//{
+	//	//if (string.IsNullOrEmpty(value))
+	//	//{
+	//	//	AddProgramCommand.NotifyCanExecuteChanged();
+	//	//	throw new DataValidationException("Name cannot be empty");
+	//	//}
+	//}
+
+	partial void OnExecutablePathChanged(IStorageFile? value)
 	{
 		Versions.Clear();
-		//if (string.IsNullOrEmpty(value))
-		//	throw new DataValidationException("Directory cannot be empty");
-		//if (!Directory.Exists(value))
-		//	throw new DataValidationException("Directory does not exist");
-		//if (ProgramService.FindVersionSubdirectories(value!).Count == 0)
-		//	throw new DataValidationException("Directory contains no Version folders");
-		if (ProgramService.CheckDirectoryValidity(value))
+		if (value == null)
 		{
-			ProgramService.FindVersionSubdirectories(value!).ForEach(version => Versions.Add(version));
-			SelectedVersion = Versions[0];
-		}
-
-	}
-
-	private readonly Window _window;
-	public AddViewModel(Window window)
-	{
-		_window = window;
-	}
-
-	// todo: simplify logic by having a single Value property and a bool that checks if the user wants a ReadOnly parameter Value (i.e. FixedValue) or ReadWrite (i.e. DefaultValue)
-	[RelayCommand(CanExecute = nameof(IsParameterDataValid))]
-	private void AddParameter()
-	{
-		ParameterData parameter;
-		if (ParameterIsReadOnly)
-		{
-			parameter = new ParameterData
-			{
-				IsOptional = ParameterIsOptional,
-				Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
-				Name = ParameterName!,
-				DefaultValue = null,
-				FixedValue = ParameterValue
-			};
+			ExecutablePathString = string.Empty;
+			//throw new DataValidationException("Directory cannot be empty");
 		}
 		else
 		{
-			parameter = new ParameterData
+			string absoluteExecutablePath = value.Path.AbsolutePath.Replace("%20", " ");
+			if (!absoluteExecutablePath.Contains(InstallationsPathString!))
 			{
-				IsOptional = ParameterIsOptional,
-				Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
-				Name = ParameterName!,
-				DefaultValue = ParameterValue,
-				FixedValue = null
-			};
+				//throw new DataValidationException("Executable Path not relative to Installations Path");
+				return;
+			}
+			ExecutablePathString = absoluteExecutablePath.Remove(0, InstallationsPathString!.Length + 1);
+			ExecutablePathString = ExecutablePathString.Substring(ExecutablePathString.IndexOf("/") + 1).Replace("%20", " ");
+			//ProgramService.GetVersions(_mainApplicationPath).ForEach(version => Versions.Add(version));
+			//if (Versions.Count == 0)
+			//	throw new DataValidationException("No versions were found");
 		}
+		//if (!File.Exists(value.Path.AbsolutePath))
+		//	throw new DataValidationException("Directory does not exist");
 
-		Parameters.Add(parameter);
 	}
 
-    [RelayCommand(CanExecute = nameof(IsParameterSelected))]
-    private void RemoveParameter()
-    {
-        Parameters.Remove(SelectedParameter!);
-    }
+	//partial void OnInstallationsPathChanged(string? value)
+	//{
+
+	//}
+
+	partial void OnInstallationsFolderChanged(IStorageFolder? value)
+	{
+		if (value != null)
+		{
+			InstallationsPathString = value.Path.AbsolutePath.Replace("%20", " ");
+			ExecutablePath = null;
+		}
+	}
+
+	private readonly NotificationService _notificationService;
+	private readonly Window _window;
+	public AddViewModel(Window window, NotificationService notificationService)
+	{
+		_window = window;
+		_notificationService = notificationService;
+
+		ParameterTypes.Remove(ParameterType.choice);
+	}
+
+	[RelayCommand(CanExecute = nameof(IsParameterDataValid))]
+	private void AddParameter()
+	{
+		ParameterData parameter = new()
+		{
+			IsOptional = ParameterIsOptional,
+			Type = SelectedParameterType!.Value, // make sure you can't add parameter without selecting a type
+			Name = ParameterName!,
+			IsReadOnly = ParameterIsReadOnly,
+			Value = ParameterValue
+		};
+
+		Parameters.Add(parameter);
+		ParameterName = string.Empty;
+		ParameterValue = string.Empty;
+		ParameterIsReadOnly = false;
+		ParameterIsOptional = false;
+		SelectedParameterType = ParameterType.@string;
+	}
+
+	[RelayCommand(CanExecute = nameof(IsParameterSelected))]
+	private void RemoveParameter()
+	{
+		Parameters.Remove(SelectedParameter!);
+	}
 
 	[RelayCommand(CanExecute = nameof(CanAddProgram))]
 	private void AddProgram()
 	{
 		ProgramData programData = new() // remember to add data here
 		{
-			Name = Name,
-			InstallationsPath = InstallationsPath,
+			Name = Name?.Trim(' '),
+			InstallationsPath = InstallationsPathString,
 			ParameterList = Parameters.ToList(),
-			Version = SelectedVersion,
-			Uninstall = true, // hardcoded for now, will be changed
-			InstallerPath = ProgramService.FindInstallerPath(Path.Combine(InstallationsPath!, SelectedVersion!))
+			InstallerPath = ExecutablePathString
 		};
 		ProgramService.SaveProgram(programData);
+
+		_notificationService.NotificationText = $"{Name} was added to your list of programs";
 	}
 
 	[RelayCommand]
 	private async Task SelectInstallationsFolder()
 	{
-		var dialog = new OpenFolderDialog
-		{
-			Title = "Select a folder",
-		};
+		var topLevel = TopLevel.GetTopLevel(_window);
 
-		var selectedFolder = await dialog.ShowAsync(_window);
-
-		if (!string.IsNullOrEmpty(selectedFolder))
+		// Start async operation to open the dialog.
+		var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
 		{
-			InstallationsPath = selectedFolder;
+			Title = "Open Folder",
+			AllowMultiple = false
+		});
+
+		if (folders.Count >= 1)
+		{
+			InstallationsFolder = folders[0];
 		}
+	}
+
+	[RelayCommand(CanExecute = nameof(CanSelectExecutable))]
+	private async Task SelectExecutable()
+	{
+		var topLevel = TopLevel.GetTopLevel(_window);
+
+		// Start async operation to open the dialog.
+		var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+		{
+			Title = "Open Installer File",
+			AllowMultiple = false,
+			FileTypeFilter = new[]{ new FilePickerFileType("Executable")
+			{
+				Patterns = new[] { "*.exe" }
+			},
+			new FilePickerFileType("Windows Installer")
+			{
+				Patterns = new[] { "*.msi" }
+			}
+			},
+			SuggestedStartLocation = InstallationsFolder
+		});
+
+		if (files.Count >= 1)
+		{
+			ExecutablePath = files[0];
+		}
+	}
+
+	private bool CanSelectExecutable()
+	{
+		return HasInstallationsFolder;
 	}
 
 	private bool IsParameterDataValid()
 	{
-		return HasParameterName;
+		if (!HasParameterName)
+			return false;
+		if (ParameterIsReadOnly)
+			return HasParameterValue;
+
+		return true;
 	}
 
 	private bool CanAddProgram()
 	{
-		return HasName && HasValidDirectory;
+		return AreInstallerDetailsSet;
 	}
 
 	private bool IsParameterSelected()

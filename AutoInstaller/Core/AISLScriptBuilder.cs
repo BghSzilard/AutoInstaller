@@ -13,28 +13,28 @@ public static class AISLScriptBuilder
 
     private static string AddParametersStatement(string script, ProgramData programData)
     {
-        script += "HAS ( \n";
+        script += "HAS (\n";
         foreach (var parameter in programData.ParameterList)
         {
-            script += "\t";
+            script += "    ";
             if (parameter.IsOptional)
             {
                 script += "optional ";
             }
             script += $"{parameter.Type} {parameter.Name}";
 
-            if (parameter.FixedValue != null)
+            if (parameter.IsReadOnly == true)
             {
                 if (parameter.Type == ParameterType.@string)
                 {
-                    script += $" = \"{parameter.FixedValue}\"";
+                    script += $" = \"{parameter.Value}\"";
                 }
                 else
                 {
-                    script += $" = {parameter.FixedValue}";
+                    script += $" = {parameter.Value}";
                 }
             }
-
+            
             if (parameter.Options != null)
             {
                 script += " FROM [";
@@ -46,28 +46,26 @@ public static class AISLScriptBuilder
                 script += "]";
             }
 
-            if (parameter.DefaultValue != null)
+            if (parameter.Value != null)
             {
                 if (parameter.Type == ParameterType.@string)
                 {
-                    script += $" WITH DEFAULT \"{parameter.DefaultValue}\"";
+                    script += $" WITH DEFAULT \"{parameter.Value}\"";
                 }
                 else
                 {
-                    script += $" WITH DEFAULT {parameter.DefaultValue}";
+                    script += $" WITH DEFAULT {parameter.Value}";
                 }
-                
             }
             script += ",\n";
         }
-        script = script.Remove(script.Length - 2);
-        script += "\n) AS installation_parameters;";
+        script = script.Remove(script.Length - 1);
+        script += "\n) AS installation_parameters;\n";
         return script;
     }
 
     private static string AddUninstallStatement(string script, ProgramData programData)
     {
-        script += "\n";
         script += $@"UNINSTALL ""{programData.Name}"";";
         return script;
     }
@@ -87,10 +85,7 @@ public static class AISLScriptBuilder
         {
             script = AddParametersStatement(script, programData);
         }
-        if (programData.Uninstall)
-        {
-            script = AddUninstallStatement(script, programData);
-        }
+        script = AddUninstallStatement(script, programData);
         script = AddExecuteStatement(script, programData);
         return script;
     }

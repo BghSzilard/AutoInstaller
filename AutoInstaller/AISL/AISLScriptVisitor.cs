@@ -13,60 +13,114 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
         return _programData;
     }
 
-    public override ProgramData VisitUninstallInstruction([NotNull] UninstallInstructionContext context)
+    public override ProgramData VisitFindInstruction([NotNull] FindInstructionContext context)
     {
-        _programData.Uninstall = true;
+        var quotedTextContexts = context.QUOTED_TEXT();
+        _programData.Name = quotedTextContexts[0].GetText().Trim('"');
+        _programData.InstallationsPath = quotedTextContexts[1].GetText().Trim('"');
+        return _programData;
+    }
+
+    public override ProgramData VisitNonChoiceParameter([NotNull] NonChoiceParameterContext context)
+    {
+        ParameterData parameter = new()
+        {
+            IsOptional = context.OPTIONAL() != null,
+            Name = context.WORD().GetText(),
+            IsReadOnly = false
+        };
+
+        string type = context.TYPE().GetText();
+        switch (type)
+        {
+            case "string":
+                parameter.Type = ParameterType.@string;
+                break;
+            case "number":
+                parameter.Type = ParameterType.number;
+                break;
+            case "flag":
+                parameter.Type = ParameterType.flag;
+                break;
+            default:
+                throw new InvalidDataException("Unrecognized type");
+        }
+
+        if (context.defaultOrFixed() != null && context.defaultOrFixed().defaultParamValue() != null)
+        {
+            parameter.Value = context.defaultOrFixed().defaultParamValue().valueOrString().GetText().Trim('"');
+        }
+
+        if (context.defaultOrFixed() != null && context.defaultOrFixed().fixedParamValue() != null)
+        {
+            parameter.Value = context.defaultOrFixed().fixedParamValue().valueOrString().GetText().Trim('"');
+            parameter.IsReadOnly = true;
+        }
+
+        _programData.ParameterList.Add(parameter);
+
+        return _programData;
+    }
+
+    public override ProgramData VisitChoiceParameter([NotNull] ChoiceParameterContext context)
+    {
+        ParameterData parameter = new()
+        {
+            IsOptional = context.OPTIONAL() != null,
+            Name = context.WORD().GetText(),
+            Type = ParameterType.choice,
+            IsReadOnly = false,
+            Options = new()
+        };
+
+        var options = context.optionList().valueOrString().ToList();
+        options.ForEach(option => parameter.Options.Add(option.GetText().Trim(' ').Trim('"')));
+
+        if (context.defaultOrFixed() != null && context.defaultOrFixed().defaultParamValue() != null)
+        {
+            parameter.Value = context.defaultOrFixed().defaultParamValue().valueOrString().GetText().Trim('"');
+        }
+
+        if (context.defaultOrFixed() != null && context.defaultOrFixed().fixedParamValue() != null)
+        {
+            parameter.Value = context.defaultOrFixed().fixedParamValue().valueOrString().GetText().Trim('"');
+            parameter.IsReadOnly = true;
+        }
+
+        _programData.ParameterList.Add(parameter);
+
         return _programData;
     }
 
     public override ProgramData VisitExecuteInstruction([NotNull] ExecuteInstructionContext context)
     {
-        _programData.InstallerPath = context.installerPath().GetText().Trim('"');
+        _programData.InstallerPath = context.QUOTED_TEXT().GetText().Trim('"');
         return _programData;
     }
 
-    public override ProgramData VisitProgramName([NotNull] ProgramNameContext context)
+    public override ProgramData VisitInvokeInstallInstruction([NotNull] InvokeInstallInstructionContext context)
     {
-        _programData.Name = context.GetText().Trim('"');
+        _programData.InvokeInstallBlock = context.anything()
+            .GetText()
+            .Trim('\r')
+            .Trim('\n')
+            .Replace(@"\}", "}")
+            .Replace(@"\{", "{");
+
+        _programData.PathToInvokeInstallAt = context.QUOTED_TEXT().GetText().Trim('"');
         return _programData;
     }
 
-    public override ProgramData VisitInstallationsPath([NotNull] InstallationsPathContext context)
+    public override ProgramData VisitInvokeUninstallInstruction([NotNull] InvokeUninstallInstructionContext context)
     {
-        _programData.InstallationsPath = context.GetText().Trim('"');
-        return _programData;
-    }
+        _programData.InvokeUninstallBlock = context.anything()
+           .GetText()
+           .Trim('\r')
+           .Trim('\n')
+           .Replace(@"\}", "}")
+           .Replace(@"\{", "{");
 
-    public override ProgramData VisitParameter([NotNull] ParameterContext context)
-    {
-        ParameterData parameter = new()
-        {
-            Type = (ParameterType)Enum.Parse(typeof(ParameterType), context.parameterType().GetText()),
-            Name = context.parameterName().GetText()
-        };
-
-        if (context.parameterDefaultValue() != null)
-        {
-            parameter.DefaultValue = context.parameterDefaultValue().GetText().Trim('"');
-        }
-
-        if (context.parameterIsOptional() != null)
-        {
-            parameter.IsOptional = true;
-        }
-
-        if (context.optionList() != null)
-        {
-            parameter.Options = context.optionList().option().Select(optionContext => optionContext.GetText().Trim('"')).ToList();
-        }
-
-        if (context.parameterFixedValue() != null)
-        {
-            parameter.FixedValue = context.parameterFixedValue().GetText().Trim('"');
-        }
-
-        _programData.ParameterList.Add(parameter);
-
+        _programData.PathToInvokeUninstallAt = context.QUOTED_TEXT().GetText().Trim('"');
         return _programData;
     }
 }

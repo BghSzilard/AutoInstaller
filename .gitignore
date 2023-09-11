@@ -402,3 +402,7 @@ FodyWeavers.xsd
 
 #Database
 Database/
+/AutoInstaller/Installs/TCB
+/AutoInstaller/Installs/Testlab
+/.vscode
+/AutoInstaller/Installs

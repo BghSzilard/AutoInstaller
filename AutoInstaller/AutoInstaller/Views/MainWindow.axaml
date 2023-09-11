@@ -11,51 +11,50 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="AutoInstaller"
-		x:CompileBindings="True">
+		x:CompileBindings="True"
+		WindowState="Maximized">
 
-	<Design.DataContext>
+    <Design.DataContext>
 		<vm:MainWindowViewModel>
 			<x:Arguments>
-				<core:ServiceCollection></core:ServiceCollection>
-				<core:PageService></core:PageService>
-				<services:NavigationService></services:NavigationService>
+				<core:ServiceCollection/>
+				<core:PageService/>
+				<services:NavigationService/>
+				<services:NotificationService/>
 			</x:Arguments>
 		</vm:MainWindowViewModel>
 	</Design.DataContext>
 
-	<Grid>
+	<Grid ColumnDefinitions="Auto *">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="30"></RowDefinition>
 		</Grid.RowDefinitions>
 
-        <StackPanel Background="#009999">
-            <Image Source="../Resources/siemenslogo.png" Height="20" Margin="10" HorizontalAlignment="Right"/>
-        </StackPanel>
-		<Menu Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#009999">
-			<MenuItem Header="File" Foreground="White" FontSize="">
-			</MenuItem>
-			<MenuItem Header="Home" Foreground="White"></MenuItem>
-		</Menu>
-        <Border Grid.Row="2" BorderBrush="LightBlue" BorderThickness="1" Bounds="">
-            <SplitView IsPaneOpen="True" DisplayMode="Inline" OpenPaneLength="200" CompactPaneLength="55">
-                <SplitView.Pane>
-                    <StackPanel>
-                        <StackPanel Orientation="Vertical">
-                            <Button Content="Add" Foreground="White" Background="#009999" HorizontalAlignment="Center"
-                                    Command="{Binding AddProgramCommand}">
-                            </Button>
-                            <Button Content="Install" Foreground="White" Background="#009999"
-                                    HorizontalAlignment="Center"
-                                    Command="{Binding InstallProgramCommand}">
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </SplitView.Pane>
-
-                <UserControl Content="{Binding Content}"></UserControl>
-            </SplitView></Border>
-	</Grid>
-
+		<StackPanel  Grid.ColumnSpan="2">
+			<Image Source="../Resources/siemenslogo.png" Height="12" Margin="10" HorizontalAlignment="Right"/>
+		</StackPanel>
+		<Grid ColumnDefinitions="Auto *" Grid.Row="1">
+			<StackPanel Orientation="Vertical" Grid.Column="0" Margin="10" Spacing="10" HorizontalAlignment="Stretch">
+				<Button Foreground="White" Background="Transparent" HorizontalAlignment="Stretch"
+						Command="{Binding AddProgramCommand}"
+                        HorizontalContentAlignment="Center">
+                    <icons:MaterialIcon Kind="Plus" Height="20" Width="20"/>
+                </Button>
+				<Button Foreground="White" Background="Transparent"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
+						Command="{Binding InstallProgramCommand}">
+                    <icons:MaterialIcon Kind="Download" Height="20" Width="20"/>
+                </Button>
+			</StackPanel>
+		</Grid>
+        <UserControl Grid.Column="1" Grid.Row="1" Content="{Binding Content}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     Margin="0 0 5 0"/>
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" 
+                   Text="{Binding NotificationService.NotificationText}" 
+                   VerticalAlignment="Center" HorizontalAlignment="Left" 
+                   Margin="10 0 0 0" Foreground="White" TextWrapping="Wrap"/>
+    </Grid>
 </Window>

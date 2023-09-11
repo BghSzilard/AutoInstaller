@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from d:\Siemens\AutoInstaller\AutoInstaller\AISL\AISL.g4 by ANTLR 4.9.2
+// Generated from c:\Users\Botond\Documents\Siemens\Summer School\Final\AutoInstaller\AutoInstaller\AISL\AISL.g4 by ANTLR 4.9.2
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -62,6 +62,36 @@ public interface IAISLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParameter([NotNull] AISLParser.ParameterContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="AISLParser.nonChoiceParameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNonChoiceParameter([NotNull] AISLParser.NonChoiceParameterContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="AISLParser.choiceParameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitChoiceParameter([NotNull] AISLParser.ChoiceParameterContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="AISLParser.defaultOrFixed"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefaultOrFixed([NotNull] AISLParser.DefaultOrFixedContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="AISLParser.defaultParamValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefaultParamValue([NotNull] AISLParser.DefaultParamValueContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="AISLParser.fixedParamValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFixedParamValue([NotNull] AISLParser.FixedParamValueContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="AISLParser.uninstallInstruction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -74,63 +104,33 @@ public interface IAISLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExecuteInstruction([NotNull] AISLParser.ExecuteInstructionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.installerPath"/>.
+	/// Visit a parse tree produced by <see cref="AISLParser.invokeInstallInstruction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitInstallerPath([NotNull] AISLParser.InstallerPathContext context);
+	Result VisitInvokeInstallInstruction([NotNull] AISLParser.InvokeInstallInstructionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.programName"/>.
+	/// Visit a parse tree produced by <see cref="AISLParser.invokeUninstallInstruction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitProgramName([NotNull] AISLParser.ProgramNameContext context);
+	Result VisitInvokeUninstallInstruction([NotNull] AISLParser.InvokeUninstallInstructionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.installationsPath"/>.
+	/// Visit a parse tree produced by <see cref="AISLParser.anything"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitInstallationsPath([NotNull] AISLParser.InstallationsPathContext context);
+	Result VisitAnything([NotNull] AISLParser.AnythingContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.parameterType"/>.
+	/// Visit a parse tree produced by <see cref="AISLParser.valueOrString"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParameterType([NotNull] AISLParser.ParameterTypeContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.parameterName"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParameterName([NotNull] AISLParser.ParameterNameContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.parameterDefaultValue"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParameterDefaultValue([NotNull] AISLParser.ParameterDefaultValueContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.parameterFixedValue"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParameterFixedValue([NotNull] AISLParser.ParameterFixedValueContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.parameterIsOptional"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParameterIsOptional([NotNull] AISLParser.ParameterIsOptionalContext context);
+	Result VisitValueOrString([NotNull] AISLParser.ValueOrStringContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="AISLParser.optionList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitOptionList([NotNull] AISLParser.OptionListContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="AISLParser.option"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitOption([NotNull] AISLParser.OptionContext context);
 }

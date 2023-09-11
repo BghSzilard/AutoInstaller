@@ -1,5 +1,6 @@
 using AISL;
 using Antlr4.Runtime;
+using System.Runtime.InteropServices;
 using System.Text;
 using Xunit.Abstractions;
 
@@ -11,23 +12,44 @@ public class AISLScriptVisitorTests
 
     private readonly ProgramData _programData;
 
-    private const string ScriptPath = @"D:\Siemens\AutoInstaller\AutoInstaller\AISL\script.aisl";
+    //private const string ScriptPath = @"C:\Users\Rares\Dropbox\My PC (DESKTOP-P06UPBI)\Desktop\SummerSchooInstaller\AutoInstaller\AutoInstaller\AISL\script.aisl";
 
     private List<ParameterData> ExpectedParameterList = new()
     {
-        new() { Type = ParameterType.number, Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.@string, Name = "ServerName", DefaultValue = @"C:\", IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.choice, Name = "DropDown", DefaultValue = null, IsOptional = false, FixedValue = null, Options = new() { "option1", "option2"} },
-        new() { Type = ParameterType.flag, Name = "Tick", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.@string, Name = "FixedParameter", DefaultValue = null, IsOptional = false, FixedValue = "FixedValue", Options = null },
-        new() { Type = ParameterType.@string, Name = "OptionalValue", DefaultValue = null, IsOptional = true, FixedValue = null, Options = null }
+        new() { Type = ParameterType.number, Name = "Port", Value = "8080", IsOptional = false, IsReadOnly = false, Options = null },
+        new() { Type = ParameterType.@string, Name = "ServerName", Value = @"C:\", IsOptional = false, IsReadOnly = false, Options = null },
+        new() { Type = ParameterType.choice, Name = "DropDown", Value = null, IsOptional = false, IsReadOnly = false, Options = new() { "option1", "option2"} },
+        new() { Type = ParameterType.flag, Name = "Tick", Value = null, IsOptional = false, IsReadOnly = false, Options = null },
+        new() { Type = ParameterType.@string, Name = "FixedParameter", Value = "FixedValue", IsOptional = false, IsReadOnly = true, Options = null },
+        new() { Type = ParameterType.@string, Name = "OptionalValue", Value = null, IsOptional = true, IsReadOnly = false, Options = null }
     };
 
     public AISLScriptVisitorTests(ITestOutputHelper output)
     {
 	    this.output = output;
 
-        string scriptText = File.ReadAllText(ScriptPath, Encoding.UTF8);
+        string scriptText = """
+            FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+            HAS (
+                number Port WITH DEFAULT 8080,
+                string ServerName WITH DEFAULT "C:\",
+                choice DropDown FROM ["option1", "option2"],
+                flag Tick,
+                string FixedParameter = "FixedValue",
+                OPTIONAL string OptionalValue,
+            ) AS installation_parameters;
+            UNINSTALL "Simcenter Test Cloud Blueprint";
+            EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+            INVOKE AS INSTALL {
+                Copy-Item "whatever" "wherever"
+                Copy-Item "whatever" | \{ "wherever" \}
+            } AT "relative\path";
+            INVOKE AS UNINSTALL {
+                Copy-Item "whatever" "wherever" to uninstall
+                Copy-Item "whatever" | \{ "wherever" \}
+            } AT "relative\path";
+
+            """;
 
         AntlrInputStream inputStream = new AntlrInputStream(scriptText);
         AISLLexer aislLexer = new AISLLexer(inputStream);
@@ -39,28 +61,16 @@ public class AISLScriptVisitorTests
         _programData = visitor.Visit(scriptContext);
     }
 
-    [Fact]
-    public void ProgramNameIsValid()
+    [Theory]
+    [InlineData("Simcenter Test Cloud Blueprint", @"D:\Siemens\tcb", @"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi")]
+    public void ProgramDataPropertiesAreValid(
+    string expectedName,
+    string expectedInstallationsPath,
+    string expectedInstallerPath)
     {
-        Assert.Equal("Simcenter Test Cloud Blueprint", _programData.Name);
-    }
-
-    [Fact]
-    public void InstallationsPathIsValid()
-    {
-        Assert.Equal(@"D:\Siemens\tcb", _programData.InstallationsPath);
-    }
-
-    [Fact]
-    public void UninstallIsValid()
-    {
-        Assert.True(_programData.Uninstall);
-    }
-
-    [Fact]
-    public void InstallerPathIsValid()
-    {
-        Assert.Equal(@"D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi", _programData.InstallerPath);
+        Assert.Equal(expectedName, _programData.Name);
+        Assert.Equal(expectedInstallationsPath, _programData.InstallationsPath);
+        Assert.Equal(expectedInstallerPath, _programData.InstallerPath);
     }
 
     public void ScriptWithIntentionalError_MissingLineOneSemicolon()
@@ -77,7 +87,6 @@ public class AISLScriptVisitorTests
             ) AS installation_parameters;
             UNINSTALL "Simcenter Test Cloud Blueprint";
             EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
-            
             """;
 
 	    AntlrInputStream inputStream = new AntlrInputStream(scriptText);
@@ -112,4 +121,210 @@ public class AISLScriptVisitorTests
     {
         Assert.Equal(ExpectedParameterList[index], _programData.ParameterList[index]);
     }
+
+    public void DefaultScript()
+    {
+        string scriptText = """
+            FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+            HAS (
+            	number Port WITH DEFAULT 8080,
+            	string ServerName WITH DEFAULT "C:\",
+            	choice DropDown FROM ["option1", "option2"],
+            	flag Tick,
+            	string FixedParameter = "FixedValue",
+            	optional string OptionalValue
+            ) AS installation_parameters;
+            UNINSTALL "Simcenter Test Cloud Blueprint";
+            EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+            """;
+
+
+        AntlrInputStream inputStream = new AntlrInputStream(scriptText);
+        AISLLexer aislLexer = new AISLLexer(inputStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(aislLexer);
+        AISLParser aislParser = new AISLParser(commonTokenStream);
+
+        AISLParser.ScriptContext scriptContext = aislParser.script();
+        AISLScriptVisitor visitor = new();
+        _ = visitor.Visit(scriptContext);
+    }
+    [Fact]
+    public void InitialTest() 
+    {
+        var exception = Record.Exception(() => DefaultScript());
+        Assert.Null(exception);
+    }
+
+    //public void ScriptErrorMissingOpenBracket()
+    //{
+    //    string scriptText = """
+    //        FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+    //        HAS 
+    //        	number Port WITH DEFAULT 8080,
+    //        	string ServerName WITH DEFAULT "C:\",
+    //        	choice DropDown FROM ["option1", "option2"],
+    //        	flag Tick,
+    //        	string FixedParameter = "FixedValue",
+    //        	optional string OptionalValue
+    //        ) AS installation_parameters;
+    //        UNINSTALL "Simcenter Test Cloud Blueprint";
+    //        EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+
+
+    //        """;
+
+    //    AntlrInputStream inputStream = new AntlrInputStream(scriptText);
+    //    AISLLexer aislLexer = new AISLLexer(inputStream);
+    //    CommonTokenStream commonTokenStream = new CommonTokenStream(aislLexer);
+    //    AISLParser aislParser = new AISLParser(commonTokenStream);
+    //    aislParser.AddErrorListener(new SyntaxErrorListener());
+
+    //    AISLParser.ScriptContext scriptContext = aislParser.script();
+    //    AISLScriptVisitor visitor = new();
+    //    _ = visitor.Visit(scriptContext);
+    //}
+    //[Fact]
+    //public void OpenBracketError()
+    //{
+    //    Exception exception = Assert.Throws<Exception>(OpenBracketError);
+
+    //    output.WriteLine(exception.Message);
+    //}
+    [Fact]
+    public void ThrowsExceptionOnSyntaxError_MissingParenthesis()
+    {
+        string scriptText = """
+        FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+        HAS 
+        	number Port WITH DEFAULT 8080,
+        	string ServerName WITH DEFAULT "C:\",
+        	choice DropDown FROM ["option1", "option2"],
+        	flag Tick,
+        	string FixedParameter = "FixedValue",
+        	optional string OptionalValue
+        ) AS installation_parameters;
+        UNINSTALL "Simcenter Test Cloud Blueprint";
+        EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+        
+        """;
+
+    Exception exception = Assert.Throws<Exception>(() => ParseScript(scriptText));
+
+        output.WriteLine(exception.Message);
+    }
+
+    private void ParseScript(string scriptText)
+    {
+        AntlrInputStream inputStream = new AntlrInputStream(scriptText);
+        AISLLexer aislLexer = new AISLLexer(inputStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(aislLexer);
+        AISLParser aislParser = new AISLParser(commonTokenStream);
+        aislParser.AddErrorListener(new SyntaxErrorListener());
+
+        AISLParser.ScriptContext scriptContext = aislParser.script();
+        AISLScriptVisitor visitor = new AISLScriptVisitor();
+        _ = visitor.Visit(scriptContext);
+    }
+
+    [Fact]
+    public void MissingAS()
+    {
+        string scriptText = """
+        FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+        HAS (
+        	string ServerName WITH DEFAULT "C:\",
+        	choice DropDown FROM ["option1", "option2"],
+        	flag Tick,
+        	string FixedParameter = "FixedValue",
+        	optional string OptionalValue
+        )  installation_parameters;
+        UNINSTALL "Simcenter Test Cloud Blueprint";
+        EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+        
+        """;
+
+        Exception exception = Assert.Throws<Exception>(() => ParseScript(scriptText));
+
+        output.WriteLine(exception.Message);
+    }
+
+    public void MissingUninstallScript()
+    {
+        string scriptText = """
+            FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+            HAS (
+            	number Port WITH DEFAULT 8080,
+            	string ServerName WITH DEFAULT "C:\",
+            	choice DropDown FROM ["option1", "option2"],
+            	flag Tick,
+            	string FixedParameter = "FixedValue",
+            	optional string OptionalValue
+            ) AS installation_parameters;
+            EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+            """;
+
+
+        AntlrInputStream inputStream = new AntlrInputStream(scriptText);
+        AISLLexer aislLexer = new AISLLexer(inputStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(aislLexer);
+        AISLParser aislParser = new AISLParser(commonTokenStream);
+
+        AISLParser.ScriptContext scriptContext = aislParser.script();
+        AISLScriptVisitor visitor = new();
+        _ = visitor.Visit(scriptContext);
+    }
+    [Fact]
+    public void MissingUnistallTest()
+    {
+        var exception = Record.Exception(() => MissingUninstallScript());
+        Assert.Null(exception);
+    }
+
+    public void MissingHasAndUninstallScript()
+    {
+        string scriptText = """
+            FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+            AS installation_parameters;
+            EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+            """;
+
+
+        AntlrInputStream inputStream = new AntlrInputStream(scriptText);
+        AISLLexer aislLexer = new AISLLexer(inputStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(aislLexer);
+        AISLParser aislParser = new AISLParser(commonTokenStream);
+
+        AISLParser.ScriptContext scriptContext = aislParser.script();
+        AISLScriptVisitor visitor = new();
+        _ = visitor.Visit(scriptContext);
+    }
+    [Fact]
+    public void MissingHasAndUnistallTest()
+    {
+        var exception = Record.Exception(() => MissingHasAndUninstallScript());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void OptionsMissingInsideSquareBrackets()
+    {
+        string scriptText = """
+        FIND "Simcenter Test Cloud Blueprint" AT "D:\Siemens\tcb";
+        HAS (
+        	number Port WITH DEFAULT 8080,
+        	string ServerName WITH DEFAULT "C:\",
+        	choice DropDown FROM [],
+        	flag Tick,
+        	string FixedParameter = "FixedValue",
+        	optional string OptionalValue
+        ) AS installation_parameters;
+        UNINSTALL "Simcenter Test Cloud Blueprint";
+        EXECUTE "D:\Siemens\tcb\230822_1.1.9_core\Simcenter Test Cloud Blueprint Setup.msi" WITH installation_parameters;
+        """;
+
+        Exception exception = Assert.Throws<Exception>(() => ParseScript(scriptText));
+
+        output.WriteLine(exception.Message);
+    }
+
 }
