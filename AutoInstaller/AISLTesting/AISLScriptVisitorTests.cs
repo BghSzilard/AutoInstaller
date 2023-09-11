@@ -11,12 +11,12 @@ public class AISLScriptVisitorTests
 
     private readonly ProgramData _programData;
 
-    private const string ScriptPath = @"C:\Users\Botond\Documents\Siemens\Summer School\Final\AutoInstaller\AutoInstaller\AISL\script.aisl";
+    private const string ScriptPath = @"D:\Siemens\AutoInstaller\AutoInstaller\AISL\script.aisl";
 
     private List<ParameterData> ExpectedParameterList = new()
     {
         new() { Type = ParameterType.number, Name = "Port", DefaultValue = "8080", IsOptional = false, FixedValue = null, Options = null },
-        new() { Type = ParameterType.@string, Name = "ServerName", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
+        new() { Type = ParameterType.@string, Name = "ServerName", DefaultValue = @"C:\", IsOptional = false, FixedValue = null, Options = null },
         new() { Type = ParameterType.choice, Name = "DropDown", DefaultValue = null, IsOptional = false, FixedValue = null, Options = new() { "option1", "option2"} },
         new() { Type = ParameterType.flag, Name = "Tick", DefaultValue = null, IsOptional = false, FixedValue = null, Options = null },
         new() { Type = ParameterType.@string, Name = "FixedParameter", DefaultValue = null, IsOptional = false, FixedValue = "FixedValue", Options = null },

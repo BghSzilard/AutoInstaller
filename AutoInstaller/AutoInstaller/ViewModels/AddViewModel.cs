@@ -113,11 +113,11 @@ public partial class AddViewModel : ObservableValidator
 		Parameters.Add(parameter);
 	}
 
-	[RelayCommand(CanExecute = nameof(IsParameterSelected))]
-	private void RemoveParameter()
-	{
-		Parameters.Remove(SelectedParameter!.Value);
-	}
+    [RelayCommand(CanExecute = nameof(IsParameterSelected))]
+    private void RemoveParameter()
+    {
+        Parameters.Remove(SelectedParameter!);
+    }
 
 	[RelayCommand(CanExecute = nameof(CanAddProgram))]
 	private void AddProgram()

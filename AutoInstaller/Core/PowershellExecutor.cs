@@ -5,25 +5,62 @@ namespace Core
 {
     public static class PowershellExecutor
     {
+        private static void InitializeProcess(Process process)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            process.StartInfo = psi;
+        }
         public static void RunPowershellInstaller(ProgramData programData)
         {
-            
-            // Create a process to execute PowerShell
-            Process process = new Process();
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
+            Process process = new();
+            InitializeProcess(process);
+            string powershellScript = PowershellScriptBuilder.BuildPowershellInstallScript(programData);
 
-            PowershellScriptBuilder.BuildPowershellInstallScript(process, programData);
-
-
-            // Start the process
             process.Start();
+            process.StandardInput.WriteLine(powershellScript);
+            process.StandardInput.Close();
 
-            // Wait for the process to finish
             process.WaitForExit();
+        }
+        
+        public static void RunPowershellUninstaller(string programName)
+        {
+            Process process = new Process();
+            InitializeProcess(process);
+            string powershellScript = PowershellScriptBuilder.BuildPowershellUninstallScript(programName);
 
+            process.Start();
+            process.StandardInput.WriteLine(powershellScript);
+            process.StandardInput.Close();
+
+            process.WaitForExit();
+        }
+        public static string RunPowershellGetNameScript(string installerPath)
+        {
+            Process process = new Process();
+            InitializeProcess(process);
+            process.StartInfo.Arguments = "-NoLogo -NoProfile -NonInteractive -Command -";
+            string powershellScript = PowershellScriptBuilder.BuildPowershelGetNameScript(installerPath);
+
+            process.Start();
+            process.StandardInput.WriteLine(powershellScript);
+            process.StandardInput.Close();
+            string output = process.StandardOutput.ReadToEnd()
+                .Replace("\n", string.Empty)
+                .Replace("\r", string.Empty)
+                .Replace("\t", string.Empty);
+
+            process.WaitForExit();
+            return output;
         }
     }
 }

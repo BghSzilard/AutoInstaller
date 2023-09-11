@@ -47,7 +47,7 @@ public class AISLScriptVisitor : AISLBaseVisitor<ProgramData>
 
         if (context.parameterDefaultValue() != null)
         {
-            parameter.DefaultValue = context.parameterDefaultValue().GetText();
+            parameter.DefaultValue = context.parameterDefaultValue().GetText().Trim('"');
         }
 
         if (context.parameterIsOptional() != null)

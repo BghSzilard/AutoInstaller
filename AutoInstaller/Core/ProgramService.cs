@@ -1,4 +1,5 @@
 ﻿using AISL;
+using Microsoft.Win32;
 using System.IO;
 
 namespace Core;
@@ -6,9 +7,10 @@ namespace Core;
 public static class ProgramService
 {
     private static readonly string _databasePath;
-    private static readonly string _programsPath;
+    public static readonly string _programsPath;
     private static readonly string _databaseFolderName = "Database";
     private static readonly string _programsFolderName = "Programs";
+
     static ProgramService()
     {
         string databasePath = Enumerable.Range(0, 4).Aggregate(Environment.CurrentDirectory,
@@ -37,56 +39,25 @@ public static class ProgramService
         }
 
         string filePath = Path.Combine(programPath, $"{programData.Version}.aisl");
-
-        //File.WriteAllText(filePath, AISLScriptBuilder.Build(programData));
         using StreamWriter writer = new(filePath);
 
-        ProgramData mockData = new()
-        {
-            Name = "Simcenter Test Cloud Blueprint",
-            InstallationsPath = "D:\\Siemens\\tcb",
-            ParameterList = new()
-            {
-                new ParameterData()
-                {
-                    Type = ParameterType.number,
-                    Name = "Port",
-                    DefaultValue = "8080",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.@string,
-                    Name = "ServerName",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.choice,
-                    Name = "DropDown",
-                    Options = new() { "option1", "option2" },
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.flag,
-                    Name = "Tick",
-                },
-                new ParameterData()
-                {
-                    Type = ParameterType.@string,
-                    Name = "FixedParameter",
-                    FixedValue = "FixedValue"
-                },
-                new ParameterData()
-                {
-                    IsOptional = true,
-                    Type = ParameterType.@string,
-                    Name = "OptionalValue"
-                }
-            },
-            InstallerPath = "D:\\Siemens\\tcb\\230822_1.1.9_core\\Simcenter Test Cloud Blueprint Setup.msi",
-            Uninstall = true
-        };
-
         writer.Write(AISLScriptBuilder.Build(programData));
+    }
+
+    public static string FindMostRecentFileInDirectory(string directoryPath)
+    {
+        DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+        FileInfo[] files = directoryInfo.GetFiles();
+
+        if (files.Length > 0)
+        {
+            FileInfo mostRecentFile = files.OrderByDescending(f => f.LastWriteTime).First();
+            return mostRecentFile.Name;
+        }
+        else
+        {
+            throw new Exception("There are no files in this directory");
+        }
     }
 
     public static List<string> FindSubdirectories(string directoryPath)
@@ -133,19 +104,70 @@ public static class ProgramService
         return installerPath[0];
     }
 
-    /// <summary>
-    /// This function tests if a Directory is 'Valid' or 'Invalid'.
-    /// Of course, validity is relative, but by our definition a 'Valid' Directory is the following:
-    /// <list type="bullet">
-    /// <item>non-empty string</item>
-    /// <item>points to an existing directory in the file system</item>
-    /// <item>has at least one subdirectory</item>
-    /// </list>
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    public static bool CheckDirectoryValidity(string? path)
+    public static List<string> FindVersionsOfProgram(string programName)
     {
-	    return !string.IsNullOrEmpty(path) && Directory.Exists(path) && ProgramService.FindVersionSubdirectories(path!).Count > 0;
+        string programPath = Path.Combine(_programsPath, programName);
+        string mostRecentFilePath = Path.Combine(programPath, FindMostRecentFileInDirectory(programPath));
+
+        string? installationsPath = ScriptDataExtractor.GetProgramData(mostRecentFilePath).InstallationsPath;
+
+        return FindVersionSubdirectories(installationsPath!);
+    }
+
+    public static ProgramData GetProgramData(string programName, string versionName)
+    {
+        string scriptPath = Path.Combine(_programsPath, programName, $"{versionName}.aisl");
+        if (File.Exists(scriptPath)) // for versions that don't have AISL files associated
+        {
+            return ScriptDataExtractor.GetProgramData(scriptPath);
+        }
+        return null!;
+    }
+
+    public static List<string> GetAllProgramsFromComputer()
+    {
+        List<string> programNames = new List<string>();
+        string registry_key = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+        using (Microsoft.Win32.RegistryKey key = Registry.LocalMachine.OpenSubKey(registry_key))
+        {
+            foreach (string subkey_name in key.GetSubKeyNames())
+            {
+                using (RegistryKey subkey = key.OpenSubKey(subkey_name))
+                {
+                    programNames.Add((string)subkey.GetValue("DisplayName"));
+                }
+            }
+        }
+        return programNames;
+    }
+    public static string? GetInstalledProgramNameFromInstaller(string installerPath)
+    {
+        if (installerPath.EndsWith(".msi"))
+        {
+            installerPath = FindExePath(installerPath);
+        }
+        string programToInstall = GetProgramName(installerPath);
+        foreach (var installedProgram in GetAllProgramsFromComputer())
+        {
+            if (programToInstall == installedProgram)
+            {
+                return programToInstall;
+            }
+        }
+        return null;
+    }
+    private static string FindExePath(string msiPath)
+    {
+        string msiDirectory = Path.GetDirectoryName(msiPath);
+        if (msiDirectory != null)
+        {
+            var exePath = Directory.GetFiles(msiDirectory, "*.exe");
+            return exePath[0];
+        }
+        throw new Exception("Could not find .exe");
+    }
+    private static string GetProgramName(string installerPath)
+    {
+        return PowershellExecutor.RunPowershellGetNameScript(installerPath);
     }
 }
