@@ -27,6 +27,7 @@ public partial class ParameterDataViewModel : ObservableValidator
         set
         {
 	        SetProperty(ref _value, value, true);
+            
         }
     }
 
@@ -56,6 +57,7 @@ public partial class ParameterDataViewModel : ObservableValidator
 
 	    }
 
+	    parameterVM.ParameterData.Value = v;
 	    return ValidationResult.Success;
     }
 

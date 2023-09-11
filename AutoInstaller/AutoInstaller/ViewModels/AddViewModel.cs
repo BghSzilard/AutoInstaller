@@ -119,8 +119,7 @@ public partial class AddViewModel : ObservableValidator
 	}
 
 	public bool HasValidName => !string.IsNullOrEmpty(Name)
-	                            && !ProgramService.FindSubdirectories(ProgramService.ProgramsPath).Contains(Name)
-	                            && !HasErrors;
+	                            && !ProgramService.FindSubdirectories(ProgramService.ProgramsPath).Contains(Name);
 
 	public bool HasValidFilePath => ProgramService.CheckFilePathValidity(ExecutablePath?.Path.AbsolutePath.Replace("%20", " "), InstallationsPathString);
 
@@ -253,8 +252,8 @@ public partial class AddViewModel : ObservableValidator
 		};
 
 		Parameters.Add(parameter);
-		ParameterName = String.Empty;
-		ParameterValue = String.Empty;
+		ParameterName = string.Empty;
+		ParameterValue = string.Empty;
 		ParameterIsReadOnly = false;
 		ParameterIsOptional = false;
 		SelectedParameterType = ParameterType.@string;
