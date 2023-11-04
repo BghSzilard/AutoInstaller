@@ -1,4 +1,3 @@
-using AISL;
 using AutoInstaller.Services;
 using AutoInstaller.ViewModels;
 using AutoInstaller.Views;
@@ -24,9 +23,6 @@ namespace AutoInstaller
             serviceCollection.AddSingleton<NavigationService>();
             serviceCollection.AddSingleton<NotificationService>();
 
-            serviceCollection.AddSingleton<HomePage>();
-            serviceCollection.AddSingleton<HomeViewModel>();
-
             serviceCollection.AddScope<AddPage>();
             serviceCollection.AddScope<AddViewModel>();
 
@@ -34,7 +30,6 @@ namespace AutoInstaller
             serviceCollection.AddScope<InstallViewModel>();
 
             PageService pageService = serviceCollection.GetService<PageService>();
-            pageService.RegisterPage<HomePage, HomeViewModel>("Demo");
             pageService.RegisterPage<AddPage, AddViewModel>("Add");
             pageService.RegisterPage<InstallPage, InstallViewModel>("Install");
 

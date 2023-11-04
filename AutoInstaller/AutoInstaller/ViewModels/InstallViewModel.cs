@@ -14,7 +14,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace AutoInstaller.ViewModels;
 
@@ -26,21 +25,15 @@ public sealed partial class InstallViewModel : ObservableObject
     public ObservableCollection<string> Versions { get; } = new();
     public ObservableCollection<ParameterDataViewModel> Parameters { get; } = new();
 
-    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand)),
-        NotifyCanExecuteChangedFor(nameof(SaveParametersCommand)),
-        NotifyCanExecuteChangedFor(nameof(LoadParametersCommand))]
-    private string _selectedProgram;
+    [ObservableProperty] private string? _selectedProgram;
 
-    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(InstallProgramCommand)),
-        NotifyCanExecuteChangedFor(nameof(SaveParametersCommand)),
-        NotifyCanExecuteChangedFor(nameof(LoadParametersCommand))]
-    private string _selectedVersion;
+    [ObservableProperty] private string? _selectedVersion;
 
     [ObservableProperty] private bool _copyInstaller;
 
     [ObservableProperty] private bool _programSectionIsVisibile;
 
-    partial void OnSelectedVersionChanged(string value)
+    partial void OnSelectedVersionChanged(string? value)
     {
         if (value != null)
         {
@@ -59,10 +52,10 @@ public sealed partial class InstallViewModel : ObservableObject
         Programs = new(ProgramService.FindPrograms());
     }
 
-    [RelayCommand(CanExecute = nameof(IsProgramSelected))]
-    public async void InstallProgram() // check if program is selected
+    [RelayCommand]
+    public async Task InstallProgram()
     {
-        ProgramData programData = ProgramService.GetProgramData(SelectedProgram);
+        ProgramData programData = ProgramService.GetProgramData(SelectedProgram!);
         programData.ParameterList.Clear();
         foreach (var parameter in Parameters)
         {
@@ -71,20 +64,18 @@ public sealed partial class InstallViewModel : ObservableObject
 
         if (CopyInstaller)
         {
-            ProgramService.CopyProgramVersion(programData, programData.InstallationsPath, SelectedVersion);
+            ProgramService.CopyProgramVersion(programData, programData.InstallationsPath!, SelectedVersion!);
         }
 
+        string? productCode = ProgramService.GetProductCode(SelectedProgram!);
 
-        //string? installedProgramName = ProgramService.GetInstalledProgramNameFromInstaller(Path.Combine(programData.InstallationsPath, SelectedVersion, programData.InstallerPath));
-
-        string? productCode = ProgramService.GetProductCode(SelectedProgram);
-
-        //user might have deleted installLog manually
         if (string.IsNullOrEmpty(productCode))
         {
-            PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion, true);
+            PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion!, true);
             return;
         }
+
+        //the user might have deleted manually the program
 
         bool isInRegistry = false;
         using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
@@ -96,12 +87,12 @@ public sealed partial class InstallViewModel : ObservableObject
 
         if (!isInRegistry)
         {
-            PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion, true);
+            PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion!, true);
             return;
         }
 
         var box = MessageBoxManager
-            .GetMessageBoxStandard("Caption", "A version of this program was detected on your device. Continuing the installation" +
+            .GetMessageBoxStandard("Warning!", "A version of this program was detected on your device. Continuing the installation" +
             " will lead to its deletion. Do you wish to continue?",
           ButtonEnum.YesNo);
 
@@ -124,11 +115,6 @@ public sealed partial class InstallViewModel : ObservableObject
 
         PowershellExecutor.RunPowershellInstaller(programData, SelectedVersion, true);
     }
-
-    bool IsProgramSelected()
-    {
-        return !string.IsNullOrWhiteSpace(SelectedProgram) && !string.IsNullOrWhiteSpace(SelectedVersion);
-    }
     partial void OnSelectedProgramChanged(string value)
     {
         Versions.Clear();
@@ -141,7 +127,7 @@ public sealed partial class InstallViewModel : ObservableObject
             programData.ParameterList.ForEach(parameter => Parameters.Add(new(parameter)));
         }
     }
-    [RelayCommand(CanExecute = nameof(IsProgramSelected))]
+    [RelayCommand]
     public async Task SaveParameters()
     {
         List<ParameterData> parameters = new();
@@ -153,8 +139,7 @@ public sealed partial class InstallViewModel : ObservableObject
 
         var topLevel = TopLevel.GetTopLevel(_window);
 
-        // Start async operation to open the dialog.
-        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        var file = await topLevel!.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save JSON File",
             DefaultExtension = "json",
@@ -162,21 +147,20 @@ public sealed partial class InstallViewModel : ObservableObject
 
         if (file is not null)
         {
-            // Open writing stream from the file.
             await using var stream = await file.OpenWriteAsync();
             using var streamWriter = new StreamWriter(stream);
-            // Write some content to the file.
+
             await streamWriter.WriteLineAsync(json);
             _notificationService.NotificationText = "The parameters were saved";
         }
     }
 
-    [RelayCommand(CanExecute = nameof(IsProgramSelected))]
+    [RelayCommand]
     public async Task LoadParameters()
     {
         var topLevel = TopLevel.GetTopLevel(_window);
 
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var files = await topLevel!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Open Text File",
             AllowMultiple = false,
@@ -189,6 +173,7 @@ public sealed partial class InstallViewModel : ObservableObject
             using var streamReader = new StreamReader(stream);
 
             var fileContent = await streamReader.ReadToEndAsync();
+
             try
             {
                 List<ParameterData> loadedParameters = ProgramService.DeserializeParameters(fileContent);

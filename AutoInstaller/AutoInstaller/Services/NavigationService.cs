@@ -4,8 +4,7 @@ namespace AutoInstaller.Services;
 
 public sealed partial class NavigationService : ObservableObject
 {
-    [ObservableProperty]
-    private bool _isNavigationAllowed = true;
+    [ObservableProperty] private bool _isNavigationAllowed = true;
 
     private Type? _currentPageType;
 

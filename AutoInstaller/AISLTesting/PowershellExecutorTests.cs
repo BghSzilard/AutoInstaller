@@ -44,5 +44,3 @@ public class PowershellExecutorTests
         PowershellExecutor.RunPowershellUninstallerAsync(programData.Name);
     }
 }
-
-

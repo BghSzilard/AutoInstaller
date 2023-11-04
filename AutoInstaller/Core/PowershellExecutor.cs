@@ -1,6 +1,5 @@
 ﻿using AISL;
 using System.Diagnostics;
-using System.Management.Automation;
 
 namespace Core
 {

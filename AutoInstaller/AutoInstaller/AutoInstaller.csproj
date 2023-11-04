@@ -48,13 +48,6 @@
 
 
   <ItemGroup>
-    <Compile Update="Views\HomePage.axaml.cs">
-      <DependentUpon>HomePage.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-
-  <ItemGroup>
     <AvaloniaResource Include="Resources\siemenslogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
